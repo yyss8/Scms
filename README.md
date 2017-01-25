@@ -1,4 +1,4 @@
-# scblog
+# ScBlog
 
 Demo: http://blog.scitnet.com
 
