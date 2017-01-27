@@ -3,6 +3,16 @@
         <div v-if='isEditing'>
             <input placeholder="输入文章标题" class='form-control' v-model='postTitle'>
             <div class='post-content-editor-btns'>
+
+                <div class="dropdown">
+                    <button class="btn btn-default dropdown-toggle btn-sm" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        {{category}} <span class="caret" v-if='category === "文章分类"'></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li  @click='selectCategories(category.name)' v-for='category in $store.state.postCategories'><a href="javascript:void(0)">{{category.name}}</a></li>
+                    </ul>
+                </div>&nbsp;
+
                 <div class="dropdown">
                     <button class="btn btn-default dropdown-toggle btn-sm" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                         字号
@@ -69,7 +79,7 @@
             <div class='post-btns'>
                 <button class='btn btn-default' @click='submit'>发表</button>&nbsp;
                 <button class='btn btn-default' @click='hideModal'>暂存</button>&nbsp;
-                <button class='btn btn-default'>撤销</button>
+                <button class='btn btn-default' @click='cancel'>撤销</button>
             </div>
         </div>
         <div v-if='isPreviewing'>
@@ -83,7 +93,7 @@
             
             <div class='post-btns'>
                 <button class='btn btn-default' @click='preview'>取消</button>&nbsp;
-                <button class='btn btn-default'>撤销</button>
+                <button class='btn btn-default' @click='cancel'>撤销</button>
             </div>
         </div>
     </div>
@@ -98,6 +108,7 @@
                 postContent:"",
                 previewContent:"",
                 postTitle:"",
+                category:"文章分类",
                 selectionStart:0,
                 selectionEnd:0,
                 urlText:"",
@@ -115,6 +126,14 @@
         methods:{
             submit(){
                 
+            },
+            selectCategories(category){
+                this.category = category;
+            },
+            cancel(){
+                this.postTitle = "",
+                this.postContent = "";
+                this.hideModal();
             },
             preview(){
                 this.previewContent = this.postContent.replace(/(?:\r\n|\r|\n)/g, '<br />');

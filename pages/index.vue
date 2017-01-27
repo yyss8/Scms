@@ -18,8 +18,6 @@
         <footer class='footer'>
             <Footer-View></Footer-View>
         </footer>
-        <script src='/js/jquery-3.1.1.min.js'></script>
-        <script src='/js/bootstrap.min.js'></script>
     </div>
 </template>
 
@@ -28,19 +26,22 @@
     import FooterView from "../components/footer.vue";
     import MainContent from "../components/articlecontent/articlecontent.vue";
     import SideBar from "../components/sidebar/sidebar.vue";
-    import store from "../store/index";
+    import axios from "axios";
+    
 
     export default {
-        data({req}){
+        data(context){
             return {
-                loginUser:(req && req.session.user !== undefined) ? req.session.user:"none"
+                loginUser:(context.req && context.req.session.user !== undefined) ? context.req.session.user:"none",
             }
         },
-        store,
         mounted(){
+            $.get('/setting/all',result =>{
+                this.$store.commit('loadSetting',result.settings);
+            });
             if (this.loginUser != "none"){
                 //pass login status to store
-                store.commit("login",this.loginUser);
+                this.$store.commit("login",this.loginUser);
             }
         },
         methods:{
@@ -54,7 +55,11 @@
             MainContent,
             SideBar
         },
-        watch:{
+        head:{
+            script:[
+                {src:'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'},
+                {src:'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'}
+            ]
         }
     }
 
@@ -69,6 +74,15 @@
         margin:0 auto;
         width:70%;
         min-height:79.2vh;
+    }
+
+    a{
+        text-decoration: none;
+        color:#6FBADE;
+    }
+
+    a:hover{
+        color:#4673F8;
     }
 
     .navbar{

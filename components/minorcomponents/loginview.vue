@@ -29,8 +29,6 @@
 
 <script>
 
-    import store from "../../store/index";
-
     export default {
         data(){
             return {
@@ -41,7 +39,6 @@
                 hasMsg:false,
             }
         },
-        store,
         methods:{
             login(){
                 if (this.username == ""){
@@ -64,7 +61,7 @@
                         data: JSON.stringify(loginData),
                         success: (result)=>{
                             if (result.status == "ok"){
-                                store.commit('login',result.user);
+                                this.$store.commit('login',result.user);
                                 $("#settingField").modal('hide');
                             }else{
                                 this.hasError = true;

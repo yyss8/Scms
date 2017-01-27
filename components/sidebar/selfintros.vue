@@ -1,21 +1,21 @@
 <template>
     <div class='panel panel-default'>
-        <div class='panel-heading'>
-            个人介绍
+        <div class='panel-heading' v-if='$store.state.sideBarComps.SelfIntro.showTitle'>
+            {{$store.state.sideBarComps.SelfIntro.title}}
         </div>
         <div class='panel-body'>
             <div class='self-intro-content'>
-                <div class='self-intro-content-name'>
-                    Shen Chen
+                <div class='self-intro-content-name' v-if='$store.state.sideBarComps.SelfIntro.showName'>
+                    {{$store.state.sideBarComps.SelfIntro.name}}
                 </div>
-                <div>
-                    <i class='fa fa-envelope-o'></i><span><a href="mailto:yyss10@gmail.com">yyss10@gmail.com</a></span>
+                <div v-if='$store.state.sideBarComps.SelfIntro.showEmail'>
+                    <i class='fa fa-envelope-o'></i><span><a :href="sendEmail">{{$store.state.sideBarComps.SelfIntro.email}}</a></span>
                 </div>
-                <div>
-                    <i class='fa fa-drivers-license-o'></i><span>New York</span>
+                <div v-if='$store.state.sideBarComps.SelfIntro.showLocation'>
+                    <i class='fa fa-drivers-license-o'></i><span>{{$store.state.sideBarComps.SelfIntro.location}}</span>
                 </div>
-                <div>
-                    A recent graduate from Baruch College with a BBA degree in CIS major.
+                <div v-if='$store.state.sideBarComps.SelfIntro.showIntros'>
+                    {{$store.state.sideBarComps.SelfIntro.intros}}
                 </div>
             </div>
             <div class='self-intro-contact-btns'>
@@ -31,7 +31,17 @@
 
 <script>
     export default{
-        
+        data () {
+            return {
+
+            }
+        },
+        computed:{
+            sendEmail(){
+                const sendEmail = `mailto:${this.$store.state.sideBarComps.SelfIntro.email}`;
+                return sendEmail
+            }
+        }
     }
 </script>
 

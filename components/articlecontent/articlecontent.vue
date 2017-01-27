@@ -1,20 +1,23 @@
 <template>
     <div class='panel panel-default blog-content'>
         <div class='panel-body'>
-            <div class='panel panel-info' v-for='article in fakeData'>
+            <div class='panel panel-info' v-for='article in articles'>
                 <div class='panel-body'>
                     <br />
                     <div class='article-title'>
-                        <a href='javascript:void(0)'>{{ article.title }}</a>
+                        <a href='javascript:void(0)' @click='articleDetail(article._id)'>{{ article.title }}</a>
                     </div>
-                    <div class='article-content'>
-                        {{ article.content }} <a href='javascript:void(0)'>更多...</a>
+                    <div class='article-content' v-html='shortArticle(article.content)'>
                     </div>
                     <div class='article-btns'>
                         <span><i class='fa fa-calendar'></i>&nbsp; &nbsp;<a href='javascript:void(0)'>{{ article.date }}</a></span><br />
                         <span><i class='fa fa-folder-open-o'></i>&nbsp; &nbsp;<a href='javascript:void(0)'>{{ article.category }}</a></span>
+                        <div class='article-btns-right pull-right'>
+                            <a><i class='fa fa-share' @click='shareArticle'></i></a>
+                            <span v-if='$store.state.isLogin'>&nbsp; &nbsp;&nbsp;<a title='修改文章'><i class='fa fa-edit' @click='modify'></i></a></span>
+                            <span v-if='$store.state.isLogin'>&nbsp; &nbsp;&nbsp;<a title='删除文章'><i class='fa fa-trash' @click='deleteArticle'></i></a></span>
+                        </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -25,48 +28,59 @@
     export default {
         data(){
             return{
-                fakeData:[
-                    {
-                        title:"Demo Title",
-                        date:"2009年07月26日",
-                        content:`
-Vue.js（读音 /vjuː/, 类似于 view） 是一套构建用户界面的 渐进式框架。与其他重量级框架不同的是，Vue 采用自底向上增量开发的设计。Vue 的核心库只关注视图层，并且非常容易学习，非常容易与其它库或已有项目整合。另一方面，Vue 完全有能力驱动采用单文件组件和 Vue 生态系统支持的库开发的复杂单页应用。
-                        `,
-                        category:"普通文章"
+                articleNum:0,
+                articles:[]
+            }
+        },
+        mounted(){
+            $.get('/post/first', r =>{
+                if (r.status == "ok"){
+                    this.articleNum = r.result.num;
+                    this.articles = r.result.articles;
+                }else{
+
+                }
+            });
+        },
+        methods:{
+            articleDetail(id){
+                alert(id);
+            },
+            shortArticle(content){
+                let newContent = content;
+                let endNum = 100;
+                const htmlPat = /<a href='.*?'>(.*?)<\/a>/g
+                const patternObj = {
+                    br:{
+                        regExp:/<br\s*[\/]?>/g, //remove all break tag
+                        newStr:" "
                     },
-                    {
-                        title:"Demo Title",
-                        date:"2009年07月26日",
-                        content:`
-Vue.js（读音 /vjuː/, 类似于 view） 是一套构建用户界面的 渐进式框架。与其他重量级框架不同的是，Vue 采用自底向上增量开发的设计。Vue 的核心库只关注视图层，并且非常容易学习，非常容易与其它库或已有项目整合。另一方面，Vue 完全有能力驱动采用单文件组件和 Vue 生态系统支持的库开发的复杂单页应用。
-                        `,
-                        category:"普通文章"
-                    },
-                    {
-                        title:"Demo Title",
-                        date:"2009年07月26日",
-                        content:`
-Vue.js（读音 /vjuː/, 类似于 view） 是一套构建用户界面的 渐进式框架。与其他重量级框架不同的是，Vue 采用自底向上增量开发的设计。Vue 的核心库只关注视图层，并且非常容易学习，非常容易与其它库或已有项目整合。另一方面，Vue 完全有能力驱动采用单文件组件和 Vue 生态系统支持的库开发的复杂单页应用。
-                        `,
-                        category:"普通文章"
-                    },
-                    {
-                        title:"Demo Title",
-                        date:"2009年07月26日",
-                        content:`
-Vue.js（读音 /vjuː/, 类似于 view） 是一套构建用户界面的 渐进式框架。与其他重量级框架不同的是，Vue 采用自底向上增量开发的设计。Vue 的核心库只关注视图层，并且非常容易学习，非常容易与其它库或已有项目整合。另一方面，Vue 完全有能力驱动采用单文件组件和 Vue 生态系统支持的库开发的复杂单页应用。
-                        `,
-                        category:"普通文章"
-                    },
-                    {
-                        title:"Demo Title",
-                        date:"2009年07月26日",
-                        content:`
-Vue.js（读音 /vjuː/, 类似于 view） 是一套构建用户界面的 渐进式框架。与其他重量级框架不同的是，Vue 采用自底向上增量开发的设计。Vue 的核心库只关注视图层，并且非常容易学习，非常容易与其它库或已有项目整合。另一方面，Vue 完全有能力驱动采用单文件组件和 Vue 生态系统支持的库开发的复杂单页应用。
-                        `,
-                        category:"普通文章"
+                    img:{
+                        regExp:/<img\b[^>]*>/g, //remove all img tag
+                        newStr:""
                     }
-                ]
+                }
+                for (let pat in patternObj){
+                    //replace html tags
+                    newContent = newContent.replace(patternObj[pat].regExp,patternObj[pat].newStr);
+                }
+                
+                newContent.match(htmlPat).forEach(matched =>{
+                    endNum += matched.length;
+                });
+                if (newContent.length < endNum){
+                    return newContent
+                };
+                return newContent.substring(0,endNum) + "&nbsp; <a href='javascript:void(0)' @click='articleDetail(article._id)'>更多...</a>";
+            },
+            modify(){
+
+            },
+            shareArticle(){
+
+            },
+            deleteArticle(){
+                
             }
         }
     }
@@ -90,7 +104,19 @@ Vue.js（读音 /vjuː/, 类似于 view） 是一套构建用户界面的 渐进
     }
 
     .article-btns{
-        padding-left:10px;
+        padding-left:40px;
+    }
+
+    .article-btns-right{
+        position: relative;
+        top:-5px;
+        padding-right:40px;
+    }
+
+    .article-btns-right a{
+        cursor: pointer;
+        font-size: 20px;
+        text-decoration: none;
     }
 
     .blog-content{

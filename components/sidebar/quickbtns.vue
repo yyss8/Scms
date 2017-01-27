@@ -1,10 +1,10 @@
 <template>
     <div>
         <div class='panel panel-default'>
-            <div class='panel-heading'>
-                快速按钮
+            <div class='panel-heading' v-if='$store.state.sideBarComps.QuickBtns.showTitle'>
+                {{$store.state.sideBarComps.QuickBtns.title}}
             </div>
-            <div class='quick-btns'>
+            <div class='quick-btns' v-if='$store.state.sideBarComps.QuickBtns.quickPost'>
                 <button class='btn btn-default' data-toggle="modal" data-target="#quickPostField">发布文章</button>
             </div>
         </div>

@@ -4,16 +4,12 @@
             <div class='col-md-12'>
                 <a class="navbar-text header-logo" style='color:white;' href='/'><img src='/images/logo.png'></a>
                 <ul class="nav">
-                    <div class="dropdown">
-                        <button class="navbtn"><i class='fa fa-list'></i> &nbsp; <strong style='position: relative;top:-2px'>文章类别</strong></button>
-                        <div class="dropdown-content">
-                            <a href="#">Link 1</a>
-                            <a href="#">Link 2</a>
-                            <a href="#">Link 3</a>
+                    <span v-for='link in headerLink' :class={dropdown:link.hasSub}>
+                        <button class="navbtn" :onclick='urlClick(link.url)'><i v-if='link.icon !== ""' class='fa' :class='link.icon'>&nbsp;&nbsp;&nbsp;</i><strong style='position: relative;top:-2px'>{{link.name}}</strong></button>
+                        <div class="dropdown-content" v-if='link.hasSub'>
+                            <a v-for='sub in link.subLinks' :href='sub.url !== "" ? sub.url:"javascript:void(0)"'>{{sub.name}}</a>
                         </div>
-                    </div>
-                    <button class='navbtn' onclick="window.location='http://github.com/yyss8';"><i class='fa fa-github'></i> &nbsp; <strong style='position: relative;top:-2px'>作品地址</strong></button>
-                    <button class='navbtn'><strong style='position: relative;top:-2px'>关于本站</strong></button>
+                    </span>
                     <div class="navbar-right" style='margin-top:8px;'>
                         <transition name="searchBarAnimate">
                             <input class='searchInput form-control-static' placeholder="搜索" v-if='showSearch' />
@@ -41,7 +37,6 @@
 
     import LoginView from "./minorcomponents/loginview.vue";
     import QuickSetting from "./minorcomponents/headersetting.vue";
-    import store from "../store/index";
 
     export default {
         data(){
@@ -50,10 +45,12 @@
                 searchKeyWrds:""
             }
         },
-        store,
         computed:{
             isLogin(){
-                return store.state.isLogin
+                return this.$store.state.isLogin
+            },
+            headerLink(){
+                return this.$store.state.headerLink
             }
         },
         methods:{
@@ -63,6 +60,10 @@
                 }else if (this.searchKeyWrds === "" && this.showSearch){
                     this.showSearch = false;
                 }
+            },
+            urlClick(url){
+                const onclick = url === "" ? "void(0)":`window.location='${url}';`
+                return onclick
             }
         },
         components:{

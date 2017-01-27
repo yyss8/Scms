@@ -7,6 +7,8 @@ const nuxtConfig = require('./config/nuxt.config');
 const nuxt = new Nuxt(nuxtConfig);
 
 const user = require('./routes/user');
+const setting = require('./routes/setting');
+const post = require('./routes/post');
 
 const app = express();
 
@@ -19,7 +21,10 @@ app.use(session({
   resave:false,
   saveUninitialized:false
 }));
+
 app.use("/user",user);
+app.use("/setting",setting);
+app.use("/post",post);
 
 nuxt.build().then(() => {
 
