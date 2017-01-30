@@ -4,7 +4,9 @@
   "description": "blog for shen",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "node server.js",
+    "build": "nuxt build",
+    "start": "NODE_ENV=production node server.js"
   },
   "keywords": [
     "blog"
@@ -12,11 +14,14 @@
   "author": "shen chen",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.15.3",
     "body-parser": "^1.16.0",
     "express": "^4.14.0",
     "express-session": "^1.15.0",
     "jquery": "^3.1.1",
     "mongodb": "^2.2.21",
-    "nuxt": "^0.9.6"
+    "nuxt": "^0.9.6",
+    "serve-favicon": "^2.3.2",
+    "v-media-query": "^1.0.3"
   }
 }

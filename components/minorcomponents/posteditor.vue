@@ -77,7 +77,10 @@
             
             <textarea placeholder="输入文章内容" v-model='postContent' class='form-control' id='editorArea'></textarea>
             <div class='post-btns'>
-                <button class='btn btn-default' @click='submit'>发表</button>&nbsp;
+                <span style='float:left'>
+                    <Result-View ref='resultView'></Result-View>
+                </span>
+                <button class='btn btn-default' @click='submitPost'>发表</button>&nbsp;
                 <button class='btn btn-default' @click='hideModal'>暂存</button>&nbsp;
                 <button class='btn btn-default' @click='cancel'>撤销</button>
             </div>
@@ -101,6 +104,8 @@
 
 <script>
 
+    import ResultView from "./resultview.vue";
+
     export default {
         data(){
             return{
@@ -120,14 +125,16 @@
                 showUrlInput:false,
                 showImgInput:false,
                 isEditing:true,
-                isPreviewing:false
+                isPreviewing:false,
+                resultMsg:"",
+                hasMsg:false,
+                errMsg:false,
+                successMsg:false
             }
         },
         methods:{
-            submit(){
-                
-            },
             selectCategories(category){
+                this.$refs.resultView.clearMsg();
                 this.category = category;
             },
             cancel(){
@@ -164,12 +171,12 @@
                 const selectionEnd = index[1];
                 if (color != "custom"){
                     this.postContent = this.postContent.substring(0, selectionStart)
-                        + `<span style="color:${color}">` + this.postContent.substring(selectionStart, selectionEnd)
+                        + `<span style='color:${color}'>` + this.postContent.substring(selectionStart, selectionEnd)
                         + '</span>' + this.postContent.substring(selectionEnd);      
                 }else{
                     const customColor = prompt('输入颜色代码','#000000');
                     this.postContent = this.postContent.substring(0, selectionStart)
-                        + `<span style="color:${customColor}">` + this.postContent.substring(selectionStart, selectionEnd)
+                        + `<span style='color:${customColor}'>` + this.postContent.substring(selectionStart, selectionEnd)
                         + '</span>' + this.postContent.substring(selectionEnd);       
                 }
             },
@@ -242,7 +249,39 @@
             selectedTextIndex(){
                 const editorArea = document.getElementById('editorArea');
                 return [editorArea.selectionStart, editorArea.selectionEnd];
+            },
+            submitPost(){
+                if (this.category != "文章分类"){
+                    const postContent = this.postContent.replace(/(?:\r\n|\r|\n)/g, '<br />'); //文章内容
+                    const postData = {
+                        title:this.postTitle,
+                        content:postContent,
+                        category:this.category
+                    };
+                    $.ajax({
+                        url: `/post/`,
+                        type:'POST',
+                        contentType: "application/json",
+                        data: JSON.stringify(postData),
+                        success: (result)=>{
+                            if (result.status == "ok"){
+                                this.postTitle = "",
+                                this.postContent = "";
+                                this.$refs.resultView.sendMsg(result.content,"success");
+                                location.reload();
+                            }else{
+                                this.$refs.resultView.sendMsg(result.content,"error");
+                            }
+                        }
+                    });
+                }else{
+                    this.$refs.resultView.sendMsg("请选择文章分类","error");
+                }
+
             }
+        },
+        components:{
+            ResultView
         }
     }
 
@@ -296,5 +335,12 @@
 
     #imgInput div input{
         margin-bottom: 15px;
+    }
+
+    .fade-enter-active, .fade-leave-active {
+    transition: opacity .5s
+    }
+    .fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+    opacity: 0
     }
 </style>

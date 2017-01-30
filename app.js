@@ -25,21 +25,21 @@ app.use(session({
 app.use("/user",user);
 app.use("/setting",setting);
 app.use("/post",post);
+app.use(nuxt.render);
 
-nuxt.build().then(() => {
+if (nuxtConfig.dev) {
+  nuxt.build()
+  .catch((error) => {
+    console.error(error)
+    process.exit(1)
+  })
+}
 
-    app.use(nuxt.render);
+const server = app.listen(8085, function () {
 
-    const server = app.listen(8085, function () {
+    const host = server.address().address;
+    const port = server.address().port; 
 
-        const host = server.address().address;
-        const port = server.address().port; 
+    console.log("Server Started", host, port);
 
-        console.log("Server Started", host, port);
-
-    })
 });
-
-
-
-

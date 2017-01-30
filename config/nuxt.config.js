@@ -1,7 +1,6 @@
+const webpack = require('webpack');
+
 module.exports = {
-    build: {
-        vendor: ['axios']
-    },
     head:{
         title: 'Shen Blog',
         meta: [
@@ -18,5 +17,7 @@ module.exports = {
             { rel: 'icon', type:'image/png', href:'/images/favicon.png'}
         ]
     },
-    store: true
+    store: true,
+    cache: true,
+    dev: (process.env.NODE_ENV !== 'production')
 }

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class='sidebar'>
         <Self-Motto v-if='SelfIntro'></Self-Motto>
         <Self-Intro v-if='SelfMotto'></Self-Intro>
         <Quick-Btns v-if='isLogin && QuickBtns'></Quick-Btns>
@@ -55,6 +55,5 @@
 
 <style>
     .sidebar{
-        background-color: white;
     }
 </style>

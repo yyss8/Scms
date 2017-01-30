@@ -4,7 +4,7 @@
         <header class="navbar navbar-default header-nav">
             <Header-View></Header-View>
         </header>
-        
+        <Header-Nav></Header-Nav>
         <div class='mainContent'>
             <div class='row'>
                 <div class='col-md-9'>
@@ -26,40 +26,43 @@
     import FooterView from "../components/footer.vue";
     import MainContent from "../components/articlecontent/articlecontent.vue";
     import SideBar from "../components/sidebar/sidebar.vue";
-    import axios from "axios";
-    
+    import HeaderNav from "../components/minorcomponents/headernavlist.vue";
 
     export default {
-        data(context){
+        data({req,store}){
             return {
-                loginUser:(context.req && context.req.session.user !== undefined) ? context.req.session.user:"none",
+                loginUser:(req && req.session.user !== undefined) ? req.session.user:"none"
             }
         },
         mounted(){
             $.get('/setting/all',result =>{
                 this.$store.commit('loadSetting',result.settings);
             });
+            
             if (this.loginUser != "none"){
                 //pass login status to store
                 this.$store.commit("login",this.loginUser);
-            }
-        },
-        methods:{
-            ccc:function(){
-                console.log(this.$store);
             }
         },
         components:{
             HeaderView,
             FooterView,
             MainContent,
-            SideBar
+            SideBar,
+            HeaderNav
         },
         head:{
             script:[
                 {src:'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'},
                 {src:'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'}
             ]
+        },
+        methods:{
+        },
+        watch:{
+            width(){
+                alert(this.width);
+            }
         }
     }
 
@@ -73,7 +76,6 @@
         top:15px;
         margin:0 auto;
         width:70%;
-        min-height:79.2vh;
     }
 
     a{
@@ -112,9 +114,21 @@
         color:white;
     }
 
-    @media only screen and (max-width: 991px){
+    @media screen and (min-width: 991px){
+        /* for desktop */
+        .mainContent{
+            min-width:1100px;
+            min-height:79.2vh;
+        }         
+    }
+
+    @media screen and (max-width: 991px){
         .mainContent{
             width:95%;
+            min-height:80vh;
         }
+
     }
+
+
 </style>

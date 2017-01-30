@@ -5,6 +5,7 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
+    articleNum:0,
     user:"",
     isLogin:false,
     headerLink:[
@@ -49,6 +50,7 @@ const store = new Vuex.Store({
     },
     blogTitle:"Blog",
     postCategories:[],
+    screenWidth:0
   },
   mutations: {
       login (state,user) {
@@ -60,6 +62,9 @@ const store = new Vuex.Store({
           state.sideBarComps = setting.sideBarComps;
           state.blogTitle = setting.title;
           state.postCategories = setting.categories;
+      },
+      getArticleNum (state,num){
+          state.articleNum = num;
       }
   }
 });
