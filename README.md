@@ -12,6 +12,10 @@ Back-end: Nuxtjs/Express
 
 Database:Mongodb
 
+#01/30/17 Updates:
+1. router added for page switching feature
+2. data fetching logic redesigned, setting and articles data are now loaded before rendering page content
+
 #01/29/17 Updates:
 
 1. article posting feature finished
