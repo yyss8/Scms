@@ -27,9 +27,3 @@
         }
     }
 </script>
-
-<style>
-    .quick-btns{
-        padding:15px;
-    }
-</style>

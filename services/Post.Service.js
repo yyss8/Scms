@@ -8,21 +8,21 @@ const dbName = config.postCollection;
 
 class PostService{
 
-    get_post_firstPage(fail,success){
+    get_post_firstPage(pgNum,fail,success){
         let data = {num:0,articles:[]}
-        let skipNum;
         mongodb.connect(url,(err,db) =>{
             assert.equal(null, err);
             let collection = db.collection(dbName); 
             collection.find().count((err,doc) => {
                 data.num = doc;
-                skipNum = data.num - 1 * 5;
-                collection.find({},{skip:skipNum}).toArray((err,doc) => {
+                const skipNum = (data.num - pgNum * 5) < 0 ? 0:data.num- pgNum * 5; //需要跳过的文章数 (如果最后一页则为0)
+                const limitNum = (data.num - pgNum * 5) < 0 ? (data.num - (pgNum-1) * 5):5; //页数所需要的文章数 (如果最后一页则为发最后所有)
+                collection.find({},{skip:skipNum,limit:limitNum}).toArray((err,doc) => {
                     data.articles = doc;
-                    success({status:"ok",content:"Post Loaded",result:data});
+                    success(data);
                     db.close();
                 },err =>{
-                    fail({status:"err",content:err});
+                    fail(err);
                     db.close();
                 });
             },err=>{

@@ -1,7 +1,7 @@
 <template>
     <div class='panel panel-default blog-content'>
         <div class='panel-body'>
-            <div class='panel panel-info' v-for='article in articles'>
+            <div class='panel panel-info' v-for='article in $store.state.articles'>
                 <div class='panel-body'>
                     <br />
                     <div class='article-title'>
@@ -51,35 +51,24 @@
     import SwitchPage from "./switchpage.vue";
 
     export default {
+        props:["pg"],
         data(){
             return{
-                articles:[],
                 confirmTxt:"",
                 confirmTitle:"",
                 pendingAction:""
             }
         },
-        mounted(){
-            $.get('/post/first', r =>{
-                if (r.status == "ok"){
-                    this.$store.commit('getArticleNum',r.result.num);
-                    this.articles = r.result.articles.reverse(); //显示最新
-                }else{
-
-                }
-            });
-        },
         methods:{
             loadArticles(pg){
                 $.get(`/post/page/${pg}/${this.$store.state.articleNum}/`, r =>{
                     if (r.status == "ok"){
-                        this.articles = r.result.reverse();
-
+                        this.$store.commit('getArticle',r.result)
                     }
                 });
             },
             articleDetail(id){
-                alert(new Date(parseInt(id.substring(0, 8), 16) * 1000));
+                alert(id);
             },
             shortArticle(content){
                 let newContent = content;
@@ -125,7 +114,7 @@
                 
             },
             showDate(id){
-                const date = new Date(parseInt(id.substring(0, 8), 16) * 1000);
+                const date = new Date(parseInt(id.toString().substring(0, 8), 16) * 1000);
                 const day = date.getDate().toString().length == 1 ? "0" + date.getDate().toString():date.getDate().toString();
                 const month = (Number(date.getMonth()) + 1).toString().length == 1 ? "0" + (Number(date.getMonth()) + 1):(Number(date.getMonth()) + 1).toString();
                 const year = date.getFullYear().toString().length == 1 ? "0" + date.getFullYear().toString():date.getFullYear().toString();
@@ -133,7 +122,7 @@
                 return [year,month,day].join('/')
             },
             showTime(id){
-                const date = new Date(parseInt(id.substring(0, 8), 16) * 1000);
+                const date = new Date(parseInt(id.toString().substring(0, 8), 16) * 1000);
                 
                 return [date.getHours(),date.getMinutes(),date.getSeconds()].join(":")
             },
@@ -179,52 +168,5 @@
 
 <style>
 
-    .article-title{
-        text-align: center;
-        font-size:20px;
-        font-weight: bold;
-    }
 
-    .article-title a{
-        text-decoration: none;
-        color:black;
-    }
-
-    .article-content{
-        padding:30px 40px 30px 40px;
-    }
-
-    .article-btns{
-        padding-left:40px;
-    }
-
-    .article-btns-right{
-        position: relative;
-        top:-5px;
-        padding-right:40px;
-    }
-
-    .article-btns-right a{
-        cursor: pointer;
-        font-size: 20px;
-        text-decoration: none;
-    }
-
-    .blog-content{
-        overflow-y:auto;
-    }
-
-    @media screen and (max-width: 991px){
-        .article-content{
-            padding:30px 10px 30px 10px;
-        }
-
-        .article-btns{
-            padding-left:10px;
-        }
-
-        .article-btns-right{
-            padding-right:10px;
-        }
-    }
 </style>

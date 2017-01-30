@@ -14,14 +14,11 @@
     export default {
         data(){
             return {
-                SelfIntro:false,
-                SelfMotto:false,
-                QuickBtns:false
+                SelfIntro:this.$store.state.sideBarComps["SelfIntro"].display,
+                SelfMotto:this.$store.state.sideBarComps["SelfMotto"].display,
+                QuickBtns:this.$store.state.sideBarComps["QuickBtns"].display
             }
         },
-        props:[
-            'comps'
-        ],
         computed:{
             isLogin(){
                 return this.$store.state.isLogin
@@ -30,30 +27,17 @@
                 return this.$store.state.sideBarComps
             }
         },
+        mounted(){
+            for (let comp in this.sideBarComps){
+                if (this.sideBarComps[comp].display){
+                    this[comp] = true;
+                }
+            }
+        },
         components:{
             SelfIntro,
             SelfMotto,
             QuickBtns
-        },
-        methods:{
-            show(){
-                console.log(this.compss);
-            }
-        },
-        watch:{
-            sideBarComps(){
-                //根据后台设置加载sidebar组件
-                for (let comp in this.sideBarComps){
-                    if (this.sideBarComps[comp].display){
-                        this[comp] = true;
-                    }
-                }
-            }
         }
     }
 </script>
-
-<style>
-    .sidebar{
-    }
-</style>

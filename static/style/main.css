@@ -1,0 +1,448 @@
+body{
+    font-family: "微软雅黑";
+    background-color:#F2F2F2;
+    padding:0;
+    margin:0;
+}
+
+a{
+    text-decoration: none;
+    color:#6FBADE;
+}
+
+a:hover{
+    color:#4673F8;
+}
+
+footer{
+    background-color:#95C2D8;
+    position:relative;
+    bottom: 0;
+    margin-top:10px;
+    width: 100%;
+    height: 80px;
+    line-height: 80px;
+    color:white;
+}
+
+/* main content start */
+
+.navbar{
+    margin-bottom: 0;
+}
+
+.header-nav{
+    padding-top:20px;
+    background-color:#6FBADE;
+}
+
+.mainContent{
+    position: relative;
+    top:15px;
+    margin:0 auto;
+    width:70%;
+}
+
+/* main content end */
+
+/* article filed start */
+
+.article-title{
+    text-align: center;
+    font-size:20px;
+    font-weight: bold;
+}
+
+.article-title a{
+    text-decoration: none;
+    color:black;
+}
+
+.article-content{
+    padding:30px 40px 30px 40px;
+}
+
+.article-btns{
+    padding-left:40px;
+}
+
+.article-btns-right{
+    position: relative;
+    top:-5px;
+    padding-right:40px;
+}
+
+.article-btns-right a{
+    cursor: pointer;
+    font-size: 20px;
+    text-decoration: none;
+}
+
+.blog-content{
+    overflow-y:auto;
+}
+
+.pagination span{
+    cursor: default;
+    text-align: center;
+    width:150px;
+    margin:0;
+}
+
+/* article filed end */
+
+/* header field start */
+
+.headerview{
+    position: relative;
+    margin:0 auto;
+    width:70%;
+}
+
+.header-logo{
+    color:white;
+    margin-top:-9px;
+    text-align: center;
+}
+
+.header-logo img{
+
+    width:90px;
+}
+
+.searchInput{
+    border-radius: 5px;
+    position: relative;
+    top:1px;
+    font-size: 18px;
+    padding-left: 8px;
+}
+
+.navbtn {
+    background-color: #6FBADE;
+    color: white;
+    padding: 16px;
+    font-size: 20px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.5s;
+    vertical-align: middle;
+}
+
+.header-link-right{
+    margin-top:13px;
+}
+
+.navbtn:hover {
+    background-color: #C1D5E5;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    z-index:3;
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 200px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    transition: opacity 0.5s;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+/* hover触发dropdown内容显示动画 */
+.dropdown:hover .dropdown-content {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.searchBarAnimate-enter-active{
+    transition: all .3s ease;
+}
+
+.searchBarAnimate-leave-active {
+    transition: all .3s ease;
+}
+.searchBarAnimate-enter, .searchBarAnimate-leave-to{
+    transform: translateX(30px);
+    opacity: 0;
+}
+
+.modal-dialog{
+    top:15vh;
+}
+
+#header_phone_nav{
+    display:none;
+}
+
+.quick-setting-view{
+    position: relative;
+    margin:0 auto;
+    width:90%;
+}
+
+.loginview{
+    position: relative;
+    margin:0 auto;
+    width:70%;
+}
+
+.login-btn{
+    color:white;
+    width:100%;
+    background-color:#92C5EE;
+    font-weight: bold;
+}
+
+.login-btn:hover{
+    color:#92C5EE;
+    border:1px solid #92C5EE;
+    background-color:white;
+}
+
+/* header field end */
+
+/* header nav list field start */
+
+#header_phone_navList{
+    display: none;
+    background-color:#6FBADE;
+    border-right:1px solid #e7e7e7;
+    border-left:1px solid #e7e7e7;
+    list-style: none;
+    padding:0;
+}
+
+.sub_Nav_List{
+    display: none;
+    background-color:#6FBADE;
+    border-right:1px solid #e7e7e7;
+    border-left:1px solid #e7e7e7;
+    list-style: none;
+    padding:0;
+}
+
+.sub_Nav_List li{
+    display: block;
+}
+
+.dropdown_divider{
+    height: 1px;
+    margin: 9px 0;
+    overflow: hidden;
+    background-color: #e5e5e5;
+}
+
+/* header nav list field end */
+
+/* sidebar field start */
+
+.quick-btns{
+    padding:15px;
+}
+
+.self-intro-content{
+    padding:15px;
+}
+
+.self-intro-content div{
+    margin-bottom: 15px;
+}
+
+.self-intro-content span{
+    padding-left:15px;
+}
+
+.self-intro-content-name{
+    font-size:20px
+}
+
+.self-intro-contact-btns{
+    margin-top:10px;
+    text-align: center;
+}
+
+.self-intro-contact-btns a{
+    padding-right:20px;
+    text-decoration: none;
+    font-size:20px;
+}
+
+/* sidebar field end */
+
+/* postview field start */
+
+.post-editor{
+    padding-top:30px;
+    position: relative;
+    width:95%;
+    margin:0 auto;
+}
+
+.post-content-editor-btns{
+    padding:10px 0 10px 0;
+}
+
+.post-editor textarea{
+    height:200px;
+    width:100%;
+    resize: none;
+    margin-bottom: 15px;
+}
+
+.post-btns{
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+#urlInput{
+    width:400px;
+}
+
+#urlInput div{
+    width:80%;
+    margin:0 auto;
+}
+
+#urlInput div input{
+    margin-bottom: 15px;
+}
+
+#imgInput{
+    width:400px;
+}
+
+#imgInput div{
+    width:80%;
+    margin:0 auto;
+}
+
+#imgInput div input{
+    margin-bottom: 15px;
+}
+
+.fade-enter-active, .fade-leave-active {
+    transition: opacity .5s
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+    opacity: 0
+}
+
+/* postview field end */
+
+/* footer field start */
+
+.footer-content{
+    width:70%;
+    margin:0 auto;
+}
+
+/* footer field end */
+
+
+@media screen and (min-width: 991px){
+    /* for desktop */
+    .headerview{
+        min-width:1100px;
+    }
+
+    .mainContent{
+        min-width:1100px;
+        min-height:79.2vh;
+    }         
+}
+
+@media screen and (max-width: 991px){
+    /* for all screens except desktop */
+
+    .mainContent{
+        width:95%;
+        min-height:80vh;
+    }
+
+    .article-content{
+        padding:30px 10px 30px 10px;
+    }
+
+    .article-btns{
+        padding-left:10px;
+    }
+
+    .article-btns-right{
+        padding-right:10px;
+    }
+
+    .footer-content{
+        width:93%;
+    }
+
+    .headerview{
+        width:93%;
+    }
+
+    .headerBtns{
+        text-align: center;
+    }
+
+    .searchInput{
+        top:0px;
+    }
+}
+
+@media screen and (max-width: 767px){
+    /* for mobile */
+
+    .header-logo img{
+        width:65px;
+        float:left;
+        padding-bottom: 10px;
+    }
+
+    #header_phone_nav{
+        display: block;
+        margin-top:8px;
+        color:white;
+        border-color: white;
+        padding-left:15px;
+        padding-right:15px;
+        margin-right:0px;
+    }
+
+
+    .header-link-right{
+        display: none;
+    }
+
+    .header-link{
+        display: none;
+    }
+
+    .navbar-default{
+        border-bottom: none;
+    }
+
+    .navbtn{
+        font-size:17px;
+        padding:10px;
+        width:100%;
+        text-align: left;
+    }
+
+    .sub_Nav_List .navbtn{
+        font-size:16px;
+        padding-left:40px;
+    }
+}

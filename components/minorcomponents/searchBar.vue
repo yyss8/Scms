@@ -38,9 +38,5 @@
 </script>
 
 <style>
-    @media screen and (max-width: 767px){
-
-    }
-
 
 </style>

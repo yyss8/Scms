@@ -1,5 +1,5 @@
 const mongodb = require("mongodb");
-const assert = require("assert")
+const assert = require("assert");
 const config = require('../config/db.config');
 
 

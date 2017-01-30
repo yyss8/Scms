@@ -17,25 +17,33 @@
     export default {
         data(){
             return {
-                currentPage:1
+                currentPage:this.$route.params.pgNum !== undefined ? Number(this.$route.params.pgNum) : 1
             }
         },
         methods:{
             nxtPage(){
                 this.currentPage += 1;
                 window.scrollTo(0,0);
+                this.$router.push('/' + this.currentPage.toString());
                 this.$emit('loadArticle',this.currentPage);
             },
             lastPage(){
                 this.currentPage -= 1;
                 window.scrollTo(0,0);
+                this.$router.push('/' + this.currentPage.toString());
                 this.$emit('loadArticle',this.currentPage);
             },
             toFirst(){
+                this.currentPage = 1;
                 window.scrollTo(0,0);
+                this.$router.push('/');
+                this.$emit('loadArticle',1);
             },
             toLast(){
+                this.currentPage = Math.floor(this.$store.state.articleNum / 5) + 1;
                 window.scrollTo(0,0);
+                this.$router.push('/' + this.currentPage.toString());
+                this.$emit('loadArticle',this.currentPage);
             },
             toTop(){
                 window.scrollTo(0,0);
@@ -45,18 +53,5 @@
 </script>
 
 <style>
-    .pagination span{
-        cursor: default;
-        text-align: center;
-        width:150px;
-        margin:0;
-    }
-
-    @media screen and (max-width: 991px){
-        .pagination{
-            text-align: center;
-        }
-    }
-
 
 </style>

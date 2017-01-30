@@ -52,48 +52,5 @@
 </script>
 
 <style>
-    #header_phone_navList{
-        display: none;
-        background-color:#6FBADE;
-        border-right:1px solid #e7e7e7;
-        border-left:1px solid #e7e7e7;
-        list-style: none;
-        padding:0;
-    }
-
-    .sub_Nav_List{
-        display: none;
-        background-color:#6FBADE;
-        border-right:1px solid #e7e7e7;
-        border-left:1px solid #e7e7e7;
-        list-style: none;
-        padding:0;
-    }
-
-    .sub_Nav_List li{
-        display: block;
-    }
-
-    .dropdown_divider{
-        height: 1px;
-        margin: 9px 0;
-        overflow: hidden;
-        background-color: #e5e5e5;
-    }
-
-    @media screen and (max-width: 767px){
-        .navbtn{
-            font-size:17px;
-            padding:10px;
-            width:100%;
-            text-align: left;
-        }
-
-        .sub_Nav_List .navbtn{
-            font-size:16px;
-            padding-left:40px;
-        }
-    }
-
 
 </style>

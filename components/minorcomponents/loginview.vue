@@ -74,26 +74,3 @@
         }
     }
 </script>
-
-<style>
-
-    .loginview{
-        position: relative;
-        margin:0 auto;
-        width:70%;
-    }
-
-    .login-btn{
-        color:white;
-        width:100%;
-        background-color:#92C5EE;
-        font-weight: bold;
-    }
-
-    .login-btn:hover{
-        color:#92C5EE;
-        border:1px solid #92C5EE;
-        background-color:white;
-    }
-
-</style>

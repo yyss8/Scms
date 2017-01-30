@@ -12,11 +12,3 @@
 <script>
 
 </script>
-
-<style>
-    .quick-setting-view{
-        position: relative;
-        margin:0 auto;
-        width:90%;
-    }
-</style>

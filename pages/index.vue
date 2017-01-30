@@ -8,7 +8,7 @@
         <div class='mainContent'>
             <div class='row'>
                 <div class='col-md-9'>
-                    <Main-Content></Main-Content>
+                    <nuxt-child></nuxt-child>
                 </div>
                 <div class='col-md-3'>
                     <Side-Bar></Side-Bar>
@@ -24,30 +24,17 @@
 <script>
     import HeaderView from "../components/header.vue";
     import FooterView from "../components/footer.vue";
-    import MainContent from "../components/articlecontent/articlecontent.vue";
     import SideBar from "../components/sidebar/sidebar.vue";
     import HeaderNav from "../components/minorcomponents/headernavlist.vue";
 
     export default {
-        data({req,store}){
+        data(){
             return {
-                loginUser:(req && req.session.user !== undefined) ? req.session.user:"none"
-            }
-        },
-        mounted(){
-            $.get('/setting/all',result =>{
-                this.$store.commit('loadSetting',result.settings);
-            });
-            
-            if (this.loginUser != "none"){
-                //pass login status to store
-                this.$store.commit("login",this.loginUser);
             }
         },
         components:{
             HeaderView,
             FooterView,
-            MainContent,
             SideBar,
             HeaderNav
         },
@@ -58,77 +45,7 @@
             ]
         },
         methods:{
-        },
-        watch:{
-            width(){
-                alert(this.width);
-            }
         }
     }
 
 </script>
-
-
-<style>
-
-    .mainContent{
-        position: relative;
-        top:15px;
-        margin:0 auto;
-        width:70%;
-    }
-
-    a{
-        text-decoration: none;
-        color:#6FBADE;
-    }
-
-    a:hover{
-        color:#4673F8;
-    }
-
-    .navbar{
-        margin-bottom: 0;
-    }
-
-    body{
-        font-family: "微软雅黑";
-        background-color:#F2F2F2;
-        padding:0;
-        margin:0;
-    }
-
-    .header-nav{
-        padding-top:20px;
-        background-color:#6FBADE;
-    }
-
-    footer{
-        background-color:#95C2D8;
-        position:relative;
-        bottom: 0;
-        margin-top:10px;
-        width: 100%;
-        height: 80px;
-        line-height: 80px;
-        color:white;
-    }
-
-    @media screen and (min-width: 991px){
-        /* for desktop */
-        .mainContent{
-            min-width:1100px;
-            min-height:79.2vh;
-        }         
-    }
-
-    @media screen and (max-width: 991px){
-        .mainContent{
-            width:95%;
-            min-height:80vh;
-        }
-
-    }
-
-
-</style>

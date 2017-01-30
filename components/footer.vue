@@ -11,17 +11,3 @@
         
     }
 </script>
-
-<style>
-    .footer-content{
-        width:70%;
-        margin:0 auto;
-    }
-
-    @media screen and (max-width: 991px){
-        .footer-content{
-            width:93%;
-        }
-    }
-</style>
-

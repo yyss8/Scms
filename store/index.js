@@ -6,6 +6,7 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
     articleNum:0,
+    articles:[],
     user:"",
     isLogin:false,
     headerLink:[
@@ -63,8 +64,22 @@ const store = new Vuex.Store({
           state.blogTitle = setting.title;
           state.postCategories = setting.categories;
       },
-      getArticleNum (state,num){
-          state.articleNum = num;
+      getArticleNum (state,data){
+          state.articleNum = data.num;
+          state.articles = data.articles.reverse();
+      },
+      getArticle (state,articles){
+          state.articles = articles.reverse();
+      }
+  },
+  actions:{
+      nuxtServerInit({commit},{req}){
+          
+          if (req.session.user !== undefined) {
+              commit('login',req.session.user);
+          }
+          commit('loadSetting',req.preLoad.settings);
+          commit('getArticleNum',req.preLoad.articles);
       }
   }
 });

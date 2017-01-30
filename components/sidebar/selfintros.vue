@@ -47,30 +47,5 @@
 
 <style>
 
-    .self-intro-content{
-        padding:15px;
-    }
 
-    .self-intro-content div{
-        margin-bottom: 15px;
-    }
-
-    .self-intro-content span{
-        padding-left:15px;
-    }
-
-    .self-intro-content-name{
-        font-size:20px
-    }
-
-    .self-intro-contact-btns{
-        margin-top:10px;
-        text-align: center;
-    }
-
-    .self-intro-contact-btns a{
-        padding-right:20px;
-        text-decoration: none;
-        font-size:20px;
-    }
 </style>
