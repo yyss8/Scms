@@ -1,6 +1,17 @@
 const webpack = require('webpack');
+const path = require('path');
 
 module.exports = {
+    build: {
+        vendor:['bootstrap','jquery'],
+        plugins:[
+            new webpack.ProvidePlugin({
+                jQuery: 'jquery',
+                $: 'jquery',
+                jquery: 'jquery'
+            })
+        ]
+    },
     head:{
         title: 'Shen Blog',
         meta: [
@@ -22,3 +33,15 @@ module.exports = {
     cache: true,
     dev: (process.env.NODE_ENV !== 'production')
 }
+
+        
+    // new webpack.DefinePlugin({
+    // 'process.env': {
+    //     NODE_ENV: '"production"'
+    // }
+    // }),
+    // new webpack.optimize.UglifyJsPlugin({
+    // compress: {
+    //     warnings: false
+    // }
+    // })

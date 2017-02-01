@@ -51,7 +51,44 @@ const store = new Vuex.Store({
     },
     blogTitle:"Blog",
     postCategories:[],
-    screenWidth:0
+    screenWidth:0,
+    currentArticle:{},
+    patternObj:{
+        code:{
+            reg:/\[code\](.*?)\[\/code]/g
+        },
+        br:{
+            reg:/(?:\r\n|\r|\n)/g,
+            newStr:"<br />"
+        },
+        b:{
+            reg:/\[b\](.*?)\[\/b\]/g,
+            newStr:"<b>$1</b>"
+        },
+        img:{
+            reg:/\[img(.*?)](.*?)\[\/img\]/g
+        },
+        color:{
+            reg:/\[c='(.*?)'\](.*?)\[\/c\]/g,
+            newStr:"<span style='color:$1'>$2</span>"
+        },
+        size:{
+            reg:/\[s='(.*?)'\](.*?)\[\/s\]/g,
+            newStr:"<span style='font-size:$1'>$2</span>",
+        },
+        i:{
+            reg:/\[i\](.*?)\[\/i\]/g,
+            newStr:"<i>$1</i>"
+        },
+        quote:{
+            reg:/\[quote](.*?)\[\/quote]/g,
+            newStr:"<blockquote>$1</blockquote>"
+        },
+        u:{
+            reg:/\[u\](.*?)\[\/u\]/g,
+            newStr:"<u>$1</u>"
+        }
+    }
   },
   mutations: {
       login (state,user) {
@@ -70,16 +107,23 @@ const store = new Vuex.Store({
       },
       getArticle (state,articles){
           state.articles = articles.reverse();
+      },
+      loadArticleDetail (state,article){
+          state.currentArticle = article;
       }
   },
   actions:{
       nuxtServerInit({commit},{req}){
           
+          commit('loadSetting',req.preLoad.settings);
+
           if (req.session.user !== undefined) {
               commit('login',req.session.user);
           }
-          commit('loadSetting',req.preLoad.settings);
-          commit('getArticleNum',req.preLoad.articles);
+
+          if (req.path.includes('/pages')){
+              commit('getArticleNum',req.preLoad.articles);
+          }
       }
   }
 });

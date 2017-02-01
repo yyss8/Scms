@@ -9,6 +9,7 @@ const nuxt = new Nuxt(nuxtConfig);
 const user = require('./routes/user');
 const preloads = require('./routes/preloads');
 const post = require('./routes/post');
+const articles = require('./routes/articles');
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use(session({
 app.use("/user",user);
 app.use("/post",post);
 app.use("*",preloads); //loading preload data
+app.use("/articles",articles);
 app.use(nuxt.render);
 
 if (nuxtConfig.dev) {

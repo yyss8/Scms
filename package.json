@@ -4,9 +4,9 @@
   "description": "blog for shen",
   "main": "app.js",
   "scripts": {
-    "dev": "node server.js",
+    "dev": "node app.js",
     "build": "nuxt build",
-    "start": "NODE_ENV=production node server.js"
+    "start": "NODE_ENV=production node app.js"
   },
   "keywords": [
     "blog"
@@ -14,8 +14,9 @@
   "author": "shen chen",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.15.3",
     "body-parser": "^1.16.0",
+    "bootstrap": "^3.3.7",
+    "expose-loader": "^0.7.1",
     "express": "^4.14.0",
     "express-session": "^1.15.0",
     "jquery": "^3.1.1",

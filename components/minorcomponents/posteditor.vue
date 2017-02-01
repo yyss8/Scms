@@ -3,7 +3,6 @@
         <div v-if='isEditing'>
             <input placeholder="输入文章标题" class='form-control' v-model='postTitle'>
             <div class='post-content-editor-btns'>
-
                 <div class="dropdown">
                     <button class="btn btn-default dropdown-toggle btn-sm" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                         {{category}} <span class="caret" v-if='category === "文章分类"'></span>
@@ -72,29 +71,23 @@
                         <br />
                     </div>
                 </div>&nbsp;
-                <button class='btn btn-default btn-sm' @click='preview'>预览</button>
+                <button class='btn btn-default btn-sm' @click='preview()'>预览</button>
             </div>
             
-            <textarea placeholder="输入文章内容" v-model='postContent' class='form-control' id='editorArea'></textarea>
+            <textarea placeholder="输入文章内容" class='form-control' id='editorArea' v-model='postContent'></textarea>
+            
             <div class='post-btns'>
                 <span style='float:left'>
                     <Result-View ref='resultView'></Result-View>
                 </span>
-                <button class='btn btn-default' @click='submitPost'>发表</button>&nbsp;
-                <button class='btn btn-default' @click='hideModal'>暂存</button>&nbsp;
+                <button class='btn btn-default' @click='submitPost'>{{ currentArticle !== undefined ? "保存":"发表" }}</button>&nbsp;
+                <span v-if='this.currentArticle === undefined'><button class='btn btn-default' @click='hideModal'>暂存</button>&nbsp;</span>
                 <button class='btn btn-default' @click='cancel'>撤销</button>
             </div>
         </div>
-        <div v-if='isPreviewing'>
-            <div class='panel panel-default'>
-                <div class='panel-heading'>预览</div><br />
-                <div class='article-title'>
-                    <a href='javascript:void(0)'>{{ postTitle }}</a>
-                </div>
-                <div v-html='previewContent' class='panel-body'></div>
-            </div>
-            
-            <div class='post-btns'>
+        <div>
+            <Preview v-if='isPreviewing' :title='postTitle' :content='postContent'></Preview>
+            <div class='post-btns' v-if='isPreviewing'>
                 <button class='btn btn-default' @click='preview'>取消</button>&nbsp;
                 <button class='btn btn-default' @click='cancel'>撤销</button>
             </div>
@@ -105,14 +98,16 @@
 <script>
 
     import ResultView from "./resultview.vue";
+    import Preview from "./preview.vue";
 
     export default {
+        props:[
+            'currentArticle'
+        ],
         data(){
             return{
                 postTitle:"",
                 postContent:"",
-                previewContent:"",
-                postTitle:"",
                 category:"文章分类",
                 selectionStart:0,
                 selectionEnd:0,
@@ -132,23 +127,80 @@
                 successMsg:false
             }
         },
+        created(){
+            if (this.currentArticle !== undefined){
+                this.postTitle = this.$store.state.currentArticle.title;
+                this.postContent = this.$store.state.currentArticle.content.replace(/<br\s*[\/]?>/gi, "\n");
+                this.category = this.$store.state.currentArticle.category;
+            }
+        },
         methods:{
-            selectCategories(category){
-                this.$refs.resultView.clearMsg();
-                this.category = category;
+            categoryOnchange(cate){
+                this.category = cate;
             },
             cancel(){
-                this.postTitle = "",
-                this.postContent = "";
-                this.hideModal();
+                if (this.currentArticle !== undefined) {
+                    this.$parent.modify();
+                }else {
+                    this.postTitle = "",
+                    this.postContent = "";
+                    this.hideModal();
+                }
             },
             preview(){
-                this.previewContent = this.postContent.replace(/(?:\r\n|\r|\n)/g, '<br />');
                 this.isEditing = !this.isEditing;
                 this.isPreviewing = !this.isPreviewing;
             },
             hideModal(){
                 $("#quickPostField").modal('hide');
+            },
+            contentOnchange(str){
+                this.postContent = str;
+            },
+            submitPost(){
+                if (this.category != "文章分类"){
+                    const postContent = this.postContent.replace(/(?:\r\n|\r|\n)/g, '<br />'); //文章内容
+                    const postType = this.currentArticle !== undefined ? "PUT":"POST";
+
+                    let postData;
+
+                    if (this.currentArticle !== undefined){
+                        postData = {
+                            id:this.$store.state.currentArticle._id,
+                            title:this.postTitle,
+                            content:postContent,
+                            category:this.category
+                        };           
+                    }else{
+                        postData = {
+                            title:this.postTitle,
+                            content:postContent,
+                            category:this.category
+                        };
+                    }
+                    $.ajax({
+                        url: `/post/`,
+                        type:postType,
+                        contentType: "application/json",
+                        data: JSON.stringify(postData),
+                        success: (result)=>{
+                            if (result.status == "ok"){
+                                this.postTitle = "",
+                                this.postContent = "";
+                                this.$refs.resultView.sendMsg(result.content,"success");
+                                location.href = this.$route.path;
+                            }else{
+                                this.$refs.resultView.sendMsg(result.content,"error");
+                            }
+                        }
+                    });
+                }else{
+                    this.$refs.resultView.sendMsg("请选择文章分类","error");
+                }
+
+            },
+            selectCategories(category){
+                this.category = category;
             },
             addFontSize(size){
                 const index = this.selectedTextIndex();
@@ -156,13 +208,13 @@
                 const selectionEnd = index[1];
                 if (size != "custom"){
                     this.postContent = this.postContent.substring(0, selectionStart)
-                        + `<span style="font-size:${size}">` + this.postContent.substring(selectionStart, selectionEnd)
-                        + '</span>' + this.postContent.substring(selectionEnd);      
+                        + `[s='${size}']` + this.postContent.substring(selectionStart, selectionEnd)
+                        + '[/s]' + this.postContent.substring(selectionEnd);      
                 }else{
                     const customSize = prompt('输入字体大小','100% 或 10px');
                     this.postContent = this.postContent.substring(0, selectionStart)
-                        + `<span style="color:${customSize}">` + this.postContent.substring(selectionStart, selectionEnd)
-                        + '</span>' + this.postContent.substring(selectionEnd);       
+                        + `[s='${customSize}']` + this.postContent.substring(selectionStart, selectionEnd)
+                        + '[/s]' + this.postContent.substring(selectionEnd);       
                 }  
             },
             addColor(color){
@@ -171,13 +223,13 @@
                 const selectionEnd = index[1];
                 if (color != "custom"){
                     this.postContent = this.postContent.substring(0, selectionStart)
-                        + `<span style='color:${color}'>` + this.postContent.substring(selectionStart, selectionEnd)
-                        + '</span>' + this.postContent.substring(selectionEnd);      
+                        + `[c='${color}']` + this.postContent.substring(selectionStart, selectionEnd)
+                        + '[/c]' + this.postContent.substring(selectionEnd);      
                 }else{
                     const customColor = prompt('输入颜色代码','#000000');
                     this.postContent = this.postContent.substring(0, selectionStart)
-                        + `<span style='color:${customColor}'>` + this.postContent.substring(selectionStart, selectionEnd)
-                        + '</span>' + this.postContent.substring(selectionEnd);       
+                        + `[c='${customColor}']` + this.postContent.substring(selectionStart, selectionEnd)
+                        + '[/c]' + this.postContent.substring(selectionEnd);       
                 }
             },
             addBold(){
@@ -185,24 +237,24 @@
                 const selectionStart = index[0];
                 const selectionEnd = index[1];
                 this.postContent = this.postContent.substring(0, selectionStart)
-                    + '<b>' + this.postContent.substring(selectionStart, selectionEnd)
-                    + '</b>' + this.postContent.substring(selectionEnd);
+                    + '[b]' + this.postContent.substring(selectionStart, selectionEnd)
+                    + '[/b]' + this.postContent.substring(selectionEnd);
             },
             addItalic(){
                 const index = this.selectedTextIndex();
                 const selectionStart = index[0];
                 const selectionEnd = index[1];
                 this.postContent = this.postContent.substring(0, selectionStart)
-                    + '<i>' + this.postContent.substring(selectionStart, selectionEnd)
-                    + '</i>' + this.postContent.substring(selectionEnd);      
+                    + '[i]' + this.postContent.substring(selectionStart, selectionEnd)
+                    + '[/i]' + this.postContent.substring(selectionEnd);      
             },
             addUnderLine(){
                 const index = this.selectedTextIndex();
                 const selectionStart = index[0];
                 const selectionEnd = index[1];
                 this.postContent = this.postContent.substring(0, selectionStart)
-                    + '<u>' + this.postContent.substring(selectionStart, selectionEnd)
-                    + '</u>' + this.postContent.substring(selectionEnd);      
+                    + '[u]' + this.postContent.substring(selectionStart, selectionEnd)
+                    + '[/u]' + this.postContent.substring(selectionEnd);      
             },
             openUrlDropDown(){
                 if (!this.showUrlInput){
@@ -225,8 +277,8 @@
                 const selectionStart = index[0];
                 const selectionEnd = index[1];
                 this.postContent = this.postContent.substring(0, selectionStart)
-                    + '<blockquote>' + this.postContent.substring(selectionStart, selectionEnd)
-                    + '</blockquote>' + this.postContent.substring(selectionEnd);      
+                    + '[quote]' + this.postContent.substring(selectionStart, selectionEnd)
+                    + '[/quote]' + this.postContent.substring(selectionEnd);      
             },
             openImgDropDown(){
                 if (!this.showImgInput){
@@ -241,47 +293,19 @@
                 this.showImgInput = !this.showImgInput;
             },
             addImg(){
-                const width = this.imgWidth == "" || isNaN(this.imgWidth) ? "" : `width='${this.imgWidth}'`; //防止非数字长宽度
-                const height = this.imgHeight == "" || isNaN(this.imgWidth) ? "": `height='${this.imgHeight}'`;
-                this.postContent = this.postContent.substring(0, this.selectionStart) + `<img alt='${this.imgAlt}' src='${this.imgLink}' ${width} ${height}>` + this.postContent.substring(this.selectionEnd);
+                const width = this.imgWidth == "" || isNaN(this.imgWidth) ? "" : `w='${this.imgWidth}'`; //防止非数字长宽度
+                const height = this.imgHeight == "" || isNaN(this.imgWidth) ? "": `h='${this.imgHeight}'`;
+                this.postContent = this.postContent.substring(0, this.selectionStart) + `[img a='${this.imgAlt}' ${width} ${height}]${this.imgLink}[/img]` + this.postContent.substring(this.selectionEnd);
                 this.showImgInput = false;
             },
             selectedTextIndex(){
                 const editorArea = document.getElementById('editorArea');
                 return [editorArea.selectionStart, editorArea.selectionEnd];
-            },
-            submitPost(){
-                if (this.category != "文章分类"){
-                    const postContent = this.postContent.replace(/(?:\r\n|\r|\n)/g, '<br />'); //文章内容
-                    const postData = {
-                        title:this.postTitle,
-                        content:postContent,
-                        category:this.category
-                    };
-                    $.ajax({
-                        url: `/post/`,
-                        type:'POST',
-                        contentType: "application/json",
-                        data: JSON.stringify(postData),
-                        success: (result)=>{
-                            if (result.status == "ok"){
-                                this.postTitle = "",
-                                this.postContent = "";
-                                this.$refs.resultView.sendMsg(result.content,"success");
-                                location.reload();
-                            }else{
-                                this.$refs.resultView.sendMsg(result.content,"error");
-                            }
-                        }
-                    });
-                }else{
-                    this.$refs.resultView.sendMsg("请选择文章分类","error");
-                }
-
             }
         },
         components:{
-            ResultView
+            ResultView,
+            Preview
         }
     }
 

@@ -27,9 +27,9 @@
     import HeaderNav from "../components/header/headernavlist.vue";
 
     export default {
-        fetch({redirect,route}){
-            if (route.path == "/"){
-                redirect('/pages/1');
+        data(){
+            return {
+
             }
         },
         components:{
@@ -37,9 +37,6 @@
             FooterView,
             SideBar,
             HeaderNav
-        },
-        methods:{
         }
     }
-
 </script>

@@ -7,7 +7,7 @@ const postSrv = new postservices.PostService();
 
 routers.get('/*',(req,res,next) => {
     //get all settings
-    if (req.originalUrl.substring(0,5) != "/_nuxt"){
+    if (req.originalUrl.charAt(1) !== "_"){
         settingSrv.get_setting(result => {
             //on success
             req.preLoad = result;
@@ -17,12 +17,14 @@ routers.get('/*',(req,res,next) => {
             req.preLoad = err;
             next();
         });
+    }else{
+        next();
     }
 });
 
-routers.get('/*',(req,res,next) => {
-    if (req.originalUrl.substring(0,5) != "/_nuxt"){
-        const pageNum = req.originalUrl == "/" ? 1:req.originalUrl.substring(1,req.originalUrl.length);
+routers.get('/',(req,res,next) => {
+    if (req.originalUrl.includes("/pages")){
+        const pageNum = req.originalUrl == "/pages" ? 1:req.originalUrl.substring(7,req.originalUrl.length);
         postSrv.get_post_firstPage(pageNum,result => {
             //on success
             req.preLoad.articles = result;
@@ -32,6 +34,8 @@ routers.get('/*',(req,res,next) => {
             req.preLoad.articles = err;
             next();
         });
+    }else{
+        next();
     }
 
 });

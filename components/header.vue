@@ -2,7 +2,7 @@
     <div class='headerview'>
         <div class='row headerBtns'>
             <div class='col-md-9'>
-                <a class="navbar-text header-logo" style='color:white;' href='/'><img src='/images/logo.png'></a>
+                <a  class="navbar-text header-logo" style='color:white;' href='/'><img src='/images/logo.png'></a>
                 <ul class="nav navbar-nav header-link">
                     <span v-for='link in $store.state.headerLink' :class={dropdown:link.hasSub}>
                         <button class="navbtn" :onclick='urlClick(link.url)'><i v-if='link.icon !== ""' class='fa' :class='link.icon'>&nbsp;&nbsp;&nbsp;</i><b style='position: relative;top:-2px'>{{link.name}}</b></button>
@@ -33,9 +33,9 @@
 
 <script>
 
-    import SearchView from "./minorcomponents/searchBar.vue";
-    import LoginView from "./minorcomponents/loginview.vue";
-    import QuickSetting from "./minorcomponents/headersetting.vue";
+    import SearchView from "./header/searchBar.vue";
+    import LoginView from "./header/loginview.vue";
+    import QuickSetting from "./header/headersetting.vue";
 
     export default {
         data(){

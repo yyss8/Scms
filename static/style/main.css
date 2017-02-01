@@ -48,9 +48,12 @@ footer{
 /* article filed start */
 
 .article-title{
+    overflow-wrap: break-word;
+    cursor: default;
     text-align: center;
     font-size:20px;
     font-weight: bold;
+    padding:0px 40px 0 40px;
 }
 
 .article-title a{
@@ -58,7 +61,21 @@ footer{
     color:black;
 }
 
+.article-info {
+    padding:30px 40px 0px 40px;
+}
+
+.article-info span{
+    cursor: default;
+    margin-right:20px;
+}
+
+.article-info br{
+    display: none;
+}
+
 .article-content{
+    overflow-wrap: break-word;
     padding:30px 40px 30px 40px;
 }
 
@@ -375,6 +392,14 @@ footer{
 
     .article-content{
         padding:30px 10px 30px 10px;
+    }
+
+    .article-info{
+        padding:30px 10px 0px 10px;
+    }
+
+    .article-info br{
+        display: block;
     }
 
     .article-btns{
