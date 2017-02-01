@@ -14,7 +14,7 @@ Database:Mongodb
 
 #01/31/17 Updates:
 1. Article editor improved by adding more built-in string converting features.
-2. raw-html aren now disabled in article editor.
+2. raw-html are now defaultly disabled in article editor.
 
 #01/30/17 Updates:
 1. router added for page switching feature.
