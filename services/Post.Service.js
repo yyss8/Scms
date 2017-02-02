@@ -32,15 +32,18 @@ class PostService{
         }); 
     }
 
-    get_post_morePage(articleNum,pgNum,success,fail){
+    get_post_morePage(pgNum,success,fail){
+        let data = {num:0,articles:[]}
         mongodb.connect(url,(err,db) =>{
             assert.equal(null, err);
-            let collection = db.collection(dbName); 
+            const collection = db.collection(dbName); 
             collection.find().count((err,doc) => {
-                const skipNum = (articleNum - pgNum * 5) < 0 ? 0:articleNum - pgNum * 5; //需要跳过的文章数 (如果最后一页则为0)
-                const limitNum = (articleNum - pgNum * 5) < 0 ? (articleNum - (pgNum-1) * 5):5; //页数所需要的文章数 (如果最后一页则为发最后所有)
+                data.num = doc;
+                const skipNum = (doc - pgNum * 5) < 0 ? 0:doc - pgNum * 5; //需要跳过的文章数 (如果最后一页则为0)
+                const limitNum = (doc - pgNum * 5) < 0 ? (doc - (pgNum-1) * 5):5; //页数所需要的文章数 (如果最后一页则为发最后所有)
                 collection.find({},{skip:skipNum,limit:limitNum}).toArray((err,doc) => {
-                    success({status:"ok",content:"Post Loaded",result:doc});
+                    data.articles = doc
+                    success({status:"ok",content:"Post Loaded",result:data});
                     db.close();
                 },err =>{
                     fail({status:"err",content:err});
@@ -51,6 +54,62 @@ class PostService{
                 db.close();
             });
         }); 
+    }
+
+    get_post_byCategories(cgNum,pgNum,success,fail){
+        mongodb.connect(url,(err,db) =>{
+            const settingCollection = db.collection(config.settingCollection);
+            settingCollection.findOne({},{categories:{$elemMatch:{id:cgNum}}}).then((doc,err) => {
+                const collection = db.collection(dbName);
+                const cgName = doc.categories[0].name;
+                collection.find({category:cgName}).toArray((err,doc) => {
+                    if (err){
+                        fail({status:"err",content:"出现错误"})
+                    }else{
+                        const startNum = pgNum * 5 - 5 <= 0 ? 0:pgNum * 5 - 5;
+                        const data = {
+                            cg:cgName,
+                            hasFst:pgNum - 1 >= 2 ? true:false,
+                            hasLast:pgNum - 1 >= 1 ? true:false,
+                            hasNxt:doc.length - pgNum * 5 > 1 ? true:false,
+                            hasLst:doc.length / 5 + 1 - pgNum >= 2 ? true:false,
+                            lastPg:Math.floor(doc.length / 5) + 1,
+                            currentArticles:doc.reverse().slice(startNum,startNum + 5)
+                        };
+                        success({status:"ok",content:"获得文章数据",result:data});
+                    }
+                    db.close();
+                });
+            })
+        });
+    }
+
+    get_post_byDate(date,pgNum,success,fail){
+        const startDate = new Date(`${date.replace(/-/g," ")} 00:00:00`).getTime()/1000; 
+        const startDateID = objectID(startDate);//转换日期id
+        const newDateID = objectID(startDate + 86400); //转换下一天id
+        mongodb.connect(url,(err,db) =>{
+            const collection = db.collection(dbName);
+            collection.find({_id:{$gte:startDateID,$lt:newDateID}}).toArray((err,doc) => {
+                if (err){
+                    fail({status:"err",content:"出现错误"})
+                }else{
+                    const startNum = pgNum * 5 - 5 <= 0 ? 0:pgNum * 5 - 5;
+                    const data = {
+                        date,
+                        hasFst:pgNum - 1 >= 2 ? true:false,
+                        hasLast:pgNum - 1 >= 1 ? true:false,
+                        hasNxt:doc.length - pgNum * 5 > 1 ? true:false,
+                        hasLst:doc.length / 5 + 1 - pgNum >= 2 ? true:false,
+                        lastPg:Math.floor(doc.length / 5) + 1,
+                        currentArticles:doc.reverse().slice(startNum,startNum + 5)
+                    };
+                    success({status:"ok",content:"获得文章数据",result:data});
+                }
+                db.close();
+            })
+        });
+        
     }
 
     get_post_one(id,successs,fail){
@@ -72,7 +131,6 @@ class PostService{
         }catch(err){
             fail({status:"err",content:"错误id"})
         }
-
     }
 
     create_new_post(data,success,fail){

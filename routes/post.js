@@ -3,8 +3,8 @@ const services = require('../services/Post.Service');
 const postSrv = new services.PostService();
 
 
-routers.get('/page/:pageNum/:articleNum',(req,res) => {
-    postSrv.get_post_morePage(req.params.articleNum,req.params.pageNum,result => {
+routers.get('/page/:pageNum',(req,res) => {
+    postSrv.get_post_morePage(req.params.pageNum,result => {
         res.status(200).send(result);
     },err => {
         res.status(404).send(err);

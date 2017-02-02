@@ -23,7 +23,7 @@ routers.get('/*',(req,res,next) => {
 });
 
 routers.get('/',(req,res,next) => {
-    if (req.originalUrl.includes("/pages")){
+    if (req.originalUrl.substring(0,6) === "/pages"){
         const pageNum = req.originalUrl == "/pages" ? 1:req.originalUrl.substring(7,req.originalUrl.length);
         postSrv.get_post_firstPage(pageNum,result => {
             //on success
@@ -37,7 +37,6 @@ routers.get('/',(req,res,next) => {
     }else{
         next();
     }
-
 });
 
 module.exports = routers;

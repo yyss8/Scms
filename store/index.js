@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import categories from "./categories";
 
 Vue.use(Vuex);
 
@@ -52,43 +53,7 @@ const store = new Vuex.Store({
     blogTitle:"Blog",
     postCategories:[],
     screenWidth:0,
-    currentArticle:{},
-    patternObj:{
-        code:{
-            reg:/\[code\](.*?)\[\/code]/g
-        },
-        br:{
-            reg:/(?:\r\n|\r|\n)/g,
-            newStr:"<br />"
-        },
-        b:{
-            reg:/\[b\](.*?)\[\/b\]/g,
-            newStr:"<b>$1</b>"
-        },
-        img:{
-            reg:/\[img(.*?)](.*?)\[\/img\]/g
-        },
-        color:{
-            reg:/\[c='(.*?)'\](.*?)\[\/c\]/g,
-            newStr:"<span style='color:$1'>$2</span>"
-        },
-        size:{
-            reg:/\[s='(.*?)'\](.*?)\[\/s\]/g,
-            newStr:"<span style='font-size:$1'>$2</span>",
-        },
-        i:{
-            reg:/\[i\](.*?)\[\/i\]/g,
-            newStr:"<i>$1</i>"
-        },
-        quote:{
-            reg:/\[quote](.*?)\[\/quote]/g,
-            newStr:"<blockquote>$1</blockquote>"
-        },
-        u:{
-            reg:/\[u\](.*?)\[\/u\]/g,
-            newStr:"<u>$1</u>"
-        }
-    }
+    currentArticle:{}
   },
   mutations: {
       login (state,user) {
@@ -121,10 +86,13 @@ const store = new Vuex.Store({
               commit('login',req.session.user);
           }
 
-          if (req.path.includes('/pages')){
+          if (req.originalUrl.substring(0,6) === "/pages"){
               commit('getArticleNum',req.preLoad.articles);
           }
       }
+  },
+  modules:{
+      categories
   }
 });
 

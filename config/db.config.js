@@ -1,5 +1,5 @@
 const config =  {
-    dataDB:"mongodb://scitnet.com:5333/scblog",
+    dataDB:"mongodb://localhost:27017/scblog",
     userCollection:"user",
     postCollection:"post",
     settingCollection:"settings"

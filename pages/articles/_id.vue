@@ -77,6 +77,9 @@
                     img:{
                         reg:/\[img(.*?)](.*?)\[\/img\]/g
                     },
+                    url:{
+                        reg:/\[url.*?].*?\[\/url\]/g
+                    },
                     color:{
                         reg:/\[c='(.*?)'\](.*?)\[\/c\]/g,
                         newStr:"<span style='color:$1'>$2</span>"
@@ -99,14 +102,15 @@
                     }
                 };
 
-                let newContent = content;
+                let newContent = content.replace(/\</g,"&lt;").replace(/\>/g,"&gt;");
 
                 for (let pat in patternObj){
+                    let tags
                     switch (pat){
                         case "code":
-                            const codeTags = newContent.match(patternObj[pat].reg);
-                            if (codeTags !== null){
-                                codeTags.forEach(code => {
+                            tags = newContent.match(patternObj[pat].reg);
+                            if (tags !== null){
+                                tags.forEach(code => {
                                     let convertedTag = code.replace(patternObj[pat].reg,"$1");
                                     convertedTag = convertedTag.replace(/\</g,"&lt;");
                                     convertedTag = convertedTag.replace(/\>/g,"&gt;");
@@ -115,20 +119,30 @@
                             }
                             break;
                         case "img":
-                            const imgTags = newContent.match(patternObj[pat].reg);
-                            if (imgTags !== null){
-                                newContent.match(patternObj[pat].reg).forEach(img =>{
-                                    let attrib = (img.match(/\[img(.*?)]/))[1];
-                                    let url = (img.match(/\](.*?)\[\//))[1];
-                                    let alt = attrib.match(/a=\'(.*?)\'/) === null ? "":` alt='${(attrib.match(/a=\'(.*?)\'/))[1]}'`; //更换alt标签
-                                    let w = attrib.match(/w=\'(.*?)\'/) === null ? "":` width='${(attrib.match(/w=\'(.*?)\'/))[1]}'`; //更换width标签
-                                    let h = attrib.match(/h=\'(.*?)\'/) === null ? "":` height='${(attrib.match(/h=\'(.*?)\'/))[1]}'`; //更换height标签
-                                    let imgTag = `<img${alt}${w}${h} src='${url}' />`;
+                            tags = newContent.match(patternObj[pat].reg);
+                            if (tags !== null){
+                                tags.forEach(img =>{
+                                    const attributes = (img.match(/\[img(.*?)]/))[1];
+                                    const url = (img.match(/\](.*?)\[\//))[1];
+                                    const alt = attributes.match(/a=\'(.*?)\'/) === null ? "":` alt='${(attributes.match(/a=\'(.*?)\'/))[1]}'`; //更换alt标签
+                                    const w = attributes.match(/w=\'(.*?)\'/) === null ? "":` width='${(attributes.match(/w=\'(.*?)\'/))[1]}'`; //更换width标签
+                                    const h = attributes.match(/h=\'(.*?)\'/) === null ? "":` height='${(attributes.match(/h=\'(.*?)\'/))[1]}'`; //更换height标签
+                                    const imgTag = `<img${alt}${w}${h} src='${url}' />`;
                                     newContent = newContent.replace(/\[img.*?].*?\[\/img\]/,imgTag);
                                 });
                             }
                             break;
                         case "url":
+                            tags = newContent.match(patternObj[pat].reg);
+                            if (tags !== null){
+                                tags.forEach(url => {
+                                    const attributes = (url.match(/\[url(.*?)]/))[1];
+                                    const link = (url.match(/\](.*?)\[\//))[1] === "" ? `${(attributes.match(/u=\'(.*?)\'/))[1]}`:(url.match(/\](.*?)\[\//))[1];
+                                    const alt = attributes.match(/u=\'(.*?)\'/) === null ? `href='${url}'`:` href='${(attributes.match(/u=\'(.*?)\'/))[1]}'`;
+                                    const urlTag = `<a ${alt}>${link}</a>`;
+                                    newContent = newContent.replace(/\[url.*?].*?\[\/url\]/,urlTag);
+                                });
+                            }
                             break;
                         default:
                             newContent = newContent.replace(patternObj[pat].reg,patternObj[pat].newStr);

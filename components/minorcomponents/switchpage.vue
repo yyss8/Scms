@@ -25,21 +25,25 @@
                 this.currentPage += 1;
                 window.scrollTo(0,0);
                 this.$router.push('/pages/' + this.currentPage.toString());
+                this.$parent.loadArticles(this.currentPage);
             },
             lastPage(){
                 this.currentPage -= 1;
                 window.scrollTo(0,0);
                 this.$router.push('/pages/' + this.currentPage.toString());
+                this.$parent.loadArticles(this.currentPage);
             },
             toFirst(){
                 this.currentPage = 1;
                 window.scrollTo(0,0);
                 this.$router.push('/pages/');
+                this.$parent.loadArticles(1);
             },
             toLast(){
                 this.currentPage = Math.floor(this.$store.state.articleNum / 5) + 1;
                 window.scrollTo(0,0);
                 this.$router.push('/pages/' + this.currentPage.toString());
+                this.$parent.loadArticles(this.currentPage);
             },
             toTop(){
                 window.scrollTo(0,0);
@@ -47,7 +51,3 @@
         }
     }
 </script>
-
-<style>
-
-</style>

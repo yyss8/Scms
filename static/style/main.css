@@ -99,6 +99,15 @@ footer{
     overflow-y:auto;
 }
 
+.category-title{
+    margin-bottom: 20px;
+    color:#6FBADE;
+}
+
+.category-title h3{
+    cursor: default;
+}
+
 .pagination span{
     cursor: default;
     text-align: center;

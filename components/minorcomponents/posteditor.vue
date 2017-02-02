@@ -130,7 +130,7 @@
         created(){
             if (this.currentArticle !== undefined){
                 this.postTitle = this.$store.state.currentArticle.title;
-                this.postContent = this.$store.state.currentArticle.content.replace(/<br\s*[\/]?>/gi, "\n");
+                this.postContent = this.$store.state.currentArticle.content;
                 this.category = this.$store.state.currentArticle.category;
             }
         },
@@ -159,7 +159,6 @@
             },
             submitPost(){
                 if (this.category != "文章分类"){
-                    const postContent = this.postContent.replace(/(?:\r\n|\r|\n)/g, '<br />'); //文章内容
                     const postType = this.currentArticle !== undefined ? "PUT":"POST";
 
                     let postData;
@@ -168,13 +167,13 @@
                         postData = {
                             id:this.$store.state.currentArticle._id,
                             title:this.postTitle,
-                            content:postContent,
+                            content:this.postContent,
                             category:this.category
                         };           
                     }else{
                         postData = {
                             title:this.postTitle,
-                            content:postContent,
+                            content:this.postContent,
                             category:this.category
                         };
                     }
@@ -185,8 +184,6 @@
                         data: JSON.stringify(postData),
                         success: (result)=>{
                             if (result.status == "ok"){
-                                this.postTitle = "",
-                                this.postContent = "";
                                 this.$refs.resultView.sendMsg(result.content,"success");
                                 location.href = this.$route.path;
                             }else{
@@ -269,7 +266,7 @@
                 this.showUrlInput = !this.showUrlInput;
             },
             addUrl(){
-                this.postContent = this.postContent.substring(0, this.selectionStart) + `<a href='${this.urlLink}'>${this.urlText}</a>` + this.postContent.substring(this.selectionEnd);
+                this.postContent = this.postContent.substring(0, this.selectionStart) + `[url a='${this.urlLink}']${this.urlText}[/url]` + this.postContent.substring(this.selectionEnd);
                 this.showUrlInput = false;
             },
             addQuote(){
