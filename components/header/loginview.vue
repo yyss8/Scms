@@ -1,20 +1,21 @@
 <template>
     <div class='row'>
+        <br /><br /><br /><br />
         <div class="loginview">
             <form id="login">
                 <div class="form-group">
                     <div class="input-group">
                         <span class="input-group-addon"><i class="fa fa-user fa-fw" aria-hidden="true"></i></span>
-                        <input type="text" v-model="username" placeholder="Username" required class="form-control mainInput" v-on:keyup.enter='loginBnt' data-minlength="2">
+                        <input type="text" v-model="username" placeholder="用户名" required class="form-control mainInput" v-on:keyup.enter='loginBnt' data-minlength="2">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="input-group">
                         <span class="input-group-addon"><i class="fa fa-key fa-fw" aria-hidden="true"></i></span>
-                        <input type="password" v-model='password' placeholder="Password" required class="form-control mainInput" v-on:keyup.enter='loginBnt' data-minlength="6">
+                        <input type="password" v-model='password' placeholder="密码" required class="form-control mainInput" v-on:keyup.enter='loginBnt' data-minlength="6">
                     </div>
                 </div>
-                <button @click="login" type="button" class="btn login-btn">Login</button>
+                <button @click="login" type="button" class="btn login-btn">登录</button>
             </form>
             <br><b style='color:white'>Demo Account: ID:1 Pw:1</b>
             <p class="alert alert-danger" v-if='hasError' role="alert">
@@ -24,6 +25,7 @@
                 <i class="fa  fa-check fa-fw" aria-hidden="true"></i>
             {{ result }}</p>
         </div>
+        <br /><br />
     </div>
 </template>
 

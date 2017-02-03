@@ -61,6 +61,10 @@ footer{
     color:black;
 }
 
+.article-title a:hover{
+    color:#6FBADE;
+}
+
 .article-info {
     padding:30px 40px 0px 40px;
 }
@@ -77,6 +81,15 @@ footer{
 .article-content{
     overflow-wrap: break-word;
     padding:30px 40px 30px 40px;
+}
+
+.article-body{
+    box-shadow: 0 3px 13px 1px rgba(0,0,0,0.12);
+    transition: .3s all ease-in-out;
+}
+
+.article-body:hover{
+    box-shadow: none;
 }
 
 .article-btns{
@@ -188,6 +201,14 @@ footer{
 
 .dropdown-content a:hover {background-color: #f1f1f1}
 
+.dropdown-tdc {
+    left:-100px;
+    top:30px;
+    min-height:250px;
+    min-width:230px;
+    border:1px solid #92C5EE;
+}
+
 /* hover触发dropdown内容显示动画 */
 .dropdown:hover .dropdown-content {
     opacity: 1;
@@ -217,7 +238,7 @@ footer{
 .quick-setting-view{
     position: relative;
     margin:0 auto;
-    width:90%;
+    width:40%;
 }
 
 .loginview{

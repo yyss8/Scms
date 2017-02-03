@@ -19,8 +19,19 @@
                 </div>
             </div>
             <div class='self-intro-contact-btns'>
-                <a href='javascript:void(0)'><i class='fa fa-qq'></i></a>
-                <a href='javascript:void(0)'><i class='fa fa-weixin'></i></a>
+                <span class='dropdown'>
+                    <a href='javascript:void(0)'><i class='fa fa-qq'></i></a>
+                    <div class="dropdown-content dropdown-tdc">
+                        <img src='~static/images/tdcimgs/qq.jpg'></img>
+                    </div>
+                </span>
+                <span class='dropdown'>
+                    <a href='javascript:void(0)'><i class='fa fa-weixin'></i></a>
+                    <div class="dropdown-content dropdown-tdc">
+                        <img src='~static/images/tdcimgs/weixin.jpg'></img>
+                    </div>
+                </span>
+                
                 <a style='color:black'><i class='fa fa-weibo'></i></a>
                 <a href='https://www.facebook.com/yyss8'><i class='fa fa-facebook'></i></a>
                 <a href='https://www.linkedin.com/in/%E7%87%8A-%E9%99%88-489145134'><i class='fa fa-linkedin'></i></a>

@@ -21,10 +21,8 @@
         <div class="modal fade" id="settingField" tabindex="-1" role="dialog" aria-labelledby="settingFieldLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <br /><br /><br /><br />
                     <Login-View v-if='!isLogin'></Login-View>
                     <Quick-Setting v-if='isLogin'></Quick-Setting>
-                    <br /><br />
                 </div>
             </div>
         </div>

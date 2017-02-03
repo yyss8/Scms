@@ -1,8 +1,8 @@
 <template>
     <div class='panel panel-default blog-content'>
         <div class='panel-body'>
-            <div class='category-title'><h3><b>{{ data.cg }}</b></h3></div>
-            <div class='panel panel-info' v-if='data.currentArticles.length != 0' v-for='article in data.currentArticles'>
+            <div class='category-title'><h3><b>{{ title }}</b></h3></div>
+            <div class='panel panel-info article-body' v-if='data.currentArticles.length != 0' v-for='article in data.currentArticles'>
                 <div class='panel-body'>
                     <br />
                     <div class='article-title'>
@@ -46,16 +46,39 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="confirmMsgField" tabindex="-1" role="dialog" aria-labelledby="confirmMsgFieldLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <span>{{ confirmTitle }}</span>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>{{confirmTxt}}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" @click='sendAction'>确定</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
     export default {
         props:[
-            "data","pg"
+            "data","pg","title"
         ],
         data(){
             return {
+                pendingAction:"",
+                confirmTxt:"",
+                confirmTitle:""
             }
         },
         methods:{
@@ -164,7 +187,8 @@
                 const day = date.getDate().toString().length == 1 ? "0" + date.getDate().toString():date.getDate().toString();
                 const month = (Number(date.getMonth()) + 1).toString().length == 1 ? "0" + (Number(date.getMonth()) + 1):(Number(date.getMonth()) + 1).toString();
                 const year = date.getFullYear().toString().length == 1 ? "0" + date.getFullYear().toString():date.getFullYear().toString();
-                const postDate = [day,month,year].join('-');
+                const postDate = [month,day,year].join('-');
+                this.$router.push(`/date/${postDate}/pages/1`);
             },
             showDate(id){
                 const date = new Date(parseInt(id.toString().substring(0, 8), 16) * 1000);
@@ -203,6 +227,9 @@
                     }
                 };
                 $("#confirmMsgField").modal('toggle');
+            },
+            sendAction(){
+                $.ajax(this.pendingAction);
             },
             toFirst(){
                 window.scrollTo(0,0);

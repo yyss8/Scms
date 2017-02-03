@@ -1,5 +1,5 @@
 <template>
-    <Filtered-Articles :data='cgArticles' :pg='pgNum' v-on:switch='switchPg'></Filtered-Articles>
+    <Filtered-Articles :data='cgArticles' :pg='pgNum' v-on:switch='switchPg' :title='cgArticles.cg'></Filtered-Articles>
 </template>
 
 <script>

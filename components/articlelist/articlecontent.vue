@@ -1,7 +1,7 @@
 <template>
     <div class='panel panel-default blog-content'>
         <div class='panel-body'>
-            <div class='panel panel-info' v-for='article in $store.state.articles'>
+            <div class='panel panel-info article-body' v-for='article in $store.state.articles'>
                 <div class='panel-body'>
                     <br />
                     <div class='article-title'>
@@ -10,7 +10,7 @@
                     <div class='article-content' v-html='shortArticle(article.content,article._id)'>
                     </div>
                     <div class='article-btns'>
-                        <span><i class='fa fa-calendar'></i>&nbsp; &nbsp;<a href='javascript:void(0)' :title='showTime(article._id)'>{{ showDate(article._id) }}</a></span><br />
+                        <span><i class='fa fa-calendar'></i>&nbsp; &nbsp;<a href='javascript:void(0)' :title='showTime(article._id)' @click='toDate(article._id)'>{{ showDate(article._id) }}</a></span><br />
                         <span><i class='fa fa-folder-open-o'></i>&nbsp; &nbsp;<a href='javascript:void(0)' @click='toCategories(article.category)'>{{ article.category }}</a></span>
                         <div class='article-btns-right pull-right'>
                             <a><i class='fa fa-share' @click='shareArticle'></i></a>
@@ -179,6 +179,14 @@
                         this.$router.push(`/categories/${category.id}/pages/1`);
                     }
                 });
+            },
+            toDate(id){
+                const date = new Date(parseInt(id.toString().substring(0, 8), 16) * 1000);
+                const day = date.getDate().toString().length == 1 ? "0" + date.getDate().toString():date.getDate().toString();
+                const month = (Number(date.getMonth()) + 1).toString().length == 1 ? "0" + (Number(date.getMonth()) + 1):(Number(date.getMonth()) + 1).toString();
+                const year = date.getFullYear().toString().length == 1 ? "0" + date.getFullYear().toString():date.getFullYear().toString();
+                const postDate = [month,day,year].join('-');
+                this.$router.push(`/date/${postDate}/pages/1`);
             },
             deleteArticle(id){
                 this.confirmTitle = "删除文章"

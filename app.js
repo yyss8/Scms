@@ -11,6 +11,7 @@ const preloads = require('./routes/preloads');
 const post = require('./routes/post');
 const articles = require('./routes/articles');
 const categories = require('./routes/categories');
+const date = require("./routes/date");
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use("/post",post);
 app.use("*",preloads); //loading preload data
 app.use("/articles",articles);
 app.use("/categories",categories);
+app.use("/date",date);
 app.use(nuxt.render);
 
 if (nuxtConfig.dev) {
