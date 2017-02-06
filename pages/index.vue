@@ -7,7 +7,7 @@
         <div class='mainContent'>
             <div class='row'>
                 <div class='col-md-9'>
-                    <nuxt-child></nuxt-child>
+                    <router-view></router-view>      
                 </div>
                 <div class='col-md-3'>
                     <Side-Bar></Side-Bar>
@@ -38,7 +38,21 @@
             SideBar,
             HeaderNav
         },
-        methods:{
+        head(){
+            return {
+                title:`${this.$store.state.blogTitle} | ${this.$store.state.blogScnTitle}`,
+                meta: [
+                    {charset:'utf-8'},
+                    { name: 'viewport', content: 'width=device-width, initial-scale=1, user-scalable=no, maximum-scale=1,minimum-scale=1' },
+                    { name: 'description', content: this.$store.state.blogDescription },
+                    { name:'keywords', content: this.$store.state.blogKyWrds },
+                    { name:'author', content: this.$store.state.blogAuthor}
+
+                ],
+                metaInfo: {
+                    base: { target: '_blank', href: '/' }
+                }
+            }
         }
     }
 

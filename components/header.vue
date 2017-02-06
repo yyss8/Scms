@@ -2,17 +2,16 @@
     <div class='headerview'>
         <div class='row headerBtns'>
             <div class='col-md-9'>
-                <a  class="navbar-text header-logo" style='color:white;' href='/'><img src='/images/logo.png'></a>
+                <nuxt-link class="navbar-text header-logo" to='/'><img src='/images/logo.png'></nuxt-link>
                 <ul class="nav navbar-nav header-link">
                     <span v-for='link in $store.state.headerLink' :class={dropdown:link.hasSub}>
                         <button class="navbtn" :onclick='urlClick(link.url)'><i v-if='link.icon !== ""' class='fa' :class='link.icon'>&nbsp;&nbsp;&nbsp;</i><b style='position: relative;top:-2px'>{{link.name}}</b></button>
                         <div class="dropdown-content" v-if='link.hasSub'>
-                            <a v-for='sub in link.subLinks' :href='sub.url !== "" ? sub.url:"javascript:void(0)"'>{{sub.name}}</a>
+                            <nuxt-link v-for='sub in link.subLinks' :to='sub.url !== "" ? `${sub.url}/pages/1`:"javascript:void(0)"'>{{sub.name}}</nuxt-link>
                         </div>
                     </span>
                 </ul>
-                <button class='navbar-toggle' id='header_phone_nav' @click='showNavList'><i class='fa fa-navicon'></i></button>
-                
+                <button class='navbar-toggle' id='header_phone_nav' @click='showNavList'><i class='fa fa-navicon'></i></button>         
             </div>
             <div class='col-md-3 header-link-right'>
                 <Search-View></Search-View>

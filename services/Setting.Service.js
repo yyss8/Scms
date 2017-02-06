@@ -19,6 +19,20 @@ class SettingService{
             db.close();
         }); 
     }
+
+    update_general_setting(data,success,fail){
+        mongodb.connect(url,(err,db) =>{
+            assert.equal(null,err);
+            let collection = db.collection(dbName); 
+            collection.updateOne({_id:1},{$set:{title:data.title,scnTitle:data.scnTitle,descri:data.description,keywords:data.keywords,author:data.author}}).then((doc,err) =>{
+                if (err){
+                    fail({status:"err",content:"出现错误",result:err});
+                }else{
+                    success({status:"ok",content:"设置更新成功"});
+                }
+            });
+        });
+    }
 }
 
 

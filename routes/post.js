@@ -31,7 +31,7 @@ routers.put('/',(req,res) => {
     postSrv.update_post(req.body,success =>{
         res.status(200).send(success);
     },err =>{
-        res.status(400).send(success);
+        res.status(400).send(err);
     });
 });
 

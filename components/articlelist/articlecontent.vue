@@ -22,7 +22,6 @@
             </div>
             <Switch-Page v-if='$store.state.articleNum>5'></Switch-Page>
         </div>
-        
         <div class="modal fade" id="confirmMsgField" tabindex="-1" role="dialog" aria-labelledby="confirmMsgFieldLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -61,8 +60,7 @@
         },
         methods:{
             articleDetail(article){
-                this.$store.commit('loadArticleDetail',article);
-                this.$router.push({path:`/articles/${article._id}`,params:article});
+                this.$router.push({path:`/articles/${article._id}`});
             },
             shortArticle(content,id){
                 let endNum = 150;

@@ -53,7 +53,11 @@ const store = new Vuex.Store({
     blogTitle:"Blog",
     postCategories:[],
     screenWidth:0,
-    currentArticle:{}
+    currentArticle:{},
+    blogScnTitle:"A Scms Blog",
+    blogDescription:"",
+    blogKyWrds:"",
+    blogAuthor:""
   },
   mutations: {
       login (state,user) {
@@ -65,6 +69,10 @@ const store = new Vuex.Store({
           state.sideBarComps = setting.sideBarComps;
           state.blogTitle = setting.title;
           state.postCategories = setting.categories;
+          state.blogScnTitle = setting.scnTitle;
+          state.blogDescription = setting.descri;
+          state.blogKyWrds = setting.keywords;
+          state.blogAuthor = setting.author;
       },
       getArticleNum (state,data){
           state.articleNum = data.num;

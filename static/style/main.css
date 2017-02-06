@@ -5,6 +5,10 @@ body{
     margin:0;
 }
 
+blockquote{
+    overflow: auto;
+}
+
 a{
     text-decoration: none;
     color:#6FBADE;
@@ -21,7 +25,7 @@ footer{
     margin-top:10px;
     width: 100%;
     height: 80px;
-    line-height: 80px;
+    line-height: 50px;
     color:white;
 }
 
@@ -88,6 +92,14 @@ footer{
     transition: .3s all ease-in-out;
 }
 
+.article-lastandnext{
+    margin-top:30px;
+    padding:20px 0px 20px 0px;
+    border-top: 1px solid #eaeaea;
+    border-bottom: 1px solid #eaeaea;
+}
+
+
 .article-body:hover{
     box-shadow: none;
 }
@@ -110,6 +122,12 @@ footer{
 
 .blog-content{
     overflow-y:auto;
+}
+
+.blog-content hr{
+    margin:20px 40px 10px 40px;
+    height: 1px;
+    background: #BDBDBD;
 }
 
 .category-title{
@@ -399,6 +417,149 @@ footer{
 
 /* footer field end */
 
+/* admin field start */
+
+.admin-header-nav{
+    right:0px;
+    width:calc(100% - 250px);
+    position: fixed;
+    height:90px;
+    box-shadow: 0px 1px 3px #888888;
+    z-index:2;
+    transition:width 0.5s;
+}
+
+.admin-header-nav button{
+    position: relative;
+    border-color:none;
+    margin-right:10px;
+    color:#283747;
+    margin-top:22px;
+}
+
+.admin-header-switch{
+    margin-left:15px;
+    margin-top:16px;
+}
+
+.admin-header-switch i{
+    transition:transform 0.5s;
+}
+
+.admin-header-switch i.switch{
+    -ms-transform: rotate(-180deg); /* IE 9 */
+    -webkit-transform: rotate(-180deg); /* Safari */
+    transform: rotate(-180deg);
+}
+
+.admin-header-nav ul.btn-lg{
+    position: relative;
+    top:18px;
+}
+
+.admin-content-field{
+    float:right;
+    position: relative;
+    width:calc(100% - 250px);
+    transition:width 0.5s;
+}
+
+.toFullScreen{
+    width:100%;
+}
+
+.admin-content-field .panel-default{
+    padding:20px;
+    margin:10px 0px 10px 0px;
+}
+
+.admin-content{
+    position: relative;
+    top:90px;
+    min-height:calc(100vh - 50px);
+    color:#283747;
+}
+
+.admin-content .panel{
+    min-height:calc(100vh - 165px);
+}
+
+.admin-content h3{
+    margin-top:0px;
+}
+
+.admin-sidebar{
+    position: fixed;
+    background-color:#34495E;
+    display: inline-block;
+    min-height:calc(100vh);
+    width:250px;
+    z-index:3;
+}
+
+.admin-sidebar ul{
+    min-width: 250px;
+}
+
+
+.admin-sidebar-search{
+    height:58px;
+    width:93%;
+    padding-left:15px;
+}
+
+.admin-sidebar-link{
+    font-size:20px;
+    color:white;
+}
+
+.admin-sidebar-link i{
+    margin-top:7px;
+}
+
+.admin-sidebar li a:hover{
+    color:white;
+    background-color:#5D6D7E;
+}
+
+.admin-sidebar-active{
+    background-color:white;
+    color:#34495E;
+}
+
+.admin-sidebar-search .input-group{
+    margin-top:22px;
+}
+
+.admin-sidebar-search button{
+    border-radius: 20px;
+}
+
+.alarm-num{
+    position: absolute;
+    border-radius: 30px;
+    top:15px;
+    right:4px;
+    width:15px;
+    height:15px;
+    background-color:#D35400;
+    color:white;
+    text-align: center;
+}
+
+.alarm-num span{
+    position: relative;
+    top:-4px;
+    font-size:10px;
+}
+
+.admin-footer{
+    float:right;
+    background-color:#283747;
+    margin-top:-5px;
+    height:95px;
+    transition: width 0.5s;
+}
 
 @media screen and (min-width: 991px){
     /* for desktop */
@@ -410,6 +571,10 @@ footer{
         min-width:1100px;
         min-height:79.2vh;
     }         
+
+    .admin-content{
+        min-width:800px;
+    }
 }
 
 @media screen and (max-width: 991px){
@@ -428,6 +593,11 @@ footer{
         padding:30px 10px 0px 10px;
     }
 
+    .blog-content hr{
+        margin-left:20px;
+        margin-right:20px;
+    }
+
     .article-info br{
         display: block;
     }
@@ -438,6 +608,13 @@ footer{
 
     .article-btns-right{
         padding-right:10px;
+    }
+
+    .articleFade-enter-active, .articleFade-leave-active {
+        transition: opacity .5s;
+    }
+    .articleFade-enter, .articleFade-leave-active {
+        opacity: 0;
     }
 
     .footer-content{
@@ -455,6 +632,19 @@ footer{
     .searchInput{
         top:0px;
     }
+
+    .admin-sidebar {
+        display: none;
+    }
+
+    .admin-header-nav{
+        width:100%;
+    }
+
+    .admin-content-field{
+        width:100%;
+    }
+
 }
 
 @media screen and (max-width: 767px){
@@ -499,5 +689,9 @@ footer{
     .sub_Nav_List .navbtn{
         font-size:16px;
         padding-left:40px;
+    }
+
+    #admin-heading-right{
+        display: none;
     }
 }

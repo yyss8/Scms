@@ -1,5 +1,5 @@
 <template>
-    <div class='panel panel-default blog-newContent'>
+    <div class='panel panel-default blog-content'>
         <div class='panel-body'>
             <div class='panel panel-info'>
                 <div class='panel-body'>
@@ -20,10 +20,24 @@
                     </div><br />
                     <div class='article-btns'>
                         <div class='article-btns-right pull-right'>
-                            <a><i class='fa fa-share' @click='shareArticle'></i></a>
+                            <a title='分享文章'><i class='fa fa-share' @click='shareArticle'></i></a>
                             <span v-if='$store.state.isLogin'>&nbsp; &nbsp;&nbsp;<a title='修改文章'><i class='fa fa-edit' @click='modify'></i></a></span>
                             <span v-if='$store.state.isLogin' @click=''>&nbsp; &nbsp;&nbsp;<a title='删除文章'><i class='fa fa-trash' @click='deleteArticle(article._id)'></i></a></span>
                         </div>
+                    </div><br />
+                    <div class='article-lastandnext'>
+                        <span>&nbsp;
+                            <nuxt-link v-if='lastArticle != "No Result"' :to="{path:`/articles/${lastArticle._id}`}" active-class='admin-sidebar-active'><i class='fa fa-chevron-left'></i>&nbsp; {{shortTitle(lastArticle.title)}}</nuxt-link>
+                        </span>
+                        <span>
+                            <nuxt-link :to="{path:`/articles/${nextArticle._id}`}" active-class='admin-sidebar-active' v-if='nextArticle != "No Result"' class='pull-right'>
+                                {{shortTitle(nextArticle.title)}}&nbsp;
+                                <i class='fa fa-chevron-right'></i>
+                            </nuxt-link>
+                        </span>
+                    </div><br />
+                    <div>
+                        <h4>评论</h4>
                     </div>
                 </div>
             </div>
@@ -33,34 +47,41 @@
 
 <script>
 
-    import EditPost from "../../components/minorcomponents/posteditor.vue";
+    import EditPost from "~components/minorcomponents/posteditor.vue";
 
     export default {
-        data({store,route,req,redirect}){
+        async data({store,route,req,redirect}){
+            
             if (req !== undefined){
-                if (req.article._id !== undefined){
-                    store.commit('loadArticleDetail',req.article);
+                
+                if (route.params.id !== undefined){
                     return {
-                        article:req.article,
-                        isEditing:route.query.isediting === undefined ? false:true
+                        article:req.article.article,
+                        isEditing:route.query.isediting === undefined ? false:true,
+                        lastArticle:req.article.lstArticle,
+                        nextArticle:req.article.nxtArticle
                     }
                 }else{
                     redirect('/');
                 }
             }else{
+                const { data } = await $.get(`/articles/${route.params.id}/client`);
                 return {
-                    article:store.state.currentArticle,
-                    isEditing:route.query.isediting === undefined ? false:true
+                    article:data.article,
+                    isEditing:route.query.isediting === undefined ? false:true,
+                    lastArticle:data.lstArticle,
+                    nextArticle:data.nxtArticle
                 }
-            }
-
-            return {
-                article:{},
-                isEditing:false
             }
 
         },
         methods:{
+            shortTitle(title){
+                if (title.length > 10){
+                    return title.substring(0,10) + " ...."
+                }
+                return title
+            },
             toHtml(content){
                 const patternObj = {
                     code:{
@@ -160,7 +181,6 @@
                 return [year,month,day].join('/')
             },
             showTime(id){
-                console.log
                 const date = new Date(parseInt(id.toString().substring(0, 8), 16) * 1000);
                 
                 return [date.getHours(),date.getMinutes(),date.getSeconds()].join(":")
