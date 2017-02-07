@@ -12,20 +12,20 @@ Back-end: Nuxtjs/Express
 
 Database:Mongodb
 
-#02/07/17 Updates:
+##02/07/17 Updates:
 1. Comment feature added.
 2. Admin pages initiated.
 3. content editor is now easier to be imported by other components
 
-#01/31/17 Updates:
+##01/31/17 Updates:
 1. content editor improved by adding more built-in string converting features.
 2. raw-html are now defaultly disabled in content editor.
 
-#01/30/17 Updates:
+##01/30/17 Updates:
 1. router added for page switching feature.
 2. data fetching logic redesigned, setting and articles data are now loaded before rendering page content.
 
-#01/29/17 Updates:
+##01/29/17 Updates:
 
 1. article posting feature finished
 2. article deleting feature finished
