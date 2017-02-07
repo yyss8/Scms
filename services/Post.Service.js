@@ -217,6 +217,44 @@ class PostService{
         }
 
     }
+
+    create_comment(data,success,fail){
+        try {
+            console.log(data);
+            const commentID = Date.now() / 1000;
+            mongodb.connect(url,(err,db) =>{
+                assert.equal(null,err);
+                let collection = db.collection(dbName); 
+                collection.updateOne({_id:objectID(data.id)},{$push:{comments:{"_id":objectID(commentID),"title":data.title,"name":data.name,"content":data.content,"comment":[],"like":0}}}).then((doc,err) =>{
+                    if (err){
+                        fail({status:"err",content:"出现错误"});
+                    }else{
+                        success({status:"ok",content:"评论发表成功"});
+                    }
+                });
+            });
+        }catch (err){
+            fail({status:"err",content:"错误id"})
+        }
+    }
+
+    delete_comment(id,commentId,success,fail){
+        try {
+            mongodb.connect(url,(err,db) =>{
+                assert.equal(null,err);
+                let collection = db.collection(dbName); 
+                collection.updateOne({_id:objectID(id)},{$pull:{comments:{_id:objectID(commentId)}}}).then((doc,err) =>{
+                    if (err){
+                        fail({status:"err",content:"出现错误"});
+                    }else{
+                        success({status:"ok",content:"评论删除成功"});
+                    }
+                });
+            });
+        }catch (err){
+            fail({status:"err",content:"错误id"})
+        }
+    }
 }
 
 module.exports = {PostService:PostService};

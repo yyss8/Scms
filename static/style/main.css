@@ -25,7 +25,7 @@ footer{
     margin-top:10px;
     width: 100%;
     height: 80px;
-    line-height: 50px;
+    line-height: 80px;
     color:white;
 }
 
@@ -93,12 +93,11 @@ footer{
 }
 
 .article-lastandnext{
-    margin-top:30px;
+    font-size:100%;
     padding:20px 0px 20px 0px;
     border-top: 1px solid #eaeaea;
     border-bottom: 1px solid #eaeaea;
 }
-
 
 .article-body:hover{
     box-shadow: none;
@@ -128,6 +127,39 @@ footer{
     margin:20px 40px 10px 40px;
     height: 1px;
     background: #BDBDBD;
+}
+
+.article-comment-field{
+    margin-top:30px;
+}
+
+.article-comment-field h4{
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.article-comments{
+    padding-left:40px;
+    padding-right:40px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.article-subcomment{
+    padding-left:80px;
+}
+
+.article-comment-content{
+    margin-top:20px;
+    margin-bottom:20px;
+}
+
+.article-subcomments{
+    border-top:1px solid #eaeaea;
+}
+
+.article-subcomment-reply{
+    border-top:1px solid #eaeaea;
 }
 
 .category-title{
@@ -693,5 +725,9 @@ footer{
 
     #admin-heading-right{
         display: none;
+    }
+
+    .article-lastandnext{
+        font-size:60%;
     }
 }

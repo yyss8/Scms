@@ -5,7 +5,9 @@
                 <div class='panel-body'>
                     <br />
                     <div class='article-title'>
-                        <a href='javascript:void(0)' @click='articleDetail(article)'>{{ shortTitle(article.title) }}</a>
+                        <nuxt-link :to="{path:`/articles/${article._id}`}">
+                            {{ shortTitle(article.title) }}
+                        </nuxt-link>
                     </div>
                     <div class='article-content' v-html='shortArticle(article.content,article._id)'>
                     </div>

@@ -2,15 +2,16 @@
     <div class='post-editor'>
         <div v-if='isEditing'>
             <input placeholder="输入文章标题" class='form-control' v-model='postTitle'>
+            <slot></slot>
             <div class='post-content-editor-btns'>
-                <div class="dropdown">
+                <div class="dropdown" v-if='hasCategory'>
                     <button class="btn btn-default dropdown-toggle btn-sm" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                         {{category}} <span class="caret" v-if='category === "文章分类"'></span>
-                    </button>
+                    </button>&nbsp;
                     <ul class="dropdown-menu">
-                        <li  @click='selectCategories(category.name)' v-for='category in $store.state.postCategories'><a href="javascript:void(0)">{{category.name}}</a></li>
+                        <li  @click='selectCategories(category.name)' v-for='category in categoryList'><a href="javascript:void(0)">{{category.name}}</a></li>
                     </ul>
-                </div>&nbsp;
+                </div>
 
                 <div class="dropdown">
                     <button class="btn btn-default dropdown-toggle btn-sm" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -80,9 +81,9 @@
                 <span style='float:left'>
                     <Result-View ref='resultView'></Result-View>
                 </span>
-                <button class='btn btn-default' @click='submitPost'>{{ currentArticle !== undefined ? "保存":"发表" }}</button>&nbsp;
-                <span v-if='this.currentArticle === undefined'><button class='btn btn-default' @click='hideModal'>暂存</button>&nbsp;</span>
-                <button class='btn btn-default' @click='cancel'>撤销</button>
+                <button class='btn btn-default' @click='submitPost'>{{ preLoads !== undefined ? "保存":"发表" }}</button>&nbsp;
+                <button class='btn btn-default' @click='cancel'>取消</button>&nbsp;
+                <button class='btn btn-default' @click='clear'>清空</button>
             </div>
         </div>
         <div>
@@ -102,13 +103,16 @@
 
     export default {
         props:[
-            'currentArticle'
+            'preLoads','categoryNeeded','preData'
         ],
         data(){
             return{
-                postTitle:"",
-                postContent:"",
-                category:"文章分类",
+                postTitle:this.preLoads === undefined ? "":this.preLoads.article === undefined ? "":this.preLoads.article.title,
+                postContent:this.preLoads === undefined ? "":this.preLoads.article === undefined ? "":this.preLoads.article.content,
+                category:this.preLoads === undefined ? "文章分类":this.preLoads.article === undefined ? "文章分类":this.preLoads.article.category,
+                hasCategory:this.preLoads === undefined ? false:this.preLoads.hasCategory,
+                categoryList:this.preLoads === undefined ? []:this.preLoads.categoryList,
+                optionContent:"",
                 selectionStart:0,
                 selectionEnd:0,
                 urlText:"",
@@ -127,72 +131,38 @@
                 successMsg:false
             }
         },
-        created(){
-            if (this.currentArticle !== undefined){
-                this.postTitle = this.$store.state.currentArticle.title;
-                this.postContent = this.$store.state.currentArticle.content;
-                this.category = this.$store.state.currentArticle.category;
-            }
-        },
         methods:{
-            categoryOnchange(cate){
-                this.category = cate;
+            categoryOnchange(cg){
+                this.category = cg;
             },
             cancel(){
-                if (this.currentArticle !== undefined) {
-                    this.$parent.modify();
-                }else {
-                    this.postTitle = "",
-                    this.postContent = "";
-                    this.hideModal();
-                }
+                const cancel = this.preLoads.cancel === undefined ? this.$parent.editorCanel:this.preLoads.cancel;
+                cancel();
+            },
+            clear(){
+                this.postTitle = "",
+                this.postContent = "";
             },
             preview(){
                 this.isEditing = !this.isEditing;
                 this.isPreviewing = !this.isPreviewing;
             },
-            hideModal(){
-                $("#quickPostField").modal('hide');
-            },
             contentOnchange(str){
                 this.postContent = str;
             },
             submitPost(){
-                if (this.category != "文章分类"){
-                    const postType = this.currentArticle !== undefined ? "PUT":"POST";
-
-                    let postData;
-
-                    if (this.currentArticle !== undefined){
-                        postData = {
-                            id:this.$store.state.currentArticle._id,
-                            title:this.postTitle,
-                            content:this.postContent,
-                            category:this.category
-                        };           
-                    }else{
-                        postData = {
-                            title:this.postTitle,
-                            content:this.postContent,
-                            category:this.category
-                        };
-                    }
-                    $.ajax({
-                        url: `/post/`,
-                        type:postType,
-                        contentType: "application/json",
-                        data: JSON.stringify(postData),
-                        success: (result)=>{
-                            if (result.status == "ok"){
-                                this.$refs.resultView.sendMsg(result.content,"success");
-                                location.href = this.$route.path;
-                            }else{
-                                this.$refs.resultView.sendMsg(result.content,"error");
-                            }
-                        }
-                    });
-                }else{
+                if (this.categoryNeeded && this.category == "文章分类"){
                     this.$refs.resultView.sendMsg("请选择文章分类","error");
+
+                }else{
+                    const postData = {
+                        title:this.postTitle,
+                        content:this.postContent,
+                        category:this.category
+                    }
+                    
+                    const submit = this.preLoads.submit === undefined ? this.$parent.editorSubmit : this.preLoads.submit;
+                    submit(postData,this.$refs.resultView.sendMsg);    
                 }
 
             },
@@ -298,6 +268,9 @@
             selectedTextIndex(){
                 const editorArea = document.getElementById('editorArea');
                 return [editorArea.selectionStart, editorArea.selectionEnd];
+            },
+            optionOnchange(e){
+                alert(e.target.value);
             }
         },
         components:{

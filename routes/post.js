@@ -35,4 +35,20 @@ routers.put('/',(req,res) => {
     });
 });
 
+routers.post('/:id/comments',(req,res) => {
+    postSrv.create_comment(req.body,success =>{
+        res.status(201).send(success);
+    },err =>{
+        res.status(500).send(err);
+    });
+});
+
+routers.delete('/:id/comments/:commentid',(req,res) => {
+    postSrv.delete_comment(req.params.id,req.params.commentid,success =>{
+        res.status(200).send(success);
+    },err =>{
+        res.status(400).send(err);
+    });
+});
+
 module.exports = routers;

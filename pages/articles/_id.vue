@@ -16,15 +16,17 @@
                         <div class='article-content' v-html='toHtml(article.content)'></div>
                     </div>
                     <div class='article-content' v-if='isEditing' style='padding:0'>
-                        <Edit-Post currentArticle='$store.state.currentArticle'></Edit-Post>
+                        <Edit-Post :preLoads='editLoads'></Edit-Post>
                     </div><br />
                     <div class='article-btns'>
                         <div class='article-btns-right pull-right'>
                             <a title='分享文章'><i class='fa fa-share' @click='shareArticle'></i></a>
-                            <span v-if='$store.state.isLogin'>&nbsp; &nbsp;&nbsp;<a title='修改文章'><i class='fa fa-edit' @click='modify'></i></a></span>
-                            <span v-if='$store.state.isLogin' @click=''>&nbsp; &nbsp;&nbsp;<a title='删除文章'><i class='fa fa-trash' @click='deleteArticle(article._id)'></i></a></span>
+                            <span v-if='$store.state.isLogin'>&nbsp; &nbsp;&nbsp;<a title='修改文章'><i class='fa fa-edit' @click='editorModifty'></i></a></span>
+                            <span v-if='$store.state.isLogin'>&nbsp; &nbsp;&nbsp;<a title='删除文章'><i class='fa fa-trash' @click='deleteArticle(article._id)'></i></a></span>
                         </div>
                     </div><br />
+                    <Comments :comments='article.comments'></Comments>
+                    <br />
                     <div class='article-lastandnext'>
                         <span>&nbsp;
                             <nuxt-link v-if='lastArticle != "No Result"' :to="{path:`/articles/${lastArticle._id}`}" active-class='admin-sidebar-active'><i class='fa fa-chevron-left'></i>&nbsp; {{shortTitle(lastArticle.title)}}</nuxt-link>
@@ -35,9 +37,25 @@
                                 <i class='fa fa-chevron-right'></i>
                             </nuxt-link>
                         </span>
-                    </div><br />
-                    <div>
-                        <h4>评论</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="confirmMsgField" tabindex="-1" role="dialog" aria-labelledby="confirmMsgFieldLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <span>{{ this.confirmTitle }}</span>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>{{confirmTxt}}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" @click='sendAction'>确定</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
                     </div>
                 </div>
             </div>
@@ -46,21 +64,28 @@
 </template>
 
 <script>
-
+    import Comments from "~components/minorcomponents/comments.vue";
     import EditPost from "~components/minorcomponents/posteditor.vue";
 
     export default {
         async data({store,route,req,redirect}){
-            
+
             if (req !== undefined){
-                
                 if (route.params.id !== undefined){
                     return {
-                        article:req.article.article,
-                        isEditing:route.query.isediting === undefined ? false:true,
-                        lastArticle:req.article.lstArticle,
-                        nextArticle:req.article.nxtArticle
-                    }
+                            article:req.article.article,
+                            isEditing:route.query.isediting !== undefined && store.state.isLogin ? true:false,
+                            lastArticle:req.article.lstArticle,
+                            nextArticle:req.article.nxtArticle,
+                            editLoads:{
+                                article:req.article.article,
+                                hasCategory:true,
+                                categoryList:store.state.postCategories
+                            },
+                            confirmTxt:"",
+                            confirmTitle:"",
+                            pendingAction:{},
+                        }
                 }else{
                     redirect('/');
                 }
@@ -68,9 +93,17 @@
                 const { data } = await $.get(`/articles/${route.params.id}/client`);
                 return {
                     article:data.article,
-                    isEditing:route.query.isediting === undefined ? false:true,
+                    isEditing:route.query.isediting !== undefined && store.state.isLogin ? true:false,
                     lastArticle:data.lstArticle,
-                    nextArticle:data.nxtArticle
+                    nextArticle:data.nxtArticle,
+                    editLoads:{
+                        article:data.article,
+                        hasCategory:true,
+                        categoryList:store.state.postCategories
+                    },
+                    confirmTxt:"",
+                    confirmTitle:"",
+                    pendingAction:{},
                 }
             }
 
@@ -191,11 +224,35 @@
             deleteArticle(id){
 
             },
-            modify(){
+            editorModifty(){
                 this.isEditing = !this.isEditing;
+            },
+            editorSubmit(data,onResult) {
+                const postData = data;
+                postData.id = this.article._id;
+
+                $.ajax({
+                    url: `/post/`,
+                    type:'PUT',
+                    contentType: "application/json",
+                    data: JSON.stringify(data),
+                    success: (result)=>{
+                        if (result.status == "ok"){
+                            onResult(result.content,"success");
+                            location.href = this.$route.path;
+                        }else{
+                            onResult(result.content,"error");
+                        }
+                    }
+                });
+            },
+            sendAction(){
+                $.ajax(this.pendingAction);
             }
+
         },
         components:{
+            Comments,
             EditPost
         }
     }

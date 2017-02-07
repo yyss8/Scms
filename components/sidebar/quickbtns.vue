@@ -11,7 +11,7 @@
         <div class="modal fade" id="quickPostField" tabindex="-1" role="dialog" aria-labelledby="quickPostFieldLabel">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
-                    <Post-Editor></Post-Editor>
+                    <Post-Editor :submit='submit' :preLoads='editLoads'></Post-Editor>
                 </div>
             </div>
         </div>
@@ -22,8 +22,39 @@
     import PostEditor from "../minorcomponents/posteditor.vue";
 
     export default {
+        data(){
+            return {
+                editLoads:{
+                    hasCategory:true,
+                    categoryList:this.$store.state.postCategories,
+                    submit:this.submit,
+                    cancel:this.cancel
+                }
+            }
+        },
         components:{
             PostEditor
+        },
+        methods:{
+            submit(data,onResult){
+                $.ajax({
+                    url: `/post/`,
+                    type:'POST',
+                    contentType: "application/json",
+                    data: JSON.stringify(data),
+                    success: (result)=>{
+                        if (result.status == "ok"){
+                            onResult(result.content,"success");
+                            location.href = "/pages/1";
+                        }else{
+                            onResult(result.content,"error");
+                        }
+                    }
+                });
+            },
+            cancel(){
+                $("#quickPostField").modal('hide');
+            }
         }
     }
 </script>
