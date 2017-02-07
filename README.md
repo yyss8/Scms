@@ -1,6 +1,6 @@
-# ScBlog
+# Scms
 
-    a simple blog based on vue-server-rendering
+    a simple blog content management system based on vue-server-rendering
 
 Demo: http://blog.scitnet.com
 
