@@ -33,6 +33,21 @@ class SettingService{
             });
         });
     }
+
+    update_header_links(data,success,fail){
+        mongodb.connect(url,(err,db) =>{
+            assert.equal(null,err);
+            let collection = db.collection(dbName); 
+            collection.updateOne({_id:1},{$set:{headerLink:data}}).then((doc,err) =>{
+                if (err){
+                    fail({status:"err",content:"出现错误",result:err});
+                }else{
+                    success({status:"ok",content:"导航更新成功"});
+                }
+            });
+        });
+    }
+
 }
 
 

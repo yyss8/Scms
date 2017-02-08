@@ -58,6 +58,7 @@
                         <br />
                     </div>
                 </div>&nbsp;
+                <button class='btn btn-default btn-sm' @click='addCode'><i class='fa fa-code'></i></button>&nbsp;
                 <button class='btn btn-default btn-sm' @click='addQuote'><i class='fa fa-quote-left'></i></button>&nbsp;
                 <div class="dropdown">
                     <button class='btn btn-default btn-sm' @click='openImgDropDown'><i class='fa fa-file-image-o'></i></button>
@@ -151,18 +152,24 @@
                 this.postContent = str;
             },
             submitPost(){
-                if (this.categoryNeeded && this.category == "文章分类"){
+                if (this.hasCategory && this.category == "文章分类"){
                     this.$refs.resultView.sendMsg("请选择文章分类","error");
-
+                }else if (this.postContent == ""){
+                    this.$refs.resultView.sendMsg("请输入内容","error");
+                }else if (this.postTitle == ""){
+                    this.$refs.resultView.sendMsg("请输入标题","error");
                 }else{
-                    const postData = {
+                    const postData = this.hasCategory ? {
                         title:this.postTitle,
                         content:this.postContent,
                         category:this.category
+                    } : {
+                        title:this.postTitle,
+                        content:this.postContent
                     }
                     
                     const submit = this.preLoads.submit === undefined ? this.$parent.editorSubmit : this.preLoads.submit;
-                    submit(postData,this.$refs.resultView.sendMsg);    
+                    submit(postData,this.$refs.resultView.sendMsg);  
                 }
 
             },
@@ -258,6 +265,14 @@
                     this.imgLink = "";
                 }
                 this.showImgInput = !this.showImgInput;
+            },
+            addCode(){
+                const index = this.selectedTextIndex();
+                const selectionStart = index[0];
+                const selectionEnd = index[1];
+                this.postContent = this.postContent.substring(0, selectionStart)
+                    + '[code]' + this.postContent.substring(selectionStart, selectionEnd)
+                    + '[/code]' + this.postContent.substring(selectionEnd);  
             },
             addImg(){
                 const width = this.imgWidth == "" || isNaN(this.imgWidth) ? "" : `w='${this.imgWidth}'`; //防止非数字长宽度

@@ -191,9 +191,9 @@
                             if (tags !== null){
                                 tags.forEach(url => {
                                     const attributes = (url.match(/\[url(.*?)]/))[1];
-                                    const link = (url.match(/\](.*?)\[\//))[1] === "" ? `${(attributes.match(/u=\'(.*?)\'/))[1]}`:(url.match(/\](.*?)\[\//))[1];
-                                    const alt = attributes.match(/u=\'(.*?)\'/) === null ? `href='${url}'`:` href='${(attributes.match(/u=\'(.*?)\'/))[1]}'`;
-                                    const urlTag = `<a ${alt}>${link}</a>`;
+                                    const alt = (url.match(/\](.*?)\[\//))[1] === "" ? `${(attributes.match(/a=\'(.*?)\'/))[1]}`:(url.match(/\](.*?)\[\//))[1];
+                                    const link = `href='${attributes.match(/a=\'(.*?)\'/)[1]}'`;
+                                    const urlTag = `<a ${link}>${alt}</a>`;
                                     newContent = newContent.replace(/\[url.*?].*?\[\/url\]/,urlTag);
                                 });
                             }

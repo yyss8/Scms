@@ -36,6 +36,13 @@
                 <i class='fa fa-chevron-right pull-right'></i>
                 </nuxt-link>
             </li>
+            <li>
+                <nuxt-link :to="{path:'/admin/users'}" class='admin-sidebar-link' active-class='admin-sidebar-active'>
+                <i class='fa fa-address-book'></i> &nbsp;
+                用户管理
+                <i class='fa fa-chevron-right pull-right'></i>
+                </nuxt-link>
+            </li>
         </ul>
     </div>
 </template>

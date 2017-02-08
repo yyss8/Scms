@@ -51,4 +51,39 @@ routers.delete('/:id/comments/:commentid',(req,res) => {
     });
 });
 
+routers.post('/:id/comments/:commentid',(req,res) => {
+    postSrv.create_subcomment(req.params.id,req.body,success =>{
+        res.status(201).send(success);
+    },err =>{
+        res.status(400).send(err);
+    });
+});
+
+routers.delete('/:id/comments/:commentid/subcomments/:subid',(req,res) => {
+    postSrv.delete_sub_comment(req.params,success =>{
+        res.status(200).send(success);
+    },err =>{
+        res.status(400).send(err);
+    });
+});
+
+routers.put('/:id/comments/:commentid/like',(req,res) => {
+    req.params.ip = req.headers['x-real-ip'] || req.connection.remoteAddress.split(":").pop();
+    postSrv.like_comment(req.params,success =>{
+        res.status(200).send(success);
+    },err =>{
+        res.status(400).send(err);
+    });
+});
+
+routers.put('/:id/comments/:commentid/subcomments/:subid/like',(req,res) => {
+    
+    req.params.ip = req.headers['x-real-ip'] || req.connection.remoteAddress.split(":").pop();
+    postSrv.like_sub_comment(req.params,success =>{
+        res.status(200).send(success);
+    },err =>{
+        res.status(400).send(err);
+    });
+});
+
 module.exports = routers;

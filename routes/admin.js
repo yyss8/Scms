@@ -10,4 +10,12 @@ routers.put('/gs',(req,res) => {
     });
 });
 
+routers.put('/nav/headers',(req,res) => {
+    settingSrv.update_header_links(req.body.links,success => {
+        res.status(200).send(success);
+    },err =>{
+        res.status(400).send(err);
+    });
+});
+
 module.exports = routers;
