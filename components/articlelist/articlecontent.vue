@@ -24,40 +24,22 @@
             </div>
             <Switch-Page v-if='$store.state.articleNum>5'></Switch-Page>
         </div>
-        <div class="modal fade" id="confirmMsgField" tabindex="-1" role="dialog" aria-labelledby="confirmMsgFieldLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <span>{{ this.confirmTitle }}</span>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>{{confirmTxt}}</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" @click='sendAction'>确定</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+
+        <Confirm-View ref='confirmView'></Confirm-View>
     </div>
 </template>
 
 <script>
 
-    import ResultView from "../minorcomponents/resultview.vue";
     import SwitchPage from "~components/articlelist/switchpage.vue";
+    import ResultView from "~components/minorcomponents/resultview.vue";
+    import ConfirmView from "~components/minorcomponents/confirmview.vue";
 
     export default {
         props:["pg"],
         data(){
             return{
-                confirmTxt:"",
-                confirmTitle:"",
-                pendingAction:""
+
             }
         },
         methods:{
@@ -189,35 +171,25 @@
                 this.$router.push(`/date/${postDate}/pages/1`);
             },
             deleteArticle(id){
-                this.confirmTitle = "删除文章"
-                this.confirmTxt = "是否删除文章";
-                this.pendingAction =  {
-                    url: `/post/${id}/`,
-                    type:'DELETE',
-                    success: function(result) {
-                        if (result.status == "ok"){
-                            $("#confirmMsgField").modal('toggle');
-                            location.reload();
-                        }
-                    }
-                };
-                $("#confirmMsgField").modal('toggle');
-            },
-            sendAction(){
-                $.ajax(this.pendingAction);
+                this.$refs.confirmView.getAction("是否删除该文章?",function() {
+                    $.ajax({
+                        url: `/post/${id}/`,
+                        type:'DELETE',
+                        success: result => {
+                            if (result.status == "ok"){
+                                $("#confirmMsgField").modal('toggle');
+                                location.reload();
+                            }
+                        }                     
+                    });
+                });
+                $("#confirmMsg").modal('toggle');
             }
         },
         components:{
             ResultView,
-            SwitchPage
-        },
-        watch:{
-            actionPending(){
-                if (this.actionPending == ""){
-                    this.confirmTitle = "";
-                    this.confirmTxt = "";
-                }
-            }
+            SwitchPage,
+            ConfirmView
         }
     }
 </script>

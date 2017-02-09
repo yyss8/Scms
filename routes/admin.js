@@ -18,4 +18,14 @@ routers.put('/nav/headers',(req,res) => {
     });
 });
 
+routers.put('/nav/sidebar',(req,res) => {
+    settingSrv.update_sidebar(req.body,success => {
+        res.status(200).send(success);
+    },err =>{
+        res.status(400).send(err);
+    });
+});
+
+
+
 module.exports = routers;

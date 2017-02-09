@@ -30,7 +30,7 @@ const store = new Vuex.Store({
             title : "",
             showTitle : false
         },
-        "SelfIntro" : {
+        SelfIntro : {
             showName:false,
             showTitle:false,
             title:"个人介绍",

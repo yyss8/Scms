@@ -48,6 +48,34 @@ class SettingService{
         });
     }
 
+    update_categories(data,success,fail){
+        mongodb.connect(url,(err,db) =>{
+            assert.equal(null,err);
+            let collection = db.collection(dbName); 
+            collection.updateOne({_id:1},{$set:{categories:data}}).then((doc,err) =>{
+                if (err){
+                    fail({status:"err",content:"出现错误",result:err});
+                }else{
+                    success({status:"ok",content:"文章分类更新成功"});
+                }
+            });
+        });
+    }
+
+    update_sidebar(data,success,fail){
+        mongodb.connect(url,(err,db) =>{
+            assert.equal(null,err);
+            let collection = db.collection(dbName); 
+            collection.updateOne({_id:1},{$set:{sideBarComps:data}}).then((doc,err) =>{
+                if (err){
+                    fail({status:"err",content:"出现错误",result:err});
+                }else{
+                    success({status:"ok",content:"文章分类更新成功"});
+                }
+            });
+        });
+    }
+
 }
 
 

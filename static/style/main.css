@@ -616,6 +616,11 @@ footer{
     border-top:1px solid #ddd;
 }
 
+.admin-category-sidebar{
+    background-color:#E7E9EC;
+    padding:0;
+}
+
 @media screen and (min-width: 991px){
     /* for desktop */
     .headerview{

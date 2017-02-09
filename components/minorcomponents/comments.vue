@@ -114,37 +114,37 @@
                 this.hidePost = !this.hidePost;
             },
             remove(id){
-                this.$parent.confirmTitle = "删除评论"
-                this.$parent.confirmTxt = "是否删除评论？";
-                this.$parent.pendingAction =  {
-                    url: `/post/${this.$route.params.id}/comments/${id}`,
-                    type:'DELETE',
-                    success: result => {
-                        if (result.status == "ok"){
-                            $("#confirmMsgField").modal('toggle');
-                            location.reload();
-                        }
-                    }
-                };
-                $("#confirmMsgField").modal('toggle');
+
+                this.$parent.$refs.confirmView.getAction("是否删除该评论？",function() {
+                    $.ajax({
+                        url: `/post/${this.$route.params.id}/comments/${id}`,
+                        type:'DELETE',
+                        success: result => {
+                            if (result.status == "ok"){
+                                $("#confirmMsg").modal('toggle');
+                                location.reload();
+                            }
+                        }            
+                    });
+                });
+                $("#confirmMsg").modal('toggle');
             },
             removeSub(id,subid){
-                this.$parent.confirmTitle = "删除子评论"
-                this.$parent.confirmTxt = "是否删除子评论？";
-                this.$parent.pendingAction =  {
-                    url: `/post/${this.$route.params.id}/comments/${id}/subcomments/${subid}`,
-                    type:'DELETE',
-                    success: result => {
-                        if (result.status == "ok"){
-                            $("#confirmMsgField").modal('toggle');
-                            location.reload();
-                        }
-                    }
-                };
-                $("#confirmMsgField").modal('toggle');
+                this.$parent.$refs.confirmView.getAction("是否删除子评论？",function() {
+                    $.ajax({
+                        url: `/post/${this.$route.params.id}/comments/${id}/subcomments/${subid}`,
+                        type:'DELETE',
+                        success: result => {
+                            if (result.status == "ok"){
+                                $("#confirmMsg").modal('toggle');
+                                location.reload();
+                            }
+                        }               
+                    });
+                });
+                $("#confirmMsg").modal('toggle');
             },
             reply(id){
-
                 const postData = {
                     id,
                     name:this.replyName,

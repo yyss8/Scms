@@ -206,6 +206,7 @@ class PostService{
     }
 
     create_new_post(data,success,fail){
+        data.comments = [];
         mongodb.connect(url,(err,db) =>{
             assert.equal(null,err);
             const collection = db.collection(dbName); 

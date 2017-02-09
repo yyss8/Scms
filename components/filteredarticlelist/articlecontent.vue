@@ -48,41 +48,18 @@
                 </div>
             </div>
         </div>
-
-        <div class="modal fade" id="confirmMsgField" tabindex="-1" role="dialog" aria-labelledby="confirmMsgFieldLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <span>{{ confirmTitle }}</span>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>{{confirmTxt}}</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" @click='sendAction'>确定</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <Confirm-View ref='confirmView'></Confirm-View>
     </div>
 </template>
 
 <script>
+
+    import ConfirmView from "~components/minorcomponents/confirmview.vue";
+
     export default {
         props:[
             "data","pg","title"
         ],
-        data(){
-            return {
-                pendingAction:"",
-                confirmTxt:"",
-                confirmTitle:""
-            }
-        },
         methods:{
             articleDetail(article){
                 this.$store.commit('loadArticleDetail',article);
@@ -216,22 +193,19 @@
 
             },
             deleteArticle(id){
-                this.confirmTitle = "删除文章"
-                this.confirmTxt = "是否删除文章";
-                this.pendingAction =  {
-                    url: `/post/${id}/`,
-                    type:'DELETE',
-                    success: function(result) {
-                        if (result.status == "ok"){
-                            $("#confirmMsgField").modal('toggle');
-                            location.reload();
+                this.$refs.confirmView.getAction("是否删除该文章?",() => {
+                    $.ajax({
+                        url: `/post/${id}/`,
+                        type:'DELETE',
+                        success: function(result) {
+                            if (result.status == "ok"){
+                                $("#confirmMsgField").modal('toggle');
+                                location.reload();
+                            }
                         }
-                    }
-                };
-                $("#confirmMsgField").modal('toggle');
-            },
-            sendAction(){
-                $.ajax(this.pendingAction);
+                    });
+                });
+                $("#confirmMsg").modal('toggle');
             },
             toFirst(){
                 window.scrollTo(0,0);
@@ -254,6 +228,9 @@
             toTop(){
                 window.scrollTo(0,0);
             }
+        },
+        components:{
+            ConfirmView
         }
     }    
 </script>

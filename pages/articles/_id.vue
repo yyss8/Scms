@@ -41,31 +41,14 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="confirmMsgField" tabindex="-1" role="dialog" aria-labelledby="confirmMsgFieldLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <span>{{ this.confirmTitle }}</span>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>{{confirmTxt}}</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" @click='sendAction'>确定</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <Confirm-View ref='confirmView'></Confirm-View>
     </div>
 </template>
 
 <script>
     import Comments from "~components/minorcomponents/comments.vue";
     import EditPost from "~components/minorcomponents/posteditor.vue";
+    import ConfirmView from "~components/minorcomponents/confirmview.vue";
 
     export default {
         async data({store,route,req,redirect}){
@@ -222,7 +205,19 @@
 
             },
             deleteArticle(id){
-
+                this.$refs.confirmView.getAction("是否删除该文章?",function() {
+                    $.ajax({
+                        url: `/post/${id}/`,
+                        type:'DELETE',
+                        success: result => {
+                            if (result.status == "ok"){
+                                $("#confirmMsgField").modal('toggle');
+                                this.$router.push('/pages/1');
+                            }
+                        }                     
+                    });
+                });
+                $("#confirmMsg").modal('toggle');
             },
             editorModifty(){
                 this.isEditing = !this.isEditing;
@@ -253,7 +248,8 @@
         },
         components:{
             Comments,
-            EditPost
+            EditPost,
+            ConfirmView
         }
     }
 </script>

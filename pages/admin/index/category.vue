@@ -12,6 +12,11 @@
                     侧快捷栏
                 </nuxt-link>
             </li>
+            <li :class='{active:$route.path == "/admin/category/articles" ? true:false}'>
+                <nuxt-link :to="{path:'/admin/category/articles'}">
+                    文章分类
+                </nuxt-link>
+            </li>
         </ul>
         <nuxt-child></nuxt-child>
     </div>
