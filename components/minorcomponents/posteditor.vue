@@ -1,7 +1,7 @@
 <template>
     <div class='post-editor'>
         <div v-if='isEditing'>
-            <input placeholder="输入文章标题" class='form-control' v-model='postTitle'>
+            <input placeholder="输入标题" class='form-control' v-model='postTitle'>
             <slot></slot>
             <div class='post-content-editor-btns'>
                 <div class="dropdown" v-if='hasCategory'>
@@ -76,13 +76,13 @@
                 <button class='btn btn-default btn-sm' @click='preview()'>预览</button>
             </div>
             
-            <textarea placeholder="输入文章内容" class='form-control' id='editorArea' v-model='postContent'></textarea>
+            <textarea placeholder="输入内容" class='form-control' id='editorArea' v-model='postContent'></textarea>
             
             <div class='post-btns'>
                 <span style='float:left'>
                     <Result-View ref='resultView'></Result-View>
                 </span>
-                <button class='btn btn-default' @click='submitPost'>{{ preLoads !== undefined ? "保存":"发表" }}</button>&nbsp;
+                <button class='btn btn-default' @click='submitPost'>{{ preLoads.article !== undefined ? "保存":"发表" }}</button>&nbsp;
                 <button class='btn btn-default' @click='cancel'>取消</button>&nbsp;
                 <button class='btn btn-default' @click='clear'>清空</button>
             </div>
@@ -137,8 +137,8 @@
                 this.category = cg;
             },
             cancel(){
-                const cancel = this.preLoads.cancel === undefined ? this.$parent.editorCanel:this.preLoads.cancel;
-                cancel();
+                const cancelPost = this.preLoads.cancel === undefined ? this.$parent.editorCanel:this.preLoads.cancel;
+                cancelPost();
             },
             clear(){
                 this.postTitle = "",

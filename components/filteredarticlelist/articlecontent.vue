@@ -16,9 +16,9 @@
                         <span><i class='fa fa-calendar'></i>&nbsp; &nbsp;<a href='javascript:void(0)' :title='showTime(article._id)' @click='toDate(article._id)'>{{ showDate(article._id) }}</a></span><br />
                         <span><i class='fa fa-folder-open-o'></i>&nbsp; &nbsp;<a href='javascript:void(0)' @click='toCategories(article.category)'>{{ article.category }}</a></span>
                         <div class='article-btns-right pull-right'>
-                            <a><i class='fa fa-share' @click='shareArticle'></i></a>
-                            <span v-if='$store.state.isLogin'>&nbsp; &nbsp;&nbsp;<a title='修改文章'><i class='fa fa-edit' @click='modify(article)'></i></a></span>
-                            <span v-if='$store.state.isLogin' @click=''>&nbsp; &nbsp;&nbsp;<a title='删除文章'><i class='fa fa-trash' @click='deleteArticle(article._id)'></i></a></span>
+                            <span v-if='$store.state.isLogin'>&nbsp; &nbsp;&nbsp;<a class='article-btns-right-a' title='修改文章'><i class='fa fa-edit' @click='modify(article)'></i></a></span>
+                            <span v-if='$store.state.isLogin' @click=''>&nbsp; &nbsp;&nbsp;<a class='article-btns-right-a' title='删除文章'><i class='fa fa-trash' @click='deleteArticle(article._id)'></i></a></span>
+                            <span>&nbsp; &nbsp;&nbsp;<Share-View :id='article._id'></Share-View></span>
                         </div>
                     </div>
                 </div>
@@ -55,6 +55,7 @@
 <script>
 
     import ConfirmView from "~components/minorcomponents/confirmview.vue";
+    import ShareView from "~components/minorcomponents/sharearticle.vue";
 
     export default {
         props:[
@@ -189,9 +190,6 @@
                 this.$store.commit('loadArticleDetail',article);
                 this.$router.push({path:`/articles/${article._id}`,query:{isediting:true}})
             },
-            shareArticle(){
-
-            },
             deleteArticle(id){
                 this.$refs.confirmView.getAction("是否删除该文章?",() => {
                     $.ajax({
@@ -230,7 +228,8 @@
             }
         },
         components:{
-            ConfirmView
+            ConfirmView,
+            ShareView
         }
     }    
 </script>

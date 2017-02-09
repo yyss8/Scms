@@ -11,7 +11,17 @@
         <div class="modal fade" id="quickPostField" tabindex="-1" role="dialog" aria-labelledby="quickPostFieldLabel">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
-                    <Post-Editor :submit='submit' :preLoads='editLoads'></Post-Editor>
+                    <Post-Editor :submit='submit' :preLoads='editLoads'>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" v-model='allowComments'/>允许评论
+                            </label>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <label>
+                                <input type="checkbox" v-model='allowSubComments'/>允许子评论
+                            </label>
+                        </div>
+                    </Post-Editor>
                 </div>
             </div>
         </div>
@@ -29,7 +39,9 @@
                     categoryList:this.$store.state.postCategories,
                     submit:this.submit,
                     cancel:this.cancel
-                }
+                },
+                allowComments:true,
+                allowSubComments:true
             }
         },
         components:{
@@ -37,11 +49,15 @@
         },
         methods:{
             submit(data,onResult){
+                const postData = Object.assign(data,{
+                    allowComments:this.allowComments,
+                    allowSubComments:this.allowSubComments
+                });
                 $.ajax({
                     url: `/post/`,
                     type:'POST',
                     contentType: "application/json",
-                    data: JSON.stringify(data),
+                    data: JSON.stringify(postData),
                     success: (result)=>{
                         if (result.status == "ok"){
                             onResult(result.content,"success");

@@ -8,8 +8,7 @@ routers.get('/:id',(req,res,next) => {
         req.article = result.data
         next();
     },err => {
-        req.article = err;
-        next();
+        res.redirect('/error');
     });
 });
 
@@ -18,7 +17,7 @@ routers.get('/:id/client',(req,res,next) => {
     postSrv.get_post_one(req.params.id,ip,result =>{
         res.send(result);
     },err => {
-        res.send(result);
+        res.redirect('/error');
     });
 });
 

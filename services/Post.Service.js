@@ -56,6 +56,29 @@ class PostService{
         }); 
     }
 
+    get_post_admin(pgNum,success,fail){
+        mongodb.connect(url,(err,db) =>{
+            const collection = db.collection(dbName);
+            collection.find({}).toArray((err,doc) => {
+                if (err){
+                    fail({status:"err",content:"出现错误"})
+                }else{
+                    const startNum = pgNum * 10 - 10 <= 0 ? 0:pgNum * 10 - 10;
+                    const data = {
+                        hasFst:pgNum - 1 >= 2 ? true:false,
+                        hasLast:pgNum - 1 >= 1 ? true:false,
+                        hasNxt:doc.length - pgNum * 10 > 1 ? true:false,
+                        hasLst:doc.length / 10 + 1 - pgNum >= 2 ? true:false,
+                        lastPg:Math.floor(doc.length / 10) + 1,
+                        currentArticles:doc.reverse().slice(startNum,startNum + 10)
+                    };
+                    success({status:"ok",content:"获得文章数据",result:data});
+                }
+                db.close();
+            });
+        });
+    }
+
     get_post_byCategories(cgNum,pgNum,success,fail){
         mongodb.connect(url,(err,db) =>{
             const settingCollection = db.collection(config.settingCollection);
@@ -85,128 +108,136 @@ class PostService{
     }
 
     get_post_byDate(date,pgNum,success,fail){
-        const startDate = new Date(`${date.replace(/-/g," ")} 00:00:00`).getTime()/1000; 
-        const startDateID = objectID(startDate);//转换日期id
-        const newDateID = objectID(startDate + 86400); //转换下一天id
-        mongodb.connect(url,(err,db) =>{
-            const collection = db.collection(dbName);
-            collection.find({_id:{$gte:startDateID,$lt:newDateID}}).toArray((err,doc) => {
-                if (err){
-                    fail({status:"err",content:"出现错误"})
-                }else{
-                    const startNum = pgNum * 5 - 5 <= 0 ? 0:pgNum * 5 - 5;
-                    const data = {
-                        date,
-                        hasFst:pgNum - 1 >= 2 ? true:false,
-                        hasLast:pgNum - 1 >= 1 ? true:false,
-                        hasNxt:doc.length - pgNum * 5 > 1 ? true:false,
-                        hasLst:doc.length / 5 + 1 - pgNum >= 2 ? true:false,
-                        lastPg:Math.floor(doc.length / 5) + 1,
-                        currentArticles:doc.reverse().slice(startNum,startNum + 5)
-                    };
-                    success({status:"ok",content:"获得文章数据",result:data});
-                }
-                db.close();
-            })
-        });
+        try {
+            const startDate = new Date(`${date.replace(/-/g," ")} 00:00:00`).getTime()/1000; 
+            const startDateID = objectID(startDate);//转换日期id
+            const newDateID = objectID(startDate + 86400); //转换下一天id
+            mongodb.connect(url,(err,db) =>{
+                const collection = db.collection(dbName);
+                collection.find({_id:{$gte:startDateID,$lt:newDateID}}).toArray((err,doc) => {
+                    if (err){
+                        fail({status:"err",content:"出现错误"})
+                    }else{
+                        const startNum = pgNum * 5 - 5 <= 0 ? 0:pgNum * 5 - 5;
+                        const data = {
+                            date,
+                            hasFst:pgNum - 1 >= 2 ? true:false,
+                            hasLast:pgNum - 1 >= 1 ? true:false,
+                            hasNxt:doc.length - pgNum * 5 > 1 ? true:false,
+                            hasLst:doc.length / 5 + 1 - pgNum >= 2 ? true:false,
+                            lastPg:Math.floor(doc.length / 5) + 1,
+                            currentArticles:doc.reverse().slice(startNum,startNum + 5)
+                        };
+                        success({status:"ok",content:"获得文章数据",result:data});
+                    }
+                    db.close();
+                })
+            });
+        }catch (err){
+            fail({status:"err",content:"出现错误"})
+        }
         
     }
 
     get_post_one(id,ip,successs,fail){
-        try {
+        
             let hasError = false;
             let data = {};
             mongodb.connect(url,(err,db) =>{
                 assert.equal(null, err);
                 const collection = db.collection(dbName);
-
-                collection.find({_id:{$gt:objectID(id)}},{limit:1,fields:{_id:1,title:1}}).toArray((err,doc) => {
-                    //获得下一篇文章
-                    if (err && !hasError){
-                        hasError = true;
-                        fail({status:"err",content:"出现错误"});
-                    }else{
-                        data.nxtArticle = doc.length == 0 ? "No Result" : doc[0]
-                    }
-                    if (Object.keys(data).length == 3){
-                        successs({status:"ok",content:"文章数据获得",data});
-                    }
-                })
-
-                collection.findOne({_id:objectID(id)}).then((doc,err) => {
-
-                    if (err){
-                        hasError = true;
-                        fail({status:"err",content:"出现错误"});
-                    }else{
-                        let article = doc;
-                        
-                        if ( doc.comments.length != 0 ){
-                            //检查ip是否已经点赞主评论
-
-                            let comments = []
-                            doc.comments.forEach(comment =>{
-                                const liked = comment.like.ip.findIndex(liked => liked == ip) !== -1 ? true:false;
-                                let newComment = {
-                                    _id:comment._id,
-                                    title:comment.title,
-                                    name:comment.name,
-                                    content:comment.content,
-                                    like:{
-                                        liked,
-                                        num:comment.like.num,
-                                    }
-                                };
-                                if ( Object.keys(comment.comments).length != 0 ){
-                                    let subComments = {};
-                                    for (let sub in comment.comments){
-                                        const subliked = comment.comments[sub].like.ip.findIndex(liked => liked == ip) !== -1 ? true:false;
-                                        subComments[sub] = {
-                                            title:comment.comments[sub].title,
-                                            name:comment.comments[sub].name,
-                                            content:comment.comments[sub].content,
-                                            like:{
-                                                liked:subliked,
-                                                num:comment.comments[sub].like.num,
-                                            }
-                                        };
-                                    }
-                                    newComment.comments = subComments;
-                                }
-                                comments.push(newComment);
-                            });
-                            article.comments = comments;
+                try {
+                    collection.find({_id:{$gt:objectID(id)}},{limit:1,fields:{_id:1,title:1}}).toArray((err,doc) => {
+                        //获得下一篇文章
+                        if (err && !hasError){
+                            hasError = true;
+                            fail({status:"err",content:"出现错误"});
+                        }else{
+                            data.nxtArticle = doc.length == 0 ? "No Result" : doc[0]
                         }
-                        data.article = article;
-                    }
+                        if (Object.keys(data).length == 3){
+                            successs({status:"ok",content:"文章数据获得",data});
+                        }
+                    });
 
-                    if (Object.keys(data).length == 3){
-                        successs({status:"ok",content:"文章数据获得",data});
-                    }
-                })
+                    collection.findOne({_id:objectID(id)}).then((doc,err) => {
 
-                collection.find({_id:{$lt:objectID(id)}},{limit:1,fields:{_id:1,title:1}}).sort({_id:-1}).toArray((err,doc) => {
-                    //获得上一篇文章
-                    if (err && !hasError){
+                        if (err){
+                            hasError = true;
+                            fail({status:"err",content:"出现错误"});
+                        }else{
+                            let article = doc;
+                            
+                            if ( doc.comments.length != 0 ){
+                                //检查ip是否已经点赞主评论
+
+                                let comments = []
+                                doc.comments.forEach(comment =>{
+                                    const liked = comment.like.ip.findIndex(liked => liked == ip) !== -1 ? true:false;
+                                    let newComment = {
+                                        _id:comment._id,
+                                        title:comment.title,
+                                        name:comment.name,
+                                        content:comment.content,
+                                        like:{
+                                            liked,
+                                            num:comment.like.num,
+                                        }
+                                    };
+                                    if ( Object.keys(comment.comments).length != 0 ){
+                                        let subComments = {};
+                                        for (let sub in comment.comments){
+                                            const subliked = comment.comments[sub].like.ip.findIndex(liked => liked == ip) !== -1 ? true:false;
+                                            subComments[sub] = {
+                                                title:comment.comments[sub].title,
+                                                name:comment.comments[sub].name,
+                                                content:comment.comments[sub].content,
+                                                like:{
+                                                    liked:subliked,
+                                                    num:comment.comments[sub].like.num,
+                                                }
+                                            };
+                                        }
+                                        newComment.comments = subComments;
+                                    }
+                                    comments.push(newComment);
+                                });
+                                article.comments = comments;
+                            }
+                            data.article = article;
+                        }
+
+                        if (Object.keys(data).length == 3){
+                            successs({status:"ok",content:"文章数据获得",data});
+                        }
+                    });
+
+                    collection.find({_id:{$lt:objectID(id)}},{limit:1,fields:{_id:1,title:1}}).sort({_id:-1}).toArray((err,doc) => {
+                        //获得上一篇文章
+                        if (err && !hasError){
+                            hasError = true;
+                            fail({status:"err",content:"出现错误"});
+                        }else{
+                            data.lstArticle = doc.length == 0 ? "No Result" : doc[0]
+                        }
+
+                        if (Object.keys(data).length == 3){
+                            successs({status:"ok",content:"文章数据获得",data});
+                        }
+                    });
+                } catch (e) {
+                    if (!hasError){
                         hasError = true;
-                        fail({status:"err",content:"出现错误"});
-                    }else{
-                        data.lstArticle = doc.length == 0 ? "No Result" : doc[0]
+                        fail({status:"err",content:"错误id"});
                     }
-
-                    if (Object.keys(data).length == 3){
-                        successs({status:"ok",content:"文章数据获得",data});
-                    }
-                })
-
+                }
             });
-        }catch(err){
-            fail({status:"err",content:"错误id"})
-        }
+
     }
 
     create_new_post(data,success,fail){
         data.comments = [];
+        data.click = 0;
         mongodb.connect(url,(err,db) =>{
             assert.equal(null,err);
             const collection = db.collection(dbName); 
@@ -225,7 +256,7 @@ class PostService{
             mongodb.connect(url,(err,db) =>{
                 assert.equal(null,err);
                 const collection = db.collection(dbName); 
-                collection.updateOne({_id:objectID(data.id)},{$set:{title:data.title,content:data.content,category:data.category}}).then((doc,err) =>{
+                collection.updateOne({_id:objectID(data.id)},{$set:{title:data.title,content:data.content,category:data.category,allowComments:data.allowComments,allowSubComments:data.allowSubComments}}).then((doc,err) =>{
                     if (err){
                         fail({status:"err",content:"出现错误"});
                     }else{

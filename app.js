@@ -28,7 +28,7 @@ app.use(session({
 
 app.use("/user",user);
 app.use("/post",post);
-app.use("/admin",admin)
+app.use("/admin",admin);
 app.use("*",preloads); //loading preload data
 app.use("/articles",articles);
 app.use("/categories",categories);

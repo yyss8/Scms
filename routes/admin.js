@@ -1,6 +1,8 @@
 const routers = require('express').Router();
 const services = require('../services/Setting.Service');
 const settingSrv = new services.SettingService();
+const postServices = require('../services/Post.Service');
+const postSrv = new postServices.PostService();
 
 routers.put('/gs',(req,res) => {
     settingSrv.update_general_setting(req.body,success =>{
@@ -26,6 +28,12 @@ routers.put('/nav/sidebar',(req,res) => {
     });
 });
 
-
+routers.get('/articles/pages/:pageNum/client',(req,res) => {
+    postSrv.get_post_admin(req.params.pageNum,result => {
+        res.status(200).send(result);
+    },err => {
+        res.status(404).send(err);
+    });
+});
 
 module.exports = routers;

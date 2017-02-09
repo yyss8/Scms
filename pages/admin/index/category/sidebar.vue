@@ -91,6 +91,38 @@
                             <input type="checkbox" v-model='SelfIntro.showIntros' /><br />
                             <textarea v-model='SelfIntro.intros' class='form-control' style='max-width:580px'></textarea>
                         </div>
+
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" v-model='SelfIntro.showQQ'>
+                                启用QQ二维码
+                            </label>&nbsp;&nbsp;&nbsp;
+                            <label>
+                                <input type="checkbox" v-model='SelfIntro.showWechat'>
+                                启用微信二维码
+                            </label>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                启用微博
+                                <input type="checkbox" v-model='SelfIntro.showWeibo'>
+                            </span>
+                            <input type="text" class="form-control" v-model='SelfIntro.weiboLink' placeholder="微博地址">
+                        </div><br />
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                启用 Facebook
+                                <input type="checkbox" v-model='SelfIntro.showFacebook'>
+                            </span>
+                            <input type="text" class="form-control" v-model='SelfIntro.facebookLink' placeholder="Facebook地址">
+                        </div><br />
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                启用 Linkedin
+                                <input type="checkbox" v-model='SelfIntro.showLinkedin'>
+                            </span>
+                            <input type="text" class="form-control" v-model='SelfIntro.linkedinLink' placeholder="Linkedin地址">
+                        </div><br />
                     </div>
 
                     <div v-if='modifyingName === "快捷按键"'>

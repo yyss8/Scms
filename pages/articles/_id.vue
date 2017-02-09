@@ -16,13 +16,23 @@
                         <div class='article-content' v-html='toHtml(article.content)'></div>
                     </div>
                     <div class='article-content' v-if='isEditing' style='padding:0'>
-                        <Edit-Post :preLoads='editLoads'></Edit-Post>
+                        <Edit-Post :preLoads='editLoads'>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" v-model='article.allowComments'/>允许评论
+                                </label>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <label>
+                                    <input type="checkbox" v-model='article.allowSubComments'/>允许子评论
+                                </label>
+                            </div>
+                        </Edit-Post>
                     </div><br />
                     <div class='article-btns'>
                         <div class='article-btns-right pull-right'>
-                            <a title='分享文章'><i class='fa fa-share' @click='shareArticle'></i></a>
-                            <span v-if='$store.state.isLogin'>&nbsp; &nbsp;&nbsp;<a title='修改文章'><i class='fa fa-edit' @click='editorModifty'></i></a></span>
-                            <span v-if='$store.state.isLogin'>&nbsp; &nbsp;&nbsp;<a title='删除文章'><i class='fa fa-trash' @click='deleteArticle(article._id)'></i></a></span>
+                            <span v-if='$store.state.isLogin'>&nbsp; &nbsp;&nbsp;<a class='article-btns-right-a' title='修改文章'><i class='fa fa-edit' @click='editorModifty'></i></a></span>
+                            <span v-if='$store.state.isLogin'>&nbsp; &nbsp;&nbsp;<a class='article-btns-right-a' title='删除文章'><i class='fa fa-trash' @click='deleteArticle(article._id)'></i></a></span>
+                            <span>&nbsp; &nbsp;&nbsp;<Share-View :id='article._id'></Share-View></span>
                         </div>
                     </div><br />
                     <Comments :comments='article.comments'></Comments>
@@ -49,6 +59,7 @@
     import Comments from "~components/minorcomponents/comments.vue";
     import EditPost from "~components/minorcomponents/posteditor.vue";
     import ConfirmView from "~components/minorcomponents/confirmview.vue";
+    import ShareView from "~components/minorcomponents/sharearticle.vue";
 
     export default {
         async data({store,route,req,redirect}){
@@ -64,10 +75,7 @@
                                 article:req.article.article,
                                 hasCategory:true,
                                 categoryList:store.state.postCategories
-                            },
-                            confirmTxt:"",
-                            confirmTitle:"",
-                            pendingAction:{},
+                            }
                         }
                 }else{
                     redirect('/');
@@ -83,10 +91,7 @@
                         article:data.article,
                         hasCategory:true,
                         categoryList:store.state.postCategories
-                    },
-                    confirmTxt:"",
-                    confirmTitle:"",
-                    pendingAction:{},
+                    }
                 }
             }
 
@@ -201,9 +206,6 @@
                 
                 return [date.getHours(),date.getMinutes(),date.getSeconds()].join(":")
             },
-            shareArticle(){
-
-            },
             deleteArticle(id){
                 this.$refs.confirmView.getAction("是否删除该文章?",function() {
                     $.ajax({
@@ -225,6 +227,8 @@
             editorSubmit(data,onResult) {
                 const postData = data;
                 postData.id = this.article._id;
+                postData.allowComments = this.article.allowComments;
+                postData.allowSubComments = this.article.allowSubComments;
 
                 $.ajax({
                     url: `/post/`,
@@ -240,16 +244,14 @@
                         }
                     }
                 });
-            },
-            sendAction(){
-                $.ajax(this.pendingAction);
             }
 
         },
         components:{
             Comments,
             EditPost,
-            ConfirmView
+            ConfirmView,
+            ShareView
         }
     }
 </script>

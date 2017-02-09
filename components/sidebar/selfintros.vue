@@ -19,22 +19,30 @@
                 </div>
             </div>
             <div class='self-intro-contact-btns'>
-                <span class='dropdown'>
+                <span class='dropdown' v-if='$store.state.sideBarComps.SelfIntro.showQQ'>
                     <a href='javascript:void(0)'><i class='fa fa-qq'></i></a>
                     <div class="dropdown-content dropdown-tdc">
                         <img src='~static/images/tdcimgs/qq.jpg'></img>
                     </div>
                 </span>
-                <span class='dropdown'>
+                <a v-else style='color:black'><i class='fa fa-qq'></i></a>
+
+                <span class='dropdown' v-if='$store.state.sideBarComps.SelfIntro.showWechat'>
                     <a href='javascript:void(0)'><i class='fa fa-weixin'></i></a>
                     <div class="dropdown-content dropdown-tdc">
                         <img src='~static/images/tdcimgs/weixin.jpg'></img>
                     </div>
                 </span>
+                <a v-else style='color:black'><i class='fa fa-weixin'></i></a>
                 
-                <a style='color:black'><i class='fa fa-weibo'></i></a>
-                <a href='https://www.facebook.com/yyss8'><i class='fa fa-facebook'></i></a>
-                <a href='https://www.linkedin.com/in/%E7%87%8A-%E9%99%88-489145134'><i class='fa fa-linkedin'></i></a>
+                <a v-if='$store.state.sideBarComps.SelfIntro.showWeibo' :href='$store.state.sideBarComps.SelfIntro.weiboLink'><i class='fa fa-weibo'></i></a>
+                <a v-else style='color:black'><i class='fa fa-weibo'></i></a>
+
+                <a v-if='$store.state.sideBarComps.SelfIntro.showFacebook' :href='$store.state.sideBarComps.SelfIntro.facebookLink'><i class='fa fa-facebook'></i></a>
+                <a v-else style='color:black'><i class='fa fa-facebook'></i></a>
+
+                <a v-if='$store.state.sideBarComps.SelfIntro.showLinkedin' :href='$store.state.sideBarComps.SelfIntro.linkedinLink'><i class='fa fa-linkedin'></i></a>
+                <a v-else style='color:black'><i class='fa fa-linkedin'></i></a>
             </div>
         </div>
     </div>

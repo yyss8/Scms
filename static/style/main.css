@@ -47,6 +47,10 @@ footer{
     width:70%;
 }
 
+.share-btns{
+    font-size:15px;
+}
+
 /* main content end */
 
 /* article filed start */
@@ -113,10 +117,9 @@ footer{
     padding-right:40px;
 }
 
-.article-btns-right a{
+.article-btns-right-a{
     cursor: pointer;
     font-size: 20px;
-    text-decoration: none;
 }
 
 .blog-content hr{

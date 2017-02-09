@@ -21,7 +21,6 @@
             sendMsg(txt,msgType){
                 this.resultMsg = txt;
                 this.dismissMsg(msgType);
-
             },
             dismissMsg(msgType){
                 clearTimeout(this.timeout);

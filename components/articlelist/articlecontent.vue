@@ -15,9 +15,9 @@
                         <span><i class='fa fa-calendar'></i>&nbsp; &nbsp;<a href='javascript:void(0)' :title='showTime(article._id)' @click='toDate(article._id)'>{{ showDate(article._id) }}</a></span><br />
                         <span><i class='fa fa-folder-open-o'></i>&nbsp; &nbsp;<a href='javascript:void(0)' @click='toCategories(article.category)'>{{ article.category }}</a></span>
                         <div class='article-btns-right pull-right'>
-                            <a><i class='fa fa-share' @click='shareArticle'></i></a>
-                            <span v-if='$store.state.isLogin'>&nbsp; &nbsp;&nbsp;<a title='修改文章'><i class='fa fa-edit' @click='modify(article)'></i></a></span>
-                            <span v-if='$store.state.isLogin' @click=''>&nbsp; &nbsp;&nbsp;<a title='删除文章'><i class='fa fa-trash' @click='deleteArticle(article._id)'></i></a></span>
+                            <span v-if='$store.state.isLogin'>&nbsp; &nbsp;&nbsp;<a class='article-btns-right-a' title='修改文章'><i class='fa fa-edit' @click='modify(article)'></i></a></span>
+                            <span v-if='$store.state.isLogin' @click=''>&nbsp; &nbsp;&nbsp;<a class='article-btns-right-a' title='删除文章'><i class='fa fa-trash' @click='deleteArticle(article._id)'></i></a></span>
+                            <span>&nbsp; &nbsp;&nbsp;<Share-View :id='article._id'></Share-View></span>
                         </div>
                     </div>
                 </div>
@@ -31,6 +31,7 @@
 
 <script>
 
+    import ShareView from "~components/minorcomponents/sharearticle.vue";
     import SwitchPage from "~components/articlelist/switchpage.vue";
     import ResultView from "~components/minorcomponents/resultview.vue";
     import ConfirmView from "~components/minorcomponents/confirmview.vue";
@@ -145,15 +146,15 @@
             },
             showTime(id){
                 const date = new Date(parseInt(id.toString().substring(0, 8), 16) * 1000);
-                
-                return [date.getHours(),date.getMinutes(),date.getSeconds()].join(":")
+                const hour = date.getHours().toString().length == 1 ? "0" + date.getHours():date.getHours().toString();
+                const min = date.getMinutes().toString().length == 1 ? "0" + date.getMinutes():date.getMinutes().toString();
+                const sec = date.getSeconds().toString().length == 1 ? "0" + date.getSeconds():date.getSeconds().toString();
+
+                return [hour,min,sec].join(":")
             },
             modify(article){
                 this.$store.commit('loadArticleDetail',article);
                 this.$router.push({path:`/articles/${article._id}`,query:{isediting:true}})
-            },
-            shareArticle(){
-
             },
             toCategories(cg){
                 this.$store.state.postCategories.forEach(category =>{
@@ -189,7 +190,8 @@
         components:{
             ResultView,
             SwitchPage,
-            ConfirmView
+            ConfirmView,
+            ShareView
         }
     }
 </script>

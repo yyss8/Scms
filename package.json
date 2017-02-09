@@ -1,12 +1,12 @@
 {
-  "name": "scblog",
+  "name": "scms",
   "version": "1.0.0",
-  "description": "blog for shen",
+  "description": "a cms based on vue-ssr",
   "main": "app.js",
   "scripts": {
     "dev": "node app.js",
     "build": "nuxt build",
-    "start": "NODE_ENV=production node app.js"
+    "start": "node app.js"
   },
   "keywords": [
     "blog"
@@ -21,8 +21,6 @@
     "express-session": "^1.15.0",
     "jquery": "^3.1.1",
     "mongodb": "^2.2.21",
-    "nuxt": "^0.9.6",
-    "serve-favicon": "^2.3.2",
-    "v-media-query": "^1.0.3"
+    "nuxt": "^0.9.6"
   }
 }
