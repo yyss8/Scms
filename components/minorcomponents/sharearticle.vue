@@ -1,5 +1,6 @@
 <template>
     <span>
+        &nbsp;&nbsp;&nbsp;
         <a><i class='fa fa-share' @click='shareArticle' style='font-size:20px;cursor:pointer'></i></a>
         <Modal-View ref='modalView'>
             <template scope='props'>

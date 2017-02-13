@@ -3,12 +3,19 @@
 </template>
 
 <script>
-    import MainContent from "../../components/articlecontent/articlecontent.vue";
+    import MainContent from "~components/articlelist/articlecontent.vue";
 
     export default {
-        data ({route}) {
+        async data ({store,req,params}) {
+            if (req){
+                //主页文章列表获取已存于store/index.js文件中
+            }else{
+                const { result } = await $.get(`/post/page/${params.pgNum}`);
+                store.commit('getArticleNum',result);
+            }
+
             return {
-                pgNum:route.params.pgNum === undefined ? 1:route.params.pgNum
+                pgNum:params.pgNum === undefined ? 1:params.pgNum,
             }
         },
         components:{

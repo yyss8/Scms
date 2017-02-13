@@ -9,10 +9,10 @@ routers.post('/login',(req,res,next) => {
                 req.session.auth = true;
                 req.session.user = req.body.username;
                 result['user'] = req.session.user;
-                res.send(result);
+                res.status(200).send(result);
              });
         }else{
-            res.send(result);
+            res.status(400).send(result);
             next();
         }
     });

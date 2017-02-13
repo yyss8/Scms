@@ -12,6 +12,7 @@
                     <p>{{confirmTxt}}</p>
                 </div>
                 <div class="modal-footer">
+                    <Result-View ref='resultView' style='float:left'></Result-View>
                     <button type="button" class="btn btn-primary" @click='sendAction'>确定</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
                 </div>
@@ -21,7 +22,11 @@
 </template>
 
 <script>
+
+    import ResultView from "./resultview.vue";
+
     export default {
+        
         data(){
             return {
                 confirmTxt:"",
@@ -37,7 +42,13 @@
             sendAction(){
                 this.pendingAction();
                 $("#confirmMsg").modal('toggle');
+            },
+            onResult(content,t){
+                this.$refs.resultView.sendMsg(content,t);
             }
+        },
+        components:{
+            ResultView
         }
     }
 </script>

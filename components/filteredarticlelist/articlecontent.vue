@@ -196,10 +196,10 @@
                         url: `/post/${id}/`,
                         type:'DELETE',
                         success: function(result) {
-                            if (result.status == "ok"){
-                                $("#confirmMsgField").modal('toggle');
-                                location.reload();
-                            }
+                            location.reload();
+                        },
+                        error:result => {
+                            alert(result.responseJSON.content);
                         }
                     });
                 });

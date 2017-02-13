@@ -62,13 +62,12 @@
                         contentType: "application/json",
                         data: JSON.stringify(loginData),
                         success: (result)=>{
-                            if (result.status == "ok"){
-                                this.$store.commit('login',result.user);
-                                $("#settingField").modal('hide');
-                            }else{
-                                this.hasError = true;
-                                this.result = result.content;
-                            }
+                            $("#settingField").modal("hide");
+                            this.$store.commit('login',result.user);
+                        },
+                        error:err =>{
+                            this.hasError = true;
+                            this.result = err.responseJSON.content;                           
                         }
                     });
                 }

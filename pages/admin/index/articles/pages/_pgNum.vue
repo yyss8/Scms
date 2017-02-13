@@ -151,13 +151,11 @@
                     contentType: "application/json",
                     data: JSON.stringify(postData),
                     success: (result)=>{
-                        if (result.status == "ok"){
-                            onResult(result.content,"success");
-                            location.reload();
-                        }else{
-                            this.$refs.modalView.toggle();
-                            this.$refs.resultView.sendMsg(result.content,"error");
-                        }
+                        location.reload();
+                    },
+                    error: err => {
+                        this.$refs.modalView.toggle();
+                        this.$refs.resultView.sendMsg(result.content,"error");                        
                     }
                 });
             },
@@ -172,11 +170,10 @@
                     data: JSON.stringify(postData),
                     success: (result)=>{
                         this.$refs.modalView.toggle();
-                        if (result.status == "ok"){
-                            this.$refs.resultView.sendMsg(result.content,"success");
-                        }else{
-                            this.$refs.resultView.sendMsg(result.content,"error");
-                        }
+                        this.$refs.resultView.sendMsg(result.content,"success");
+                    },
+                    error: err => {
+                        this.$refs.resultView.sendMsg(result.content,"error");
                     }
                 });
             },  
@@ -187,10 +184,11 @@
                         url: `/post/${id}/`,
                         type:'DELETE',
                         success: result => {
-                            if (result.status == "ok"){
-                                location.reload();
-                            }
-                        }                     
+                            location.reload();
+                        },
+                        error: err => {
+                            this.$refs.resultView.sendMsg(err.responseJSON.content,"error");
+                        }               
                     });
                 });
                 $("#confirmMsg").modal('toggle');

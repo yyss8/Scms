@@ -212,11 +212,12 @@
                         url: `/post/${id}/`,
                         type:'DELETE',
                         success: result => {
-                            if (result.status == "ok"){
-                                $("#confirmMsgField").modal('toggle');
-                                this.$router.push('/pages/1');
-                            }
-                        }                     
+                            $("#confirmMsgField").modal('toggle');
+                            this.$router.push('/pages/1');
+                        },
+                        error: err => {
+                            alert(err.responseJSON.content);
+                        }         
                     });
                 });
                 $("#confirmMsg").modal('toggle');
@@ -235,13 +236,11 @@
                     type:'PUT',
                     contentType: "application/json",
                     data: JSON.stringify(data),
-                    success: (result)=>{
-                        if (result.status == "ok"){
-                            onResult(result.content,"success");
-                            location.href = this.$route.path;
-                        }else{
-                            onResult(result.content,"error");
-                        }
+                    success: result => {
+                        location.href = this.$route.path;
+                    },
+                    error: err => {
+                        onResult(err.responseJSON.content,"error");
                     }
                 });
             }

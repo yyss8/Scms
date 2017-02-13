@@ -61,11 +61,10 @@
                     contentType: "application/json",
                     data: JSON.stringify(data),
                     success: (result)=>{
-                        if (result.status == "ok"){
-                            this.$refs.resultView.sendMsg(result.content,"success");
-                        }else{
-                            this.$refs.resultView.sendMsg(result.content,"error");
-                        }
+                        this.$refs.resultView.sendMsg(result.content,"success");
+                    },
+                    error: err => {
+                        this.$refs.resultView.sendMsg(err.responseJSON.content,"error");
                     }
                 });
             }

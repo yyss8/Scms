@@ -17,7 +17,7 @@
                         <div class='article-btns-right pull-right'>
                             <span v-if='$store.state.isLogin'>&nbsp; &nbsp;&nbsp;<a class='article-btns-right-a' title='修改文章'><i class='fa fa-edit' @click='modify(article)'></i></a></span>
                             <span v-if='$store.state.isLogin' @click=''>&nbsp; &nbsp;&nbsp;<a class='article-btns-right-a' title='删除文章'><i class='fa fa-trash' @click='deleteArticle(article._id)'></i></a></span>
-                            <span>&nbsp; &nbsp;&nbsp;<Share-View :id='article._id'></Share-View></span>
+                            <Share-View :id='article._id'></Share-View>
                         </div>
                     </div>
                 </div>
@@ -177,11 +177,11 @@
                         url: `/post/${id}/`,
                         type:'DELETE',
                         success: result => {
-                            if (result.status == "ok"){
-                                $("#confirmMsgField").modal('toggle');
-                                location.reload();
-                            }
-                        }                     
+                            location.reload();
+                        },
+                        error:result => {
+                            alert(result.responseJSON.content);
+                        }              
                     });
                 });
                 $("#confirmMsg").modal('toggle');

@@ -1,6 +1,8 @@
 <template>
     <div class='article-comment-field'>
-        <h4>评论</h4>
+        <div class='article-comment-title'>
+            <span class='h4'>评论</span>
+        </div>
         <div class='article-comments' v-for='(comment,index) in comments'>
             <div>
                 <a class='pull-right' @click='remove(comment._id)' v-if='$store.state.isLogin'><i class='fa fa-times'></i></a>
@@ -61,6 +63,7 @@
         </div>
         <div class='article-post'>
             <button class='btn btn-default' v-if='!hidePost' @click='hidePost = !hidePost'>发表评论</button>
+            <Result-View class='pull-right' ref='resultView'></Result-View>
             <Edit-Post v-show='hidePost' style='width:100%' :preLoads='editLoads'>
                 <input class='form-control' v-model='commentName' placeholder="输入昵称" style='margin-top:10px;'/>
             </Edit-Post>
@@ -71,6 +74,7 @@
 <script>
 
     import EditPost from "~components/minorcomponents/posteditor.vue";
+    import ResultView from "~components/minorcomponents/resultview.vue";
 
     export default {
         data(){
@@ -101,12 +105,10 @@
                     contentType: "application/json",
                     data: JSON.stringify(postData),
                     success: result => {
-                        if (result.status == "ok"){
-                            onResult(result.content,"success");
-                            location.reload();
-                        }else{
-                            onResult(result.content,"error");
-                        }
+                        location.reload();
+                    },
+                    error: err => {
+                        onResult(err.responseJSON.content,"error");
                     }
                 });
             },
@@ -120,11 +122,11 @@
                         url: `/post/${this.$route.params.id}/comments/${id}`,
                         type:'DELETE',
                         success: result => {
-                            if (result.status == "ok"){
-                                $("#confirmMsg").modal('toggle');
-                                location.reload();
-                            }
-                        }            
+                            location.reload();
+                        },
+                        error: err => {
+                            this.$parent.$refs.confirmView.onResult(err.responseJSON.content,"error");
+                        }      
                     });
                 });
                 $("#confirmMsg").modal('toggle');
@@ -135,11 +137,11 @@
                         url: `/post/${this.$route.params.id}/comments/${id}/subcomments/${subid}`,
                         type:'DELETE',
                         success: result => {
-                            if (result.status == "ok"){
-                                $("#confirmMsg").modal('toggle');
-                                location.reload();
-                            }
-                        }               
+                            location.reload();
+                        },
+                        error: err => {
+                            this.$parent.$refs.confirmView.onResult(err.responseJSON.content,"error");
+                        }              
                     });
                 });
                 $("#confirmMsg").modal('toggle');
@@ -156,12 +158,11 @@
                     type:'POST',
                     contentType: "application/json",
                     data: JSON.stringify(postData),
-                    success: (result)=>{
-                        if (result.status == "ok"){
-                            location.reload();
-                        }else{
-                            
-                        }
+                    success: result => {
+                        location.reload();
+                    },
+                    error: err =>{
+                        this.$refs.resultView.sendMsg(err.responseJSON.content,"error");
                     }
                 });
             },
@@ -174,16 +175,17 @@
                     type:'PUT',
                     contentType: "application/json",
                     success: (result)=>{
-                        if (result.status == "ok"){
-                            if (this.$parent.article.comments[index].like.liked){
-                                this.$parent.article.comments[index].like.num -= 1;
-                            }else{
-                                this.$parent.article.comments[index].like.num += 1;
-                            }
-                            this.$parent.article.comments[index].like.liked = !this.$parent.article.comments[index].like.liked;
+                        if (this.$parent.article.comments[index].like.liked){
+                            this.$refs.resultView.sendMsg("取消点赞成功","success");
+                            this.$parent.article.comments[index].like.num -= 1;
                         }else{
-                            
+                            this.$refs.resultView.sendMsg("点赞成功","success");
+                            this.$parent.article.comments[index].like.num += 1;
                         }
+                        this.$parent.article.comments[index].like.liked = !this.$parent.article.comments[index].like.liked;
+                    },
+                    error: err =>{
+                        this.$refs.resultView.sendMsg(err.responseJSON.content,"error");
                     }
                 });
             },
@@ -193,22 +195,22 @@
                     type:'PUT',
                     contentType: "application/json",
                     success: (result)=>{
-                        if (result.status == "ok"){
-                            if (this.$parent.article.comments[index].comments[subcommentid].like.liked){
-                                this.$parent.article.comments[index].comments[subcommentid].like.num -= 1;
-                            }else{
-                                this.$parent.article.comments[index].comments[subcommentid].like.num += 1;
-                            }
-                            this.$parent.article.comments[index].comments[subcommentid].like.liked = !this.$parent.article.comments[index].comments[subcommentid].like.liked;
+                        if (this.$parent.article.comments[index].comments[subcommentid].like.liked){
+                            this.$parent.article.comments[index].comments[subcommentid].like.num -= 1;
                         }else{
-                            
+                            this.$parent.article.comments[index].comments[subcommentid].like.num += 1;
                         }
+                        this.$parent.article.comments[index].comments[subcommentid].like.liked = !this.$parent.article.comments[index].comments[subcommentid].like.liked;
+                    },
+                    error: err => {
+                        this.$refs.resultView.sendMsg(err.responseJSON.content,"error");
                     }
                 });
             }
         },
         components:{
-            EditPost
+            EditPost,
+            ResultView
         }
     }
 </script>
