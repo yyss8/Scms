@@ -12,6 +12,10 @@ Back-end: Nuxtjs/Express
 
 Database:Mongodb
 
+##02/13/17 Updates:
+1. articles/categories/general control panel features finished.
+2. article search feature finished.
+
 ##02/07/17 Updates:
 1. Comment feature added.
 2. Admin pages initiated.
