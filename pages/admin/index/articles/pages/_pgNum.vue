@@ -7,17 +7,19 @@
                     <th>文章日期</th>
                     <th>文章分类</th>
                     <th class='text-center'>点击数</th>
+                    <th class='text-center'>评论数</th>
                     <th></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for='(article,index) in articles.currentArticles'>
-                    <th><a href='javascript:void(0)' @click='modify(article._id)'>{{shortTitle(article.title)}}</a></th>
-                    <th>{{showDate(article._id)}}</th>
+                    <th><a href='javascript:void(0)' @click='modify(index)'>{{$scms.showShortTitle(article.title,20)}}</a></th>
+                    <th>{{$scms.showDate(article._id)}} | {{$scms.showTime(article._id)}}</th>
                     <th>{{article.category}}</th>
                     <th class='text-center'>{{article.click}}</th>
-                    <th class='text-center'><a href='javascript:void(0)'  @click='modify(index)'>编辑</a></th>
+                    <th class='text-center'><a href='javascript:void(0)' @click='modify(index,"comments")'>{{ $scms.showCommentNumber(article.comments) }}</a></th>
+                    <th class='text-center'><a href='javascript:void(0)'  @click='modify(index,"article")'>编辑</a></th>
                     <th class='text-center'><a href='javascript:void(0)'  @click='deleteArticle(index)'>删除</a></th>
                 </tr>
             </tbody>
@@ -33,7 +35,15 @@
         </div><br />
         <Modal-View ref='modalView'>
             <div class='scms-modal-body'>
-                <Edit-Post :preLoads='editLoads'>
+                <ul class="nav nav-tabs">
+                    <li :class='{active:showArticle}'>
+                        <a href='javascript:void(0)' @click='enableArticle'>文章内容</a>
+                    </li>
+                    <li :class='{active:showComments}'>
+                        <a href='javascript:void(0)' @click='enableComments' v-if='this.editLoads.article !== undefined'>评论</a>
+                    </li>
+                </ul>
+                <Edit-Post :preLoads='editLoads' v-if='showArticle'>
                     <div class="checkbox">
                         <label>
                             <input type="checkbox" v-model='modifyingArticle.allowComments'/>允许评论
@@ -44,6 +54,82 @@
                         </label>
                     </div>
                 </Edit-Post>
+                <div v-if='showComments'>
+                    <div class='container-fluid'>
+                        <table class='table table-striped'>
+                            <thead>
+                                <tr>
+                                    <th>标题</th>
+                                    <th class='text-center'>内容</th>
+                                    <th class='text-center'>点赞数</th>
+                                    <th class='text-center'>子评论</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for='(comment,index) in modifyingArticleComments.comments'>
+                                    <th>{{ $scms.showShortTitle(comment.title,5) }}</th>
+                                    <th class='text-center'>
+                                        <div class="dropdown">
+                                            <a href='javascript:void(0)' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class='fa fa-info-circle'></i></a>
+                                            <div class='dropdown-menu'>
+                                                <div class='container-fluid'>
+                                                    <div v-html='$scms.toFullHtml(comment.content)'></div>
+                                                </div>
+                                            </div>
+                                        </div>     
+                                    </th>
+                                    <th class='text-center'>{{ comment.like.num }}</th>
+                                    <th class='text-center'>
+                                        <div class="dropdown">
+                                            <a href='javascript:void(0)' @click='openSub(index)'>{{ Object.keys(comment.comments).length }}</a>
+                                            <div class='dropdown-menu' style='width:400px;' :id='"comment" + index.toString()'>
+                                                <div class="modal-header">
+                                                    <span>子评论</span>
+                                                    <button type="button" class="close" @click='closeSub(index)'>
+                                                        <span>&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <table class='table table-striped'>
+                                                        <thead>
+                                                            <tr>
+                                                                <th class='text-center'>内容</th>
+                                                                <th class='text-center'>点赞数</th>
+                                                                <th></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr v-for='(sub,subid) in comment.comments'>
+                                                                <th class='text-center'>
+                                                                    <div class="dropdown">
+                                                                        <a href='javascript:void(0)' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class='fa fa-info-circle'></i></a>
+                                                                        <div class='dropdown-menu'>
+                                                                            <div class='container-fluid'>
+                                                                                <div v-html='$scms.toFullHtml(sub.content)'></div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>     
+                                                                </th>
+                                                                <th class='text-center'>{{ sub.like.num }}</th>
+                                                                <th class='text-center'><a href='javascript:void(0)' @click='deleteSubComment(comment._id,subid)'>删除</a></th>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-primary" @click='closeSub(index)'>确定</button>
+                                                </div>
+                                            </div>
+                                        </div> 
+                                        
+                                    </th>
+                                    <th class='text-center'><a href='javascript:void(0)' @click='deleteComment(comment._id)'>删除</a></th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </Modal-View>
         <div class='admin-category-controls'>
@@ -77,7 +163,12 @@
                     modifyingArticle:{
                         allowComments:true,
                         allowSubComments:true
-                    }
+                    },
+                    modifyingArticleComments:{
+                        comments:[]
+                    },
+                    showArticle:true,
+                    showComments:false
                 }
             }else{
                 const {result} = await $.get(`/admin/articles/pages/${route.params.pgNum}/client`);
@@ -87,7 +178,12 @@
                         hasCategory:true,
                         categoryList:store.state.postCategories
                     },
-                    modifyingArticle:{}
+                    modifyingArticle:{},
+                    modifyingArticleComments:{
+                        comments:[]
+                    },
+                    showArticle:true,
+                    showComments:false
                 }
             }
         },
@@ -96,33 +192,34 @@
             this.editLoads.cancel = this.cancel;
         },
         methods:{
-            shortTitle(title){
-                if (title.length > 20){
-                    return title.substring(0,20) + " ...."
-                }
-                return title
+            enableArticle(){
+                this.showArticle = true;
+                this.showComments = false;
             },
-            showDate(id){
-                const date = new Date(parseInt(id.toString().substring(0, 8), 16) * 1000);
-                const day = date.getDate().toString().length == 1 ? "0" + date.getDate().toString():date.getDate().toString();
-                const month = (Number(date.getMonth()) + 1).toString().length == 1 ? "0" + (Number(date.getMonth()) + 1):(Number(date.getMonth()) + 1).toString();
-                const year = date.getFullYear().toString().length == 1 ? "0" + date.getFullYear().toString():date.getFullYear().toString();
-                const d = [year,month,day].join('/');
-
-                const hour = date.getHours().toString().length == 1 ? "0" + date.getHours():date.getHours().toString();
-                const min = date.getMinutes().toString().length == 1 ? "0" + date.getMinutes():date.getMinutes().toString();
-                const sec = date.getSeconds().toString().length == 1 ? "0" + date.getSeconds():date.getSeconds().toString();
-                const time = [date.getHours(),date.getMinutes(),date.getSeconds()].join(":");
-                
-                return `${d} | ${time}`
+            enableComments(index){
+                this.modifyingArticleComments = {
+                    comments:this.editLoads.article.comments
+                };
+                this.showArticle = false;
+                this.showComments = true;                
             },
-            modify(index){
+            modify(index,modifyType){
                 this.$refs.modalView.toggle();
                 this.editLoads.article = this.articles.currentArticles[index];
-                this.modifyingArticle = {
-                    id:this.articles.currentArticles[index]._id,
-                    allowComments:this.articles.currentArticles[index].allowComments,
-                    allowSubComments:this.articles.currentArticles[index].allowSubComments
+                if (modifyType == "comments"){
+                    this.showArticle = false;
+                    this.showComments = true;
+                    this.modifyingArticleComments = {
+                        comments:this.articles.currentArticles[index].comments
+                    }
+                }else{
+                    //修改文章内容
+                    this.showArticle = true;
+                    this.modifyingArticle = {
+                        id:this.articles.currentArticles[index]._id,
+                        allowComments:this.articles.currentArticles[index].allowComments,
+                        allowSubComments:this.articles.currentArticles[index].allowSubComments
+                    }
                 }
             },
             cancel(){
@@ -139,6 +236,8 @@
                     allowComments:true,
                     allowSubComments:true
                 }
+                this.showArticle = true;
+                this.showComments = false;
                 this.$refs.modalView.toggle();
 
             },
@@ -178,6 +277,7 @@
                 });
             },  
             deleteArticle(index){
+                const sendMsg = this.$refs.resultView.sendMsg;
                 const id = this.articles.currentArticles[index]._id;
                 this.$refs.confirmView.getAction("是否删除该文章?",function() {
                     $.ajax({
@@ -187,11 +287,51 @@
                             location.reload();
                         },
                         error: err => {
-                            this.$refs.resultView.sendMsg(err.responseJSON.content,"error");
+                            sendMsg(err.responseJSON.content,"error");
                         }               
                     });
                 });
                 $("#confirmMsg").modal('toggle');
+            },
+            deleteComment(id){
+                const sendMsg = this.$refs.resultView.sendMsg;
+                const _id = this.editLoads.article._id;
+                this.$refs.confirmView.getAction("是否删除该评论？",function() {
+                    $.ajax({
+                        url: `/post/${_id}/comments/${id}`,
+                        type:'DELETE',
+                        success: result => {
+                            location.reload();
+                        },
+                        error: err => {
+                            sendMsg(err.responseJSON.content,"error");
+                        }      
+                    });
+                });
+                $("#confirmMsg").modal('toggle');
+            },
+            deleteSubComment(id,subid){
+                const sendMsg = this.$refs.resultView.sendMsg;
+                const _id = this.editLoads.article._id;
+                this.$refs.confirmView.getAction("是否删除子评论？",function() {
+                    $.ajax({
+                        url: `/post/${_id}/comments/${id}/subcomments/${subid}`,
+                        type:'DELETE',
+                        success: result => {
+                            location.reload();
+                        },
+                        error: err => {
+                            sendMsg(err.responseJSON.content,"error");
+                        }              
+                    });
+                });
+                $("#confirmMsg").modal('toggle');
+            },
+            openSub(index){
+                $(`#comment${index}`).show();
+            },
+            closeSub(index){
+                $(`#comment${index}`).hide();
             }
         },
         components:{

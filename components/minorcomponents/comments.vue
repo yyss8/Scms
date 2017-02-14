@@ -12,12 +12,12 @@
                 <a href='#'>{{comment.name}}</a>
                 发表于:&nbsp;&nbsp;
                 <i class='fa fa-calendar'></i>
-                &nbsp;{{$parent.showDate(comment._id)}}&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;{{$scms.showDate(comment._id)}}&nbsp;&nbsp;&nbsp;&nbsp;
                 <i class='fa fa-clock-o'></i>
-                &nbsp;{{$parent.showTime(comment._id)}}&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;{{$scms.showTime(comment._id)}}&nbsp;&nbsp;&nbsp;&nbsp;
                 <a href='javascript:void(0)' @click='like(comment._id,index)'><i class='fa fa-thumbs-o-up'></i>[{{comment.like.num}}]</a>
             </h6>
-            <div class='article-comment-content' v-html='$parent.toHtml(comment.content)'></div>
+            <div class='article-comment-content' v-html='$scms.toFullHtml(comment.content)'></div>
             <div>
                 <button class='btn btn-default btn-sm' @click='like(comment._id,index)'>{{ !comment.like.liked ? "点赞":"取消点赞"}}</button>&nbsp;&nbsp;
                 <span class="dropdown">
@@ -50,8 +50,8 @@
                         <a href='#'>{{sub.name}}</a>
                         发表于:&nbsp;&nbsp;
                         <i class='fa fa-calendar'></i>
-                        &nbsp;{{$parent.showDate(subid)}}&nbsp;&nbsp;&nbsp;&nbsp;
-                        <i class='fa fa-clock-o'></i>&nbsp;{{$parent.showTime(subid)}}&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;{{$scms.showDate(subid)}}&nbsp;&nbsp;&nbsp;&nbsp;
+                        <i class='fa fa-clock-o'></i>&nbsp;{{$scms.showTime(subid)}}&nbsp;&nbsp;&nbsp;&nbsp;
                         <a href='javascript:void(0)' @click='replyLike(comment._id,index,subid)'><i class='fa fa-thumbs-o-up'></i>[{{sub.like.num}}]</a>
                     </h6>
                     <div class='article-comment-content'>{{sub.content}}</div>
@@ -116,7 +116,6 @@
                 this.hidePost = !this.hidePost;
             },
             remove(id){
-
                 this.$parent.$refs.confirmView.getAction("是否删除该评论？",function() {
                     $.ajax({
                         url: `/post/${this.$route.params.id}/comments/${id}`,
@@ -130,6 +129,19 @@
                     });
                 });
                 $("#confirmMsg").modal('toggle');
+            },
+            showDate(id){
+                const date = new Date(parseInt(id.toString().substring(0, 8), 16) * 1000);
+                const day = date.getDate().toString().length == 1 ? "0" + date.getDate().toString():date.getDate().toString();
+                const month = (Number(date.getMonth()) + 1).toString().length == 1 ? "0" + (Number(date.getMonth()) + 1):(Number(date.getMonth()) + 1).toString();
+                const year = date.getFullYear().toString().length == 1 ? "0" + date.getFullYear().toString():date.getFullYear().toString();
+
+                return [year,month,day].join('/')
+            },
+            showTime(id){
+                const date = new Date(parseInt(id.toString().substring(0, 8), 16) * 1000);
+                
+                return [date.getHours(),date.getMinutes(),date.getSeconds()].join(":")
             },
             removeSub(id,subid){
                 this.$parent.$refs.confirmView.getAction("是否删除子评论？",function() {

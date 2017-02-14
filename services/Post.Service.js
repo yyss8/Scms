@@ -139,6 +139,33 @@ class PostService{
         
     }
 
+    get_post_byKyWrds(kyWrds,pgNum,success,fail){
+        let keywords = kyWrds.split("+");
+        for (let i = 0;i<keywords.length;i++){
+            keywords[i] = new RegExp(keywords[i],"gi");
+        }
+        mongodb.connect(url,(err,db) =>{
+            const collection = db.collection(dbName);
+            collection.find({$or:[{content:{$all:keywords}},{title:{$all:keywords}}]}).toArray((err,doc) => {
+                if (err){
+                    fail({status:"err",content:"出现错误"})
+                }else{
+                    const startNum = pgNum * 5 - 5 <= 0 ? 0:pgNum * 5 - 5;
+                    const data = {
+                        hasFst:pgNum - 1 >= 2 ? true:false,
+                        hasLast:pgNum - 1 >= 1 ? true:false,
+                        hasNxt:doc.length - pgNum * 5 > 1 ? true:false,
+                        hasLst:doc.length / 5 + 1 - pgNum >= 2 ? true:false,
+                        lastPg:Math.floor(doc.length / 5) + 1,
+                        currentArticles:doc.reverse().slice(startNum,startNum + 5)
+                    };
+                    success({status:"ok",content:"获得搜索数据",result:data});
+                }
+                db.close();
+            })
+        });
+    }
+
     get_post_one(id,ip,successs,fail){
         
             let hasError = false;
@@ -160,19 +187,18 @@ class PostService{
                         }
                     });
 
-                    collection.findOne({_id:objectID(id)}).then((doc,err) => {
-
+                    collection.findAndModify({_id:objectID(id)},[],{$inc:{click:1}},{ new: true },(err,doc) => {
                         if (err){
                             hasError = true;
                             fail({status:"err",content:"出现错误"});
                         }else{
-                            let article = doc;
+                            let article = doc.value;
                             
-                            if ( doc.comments.length != 0 ){
+                            if ( doc.value.comments.length != 0 ){
                                 //检查ip是否已经点赞主评论
 
                                 let comments = []
-                                doc.comments.forEach(comment =>{
+                                doc.value.comments.forEach(comment =>{
                                     const liked = comment.like.ip.findIndex(liked => liked == ip) !== -1 ? true:false;
                                     let newComment = {
                                         _id:comment._id,
@@ -206,7 +232,6 @@ class PostService{
                             }
                             data.article = article;
                         }
-
                         if (Object.keys(data).length == 3){
                             successs({status:"ok",content:"文章数据获得",data});
                         }

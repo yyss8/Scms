@@ -7,7 +7,8 @@ module.exports = {
             new webpack.ProvidePlugin({
                 jQuery: 'jquery',
                 $: 'jquery',
-                jquery: 'jquery'
+                jquery: 'jquery',
+                $sg:"~plugins/scms-global.js"
             })
         ]
     },
@@ -19,7 +20,8 @@ module.exports = {
             { rel: 'icon', type:'image/png', href:'/images/favicon.png'}
         ]
     },
+    plugins: ['~plugins/scms-global'],
     store: true,
     cache: true,
-    dev: (process.env.NODE_ENV !== 'production')
+    dev: (process.env.NODE_ENV !== 'production'),
 }

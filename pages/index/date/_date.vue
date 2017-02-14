@@ -9,7 +9,7 @@
             }
             if (route.params.date !== undefined){
                 if (route.params.pgNum === undefined){
-                    redirect(`date/${route.params.date}/pages/1`);
+                    redirect(`/date/${route.params.date}/pages/1`);
                 }
             }else{
                 redirect(`/pages/1`);

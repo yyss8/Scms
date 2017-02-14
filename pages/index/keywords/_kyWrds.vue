@@ -5,11 +5,9 @@
 <script>
     export default {
         fetch({redirect,route,store,req}){
-            if (req){
-            }
-            if (route.params.cgNum !== undefined){
+            if (route.params.kyWrds !== undefined){
                 if (route.params.pgNum === undefined){
-                    redirect(`/categories/${route.params.cgNum}/pages/1`);
+                    redirect(`/keywords/${route.params.kyWrds}/pages/1`);
                 }
             }else{
                 redirect(`/pages/1`);

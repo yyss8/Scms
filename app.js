@@ -13,6 +13,7 @@ const post = require('./routes/post');
 const articles = require('./routes/articles');
 const categories = require('./routes/categories');
 const date = require("./routes/date");
+const search = require('./routes/search');
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use("*",preloads); //loading preload data
 app.use("/articles",articles);
 app.use("/categories",categories);
 app.use("/date",date);
+app.use("/keywords",search);
 app.use(nuxt.render);
 
 if (nuxtConfig.dev) {
