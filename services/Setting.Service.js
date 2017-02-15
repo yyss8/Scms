@@ -76,6 +76,20 @@ class SettingService{
         });
     }
 
+    update_user_general(data,success,fail){
+        mongodb.connect(url,(err,db) =>{
+            assert.equal(null,err);
+            let collection = db.collection(dbName); 
+            collection.updateOne({_id:1},{$set:{usersControl:data}}).then((doc,err) =>{
+                if (err){
+                    fail({status:"err",content:"出现错误",result:err});
+                }else{
+                    success({status:"ok",content:"用户基础更新成功"});
+                }
+            });
+        });     
+    }
+
 }
 
 

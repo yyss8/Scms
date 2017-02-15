@@ -3,6 +3,8 @@ const services = require('../services/Setting.Service');
 const postservices = require('../services/Post.Service');
 const settingSrv = new services.SettingService();
 const postSrv = new postservices.PostService();
+const userServices = require('../services/User.Service');
+const usrSrv = new userServices.UserService();
 
 
 routers.get('/',(req,res,next) => {
@@ -33,6 +35,23 @@ routers.get('/',(req,res,next) => {
         },err =>{
             //on error
             req.preLoad.articles = err;
+            next();
+        });
+    }else{
+        next();
+    }
+});
+
+routers.get('/',(req,res,next) => {
+    if (req.originalUrl.includes("/admin/users/profile/id/")){
+        const id = req.originalUrl.replace("/admin/users/profile/id/","");
+        usrSrv.get_user_info_one(id,r => {
+            //on success
+            req.preLoad.user = r.result;
+            next(); 
+        },err =>{
+            //on error
+            req.preLoad.user = err;
             next();
         });
     }else{

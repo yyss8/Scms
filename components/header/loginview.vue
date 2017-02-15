@@ -63,7 +63,7 @@
                         data: JSON.stringify(loginData),
                         success: (result)=>{
                             $("#settingField").modal("hide");
-                            this.$store.commit('login',result.user);
+                            this.$store.commit('login',result.result);
                         },
                         error:err =>{
                             this.hasError = true;

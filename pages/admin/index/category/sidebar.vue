@@ -8,7 +8,7 @@
                 <th class='text-center'>导航可见</th>
                 <th class='text-center'>标题可见</th>
                 <th>标题名称</th>
-                <th class='text-center'>游客可见</th>
+                <th class='text-center'>游客不可见</th>
                 <th></th>
             </tr>
             </thead>
@@ -28,6 +28,14 @@
                     <th><input class='form-control' v-model='SelfIntro.title' style='margin-top:-3px;' /></th>
                     <th class='text-center'><input type='checkbox' v-model='SelfIntro.onlyAdmin' /></th>
                     <th class='text-center'><button class='btn btn-default' style='margin-top:-3px;' @click='modify("SelfIntro")'>编辑</button></th>
+                </tr>
+                <tr>
+                    <th>热门文章</th>
+                    <th class='text-center'><input type='checkbox' v-model='HotPosts.display' /></th>
+                    <th class='text-center'><input type='checkbox' v-model='HotPosts.showTitle' /></th>
+                    <th><input class='form-control' v-model='HotPosts.title' style='margin-top:-3px;' /></th>
+                    <th class='text-center'><input type='checkbox' v-model='HotPosts.onlyAdmin' /></th>
+                    <th class='text-center'><button class='btn btn-default' style='margin-top:-3px;' @click='modify("HotPosts")'>编辑</button></th>
                 </tr>
                 <tr>
                     <th>快捷按键</th>
@@ -153,6 +161,7 @@
                 SelfMotto:store.state.sideBarComps.SelfMotto,
                 SelfIntro:store.state.sideBarComps.SelfIntro,
                 QuickBtns:store.state.sideBarComps.QuickBtns,
+                HotPosts:store.state.sideBarComps.HotPosts,
                 modifyingName:"",
             }
         },
@@ -171,14 +180,16 @@
                 const data = {
                     SelfMotto:this.SelfMotto,
                     SelfIntro:this.SelfIntro,
-                    QuickBtns:this.QuickBtns
-                }
+                    QuickBtns:this.QuickBtns,
+                    HotPosts:this.HotPosts
+                };
                 $.ajax({
                     url: `/admin/nav/sidebar`,
                     type:"PUT",
                     contentType: "application/json",
                     data: JSON.stringify(data),
                     success: result => {
+                        this.$store.commit('updateSidebar',data);
                         this.$refs.resultView.sendMsg(result.content,"success");
                     },
                     error: err => {

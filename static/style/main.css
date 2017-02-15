@@ -78,6 +78,10 @@ footer{
 }
 
 .article-info span{
+    font-size:12px;
+}
+
+.article-info span{
     cursor: default;
     margin-right:20px;
 }
@@ -109,6 +113,10 @@ footer{
 
 .article-btns{
     padding-left:40px;
+}
+
+.article-btns span{
+    font-size:11px;
 }
 
 .article-btns-right{
@@ -285,9 +293,13 @@ footer{
 }
 
 .quick-setting-view{
+    padding-top:15px;
+    border-top:1px solid lightgray;
+}
+
+.quick-setting-view-btns{
+    float:right;
     position: relative;
-    margin:0 auto;
-    width:40%;
 }
 
 .loginview{
@@ -456,7 +468,7 @@ footer{
     position: fixed;
     height:90px;
     box-shadow: 0px 1px 3px #888888;
-    z-index:2;
+    z-index:1000;
     transition:width 0.5s;
 }
 
@@ -624,6 +636,19 @@ footer{
     padding:0;
 }
 
+.admin-control-buttons {
+    border-top:1px solid #ddd;
+}
+
+.admin-user-search-field {
+    margin-top:20px;
+    margin-bottom: 20px;
+}
+
+.admin-user-profile-field{
+    border-top:1px solid lightgray;
+}
+
 @media screen and (min-width: 991px){
     /* for desktop */
     .headerview{
@@ -754,9 +779,14 @@ footer{
         padding-left:40px;
     }
 
+    .article-btns span{
+        font-size: 9px;
+    }
+
     #admin-heading-right{
         display: none;
     }
+    
 
     .article-lastandnext{
         font-size:60%;

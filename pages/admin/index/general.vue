@@ -54,6 +54,7 @@
                     contentType: "application/json",
                     data: JSON.stringify(data),
                     success: (result)=>{
+                        this.$store.commit('updateGeneralSetting',data);
                         this.$refs.resultView.sendMsg(result.content,"success");
                     },
                     error: err => {

@@ -6,7 +6,7 @@
         <div class='col-md-7'>
             <ul class="nav navbar-nav pull-right" id='admin-heading-right'>
                 <li><a href='#'><img src='~static/images/scmslogo.png'></a></li>
-                <li><button class='btn btn-default btn-lg'><i class='fa  fa-user'></i>&nbsp; {{$store.state.user}} &nbsp;<span class="caret"></span></button></li>
+                <li><button class='btn btn-default btn-lg'><i class='fa  fa-user'></i>&nbsp; {{$store.state.user.username}} &nbsp;<span class="caret"></span></button></li>
                 <li><button class='btn btn-default' style='margin-top:28px;' onclick="window.location='/pages/1';"><i class='glyphicon glyphicon-home'></i></button></li>
                 <li>
                     <button class='btn btn-default' style='margin-top:28px;'>

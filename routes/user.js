@@ -7,8 +7,7 @@ routers.post('/login',(req,res,next) => {
         if (result.status == "ok"){
             req.session.regenerate(() => {
                 req.session.auth = true;
-                req.session.user = req.body.username;
-                result['user'] = req.session.user;
+                req.session.user = result.result;
                 res.status(200).send(result);
              });
         }else{
@@ -22,6 +21,27 @@ routers.get('/logout',(req,res,next) => {
     req.session.destroy(() => {
         res.redirect('../');
         next();
+    });
+});
+
+routers.get('/matched/:kyWrds',(req,res,next) => {
+    if (req.session){
+        userSrv.get_matched_users(req.params.kyWrds,result => {
+            res.status(200).send(result);
+        }, err => {
+            res.status(400).send(err);
+        });
+    }
+});
+
+routers.put('/:id',(req,res) => {
+    userSrv.update_user_info(req.body, result => {
+        req.session.user.email = req.body.email;
+        req.session.user.password = req.body.password;
+        res.status(200).send(result);
+    },
+    err => {
+        res.status(400).send(err);
     });
 });
 

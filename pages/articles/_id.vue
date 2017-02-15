@@ -12,6 +12,7 @@
                             <span><i class='fa fa-folder-open-o'></i>&nbsp;<a href='javascript:void(0)'>{{ article.category }}</a></span><br />
                             <span><i class='fa fa-calendar'></i>&nbsp; <a href='javascript:void(0)'>{{ $scms.showDate(article._id) }}</a></span><br />
                             <span><i class='fa fa-clock-o'></i>&nbsp;{{ $scms.showTime(article._id) }}</span>
+                            <span><i class='fa fa-eye'></i>&nbsp;{{ article.click }}</span>
                         </div>
                         <div class='article-content' v-html='$scms.toFullHtml(article.content)'></div>
                     </div>

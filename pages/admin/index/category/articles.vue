@@ -61,6 +61,7 @@
                     contentType: "application/json",
                     data: JSON.stringify(data),
                     success: (result)=>{
+                        this.$store.commit('updateCategories',this.categories);
                         this.$refs.resultView.sendMsg(result.content,"success");
                     },
                     error: err => {

@@ -1,8 +1,9 @@
 <template>
     <div class='sidebar'>
+        <Quick-Btns v-if='QuickBtns'></Quick-Btns>
         <Self-Motto v-if='SelfMotto'></Self-Motto>
         <Self-Intro v-if='SelfIntro'></Self-Intro>
-        <Quick-Btns v-if='QuickBtns'></Quick-Btns>
+        <Hot-Posts></Hot-Posts>
     </div>
 </template>
 
@@ -10,6 +11,7 @@
     import SelfIntro from "./selfintros.vue";
     import SelfMotto from "./selfmotto.vue";
     import QuickBtns from "./quickbtns.vue";
+    import HotPosts from "./hotarticles.vue";
 
     export default {
         computed:{
@@ -41,7 +43,8 @@
         components:{
             SelfIntro,
             SelfMotto,
-            QuickBtns
+            QuickBtns,
+            HotPosts
         }
     }
 </script>

@@ -8,48 +8,10 @@ const store = new Vuex.Store({
   state: {
     articleNum:0,
     articles:[],
-    user:"",
+    user:{},
     isLogin:false,
-    headerLink:[
-        {
-            name:"",
-            url:"",
-            hasSub:false,
-            subLinks:[
-                {
-                    name:"",
-                    url:""
-                }
-            ]
-        }
-    ],
-    sideBarComps : {
-        SelfMotto : {
-            display : false,
-            content : "",
-            title : "",
-            showTitle : false
-        },
-        SelfIntro : {
-            showName:false,
-            showTitle:false,
-            title:"个人介绍",
-            name:"",
-            display : false,
-            showEmail : false,
-            email : "",
-            showLocation : false,
-            location : "",
-            showIntros : false,
-            intros : ""
-        },
-        QuickBtns : {
-            display : false,
-            showTitle : false,
-            title:"",
-            quickPost : false
-        }
-    },
+    headerLink:[],
+    sideBarComps : {},
     blogTitle:"Blog",
     postCategories:[],
     screenWidth:0,
@@ -57,7 +19,8 @@ const store = new Vuex.Store({
     blogScnTitle:"A Scms Blog",
     blogDescription:"",
     blogKyWrds:"",
-    blogAuthor:""
+    blogAuthor:"",
+    usersControl:{}
   },
   mutations: {
       login (state,user) {
@@ -73,6 +36,7 @@ const store = new Vuex.Store({
           state.blogDescription = setting.descri;
           state.blogKyWrds = setting.keywords;
           state.blogAuthor = setting.author;
+          state.usersControl = setting.usersControl
       },
       getArticleNum (state,data){
           state.articleNum = data.num;
@@ -83,6 +47,29 @@ const store = new Vuex.Store({
       },
       loadArticleDetail (state,article){
           state.currentArticle = article;
+      },
+      updateGeneralSetting (state,settings){
+          state.blogTitle = settings.title;
+          state.blogScnTitle = settings.scnTitle;
+          state.blogDescription = settings.description;
+          state.blogKyWrds = settings.keywords;
+          state.blogAuthor = settings.author;
+      },
+      updateHeaderLinks (state,links){
+          state.headerLink = links;
+      },
+      updateSidebar (state,sidebars){
+          state.sideBarComps = sidebars;
+      },
+      updateCategories (state,cg) {
+          state.postCategories = cg;
+      },
+      updateUsersControl (state,setting){
+          state.usersControl = setting;
+      },
+      updateUserInfo(state,infos){
+          state.user.email = infos.email;
+          state.user.password = infos.password;
       }
   },
   actions:{
