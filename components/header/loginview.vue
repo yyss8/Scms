@@ -2,7 +2,7 @@
     <div class='row'>
         <br /><br /><br />
         <div class="loginview">
-            <div class='radio'>
+            <div class='radio' v-if='$store.state.usersControl.allowReg'>
                 <label><input type='radio' v-model='selectedForm' value='login'/>登录</label>&nbsp;
                 <label><input type='radio' v-model='selectedForm' value='signup'>注册</label>
             </div>
@@ -29,10 +29,10 @@
             </form>
             <br><b style='color:white'>Demo Account: ID:1 Pw:1</b>
             <p class="alert alert-danger" v-if='hasError' role="alert">
-                <i class="fa  fa-exclamation fa-fw" aria-hidden="true" :class="{hidden:resultAlert}"></i>
+                <i class="fa  fa-exclamation fa-fw"></i>
             {{ result }}</p>
             <p class="alert alert-success" v-if='hasMsg' role="alert">
-                <i class="fa  fa-check fa-fw" aria-hidden="true"></i>
+                <i class="fa  fa-check fa-fw"></i>
             {{ result }}</p>
         </div>
         <br /><br />
@@ -57,10 +57,10 @@
             login(){
                 if (this.username == ""){
                     this.hasError = true;
-                    this.result = "Enter Password";
+                    this.result = "请输入帐号";
                 }else if (this.password == ""){
                     this.hasError = true;
-                    this.result = "Enter Username";
+                    this.result = "请输入密码";
                 }else{
                     this.hasError = false;
                     this.result = "";
@@ -87,19 +87,19 @@
             signup(){
                 if (this.username == ""){
                     this.hasError = true;
-                    this.result = "请输入帐号0";
+                    this.result = "请输入帐号";
                 }else if (this.password == ""){
                     this.hasError = true;
                     this.result = "请输入密码";
-                }else if (this.email == ""){
+                }else if (this.email === "" || this.email.match(/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/) === null){
                     this.hasError = true;
-                    this.result = "请输入邮箱";
+                    this.result = "请输入正确邮箱";
                 }else{
                     this.hasError = false;
                     this.result = "";
                     const data = {
-                        username:this.username,
-                        password:this.password,
+                        username:this.username.trim(),
+                        password:this.password.trim(),
                         email:this.email,
                         usertype:2
                     };

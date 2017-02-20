@@ -36,7 +36,7 @@
         width:600px;
         min-height:150px;
         background-color:white;
-        z-index:1000;
+        z-index:1002;
         border-radius: 5px;
     }
 
@@ -48,7 +48,7 @@
         right:0;
         bottom: 0;
         opacity: 0.6;
-        z-index:4;
+        z-index:1001;
     }
     
     .scms-modal-header{

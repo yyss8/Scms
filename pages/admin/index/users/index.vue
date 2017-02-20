@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class='admin-users-general'>
         <br />
         <div class='container-fluid'>
             <div class="checkbox">
@@ -12,9 +12,37 @@
                             如果关闭用户注册将会在用户评论时允许用户自定义名称.
                             </span>
                         </div>
-                    </span>
+                    </span>&nbsp;&nbsp;
                 </label>
+                <button type="button" class="close" v-if='allowReg && !showRegSettings' @click='showRegSettings = !showRegSettings'>
+                    <i class='fa fa-gear'></i>
+                </button>
             </div><br />
+            <div class='admin-reg-settings' v-if='showRegSettings'>
+                <div class='container-fluid'>
+                    <div class='panel panel-info'>
+                        <div class="panel-heading">用户注册设置
+                            <button type="button" class="close" @click='showRegSettings = !showRegSettings'>
+                                <i class='fa fa-chevron-up'></i>
+                            </button>
+                        </div>
+                        <div class='panel-body'>
+                            <div class='form-group'>
+                                <label>IP每天可注册用户数:</label>
+                                <input class='form-control' v-model='serverUsersControl.regPerDay'/> 
+                            </div>
+                            <div class='form-group'>
+                                <label>禁止以下IP注册 (每行一个IP地址):</label>
+                                <textarea class='form-control' v-model='serverUsersControl.disallowedIP' rows='4'></textarea>
+                            </div>
+                            <div class='form-group'>
+                                <label>禁止以下用户名 (用","逗号隔离每一个关键词):</label>
+                                <textarea class='form-control' v-model='serverUsersControl.disallowedIP' rows='2'></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="checkbox">
                 <label>
                     <input type='checkbox'  v-model='allowNonUserViewArticle' />允许非用户浏览文章
@@ -61,8 +89,13 @@
         data({store}){
             return {
                 allowReg:store.state.usersControl.allowReg,
+                showRegSettings:store.state.usersControl.allowReg ? true:false,
                 allowNonUserViewArticle : store.state.usersControl.allowNonUserViewArticle,
-                allowNonUserComment : store.state.usersControl.allowNonUserComment
+                allowNonUserComment : store.state.usersControl.allowNonUserComment,
+                serverUsersControl:{
+                    regPerDay:1,
+                    disallowedIP:""
+                }
             }
         },
         methods:{

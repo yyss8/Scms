@@ -12,7 +12,6 @@ routers.post('/login',(req,res,next) => {
              });
         }else{
             res.status(400).send(result);
-            next();
         }
     });
 });
@@ -21,6 +20,20 @@ routers.get('/logout',(req,res,next) => {
     req.session.destroy(() => {
         res.redirect('../');
         next();
+    });
+});
+
+routers.post('/signup',(req,res,next) => {
+    userSrv.signup_user(req.body,result => {
+        if (result.status == "ok"){
+            req.session.regenerate(() => {
+                req.session.auth = true;
+                req.session.user = req.body;
+                res.status(200).send(result);
+             });
+        }
+    },error => {
+        res.status(400).send(error);
     });
 });
 

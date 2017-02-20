@@ -362,6 +362,43 @@ class PostService{
         }
     }
 
+    delete_comment_all(id,success,fail){
+        try {
+            mongodb.connect(url,(err,db) =>{
+                assert.equal(null,err);
+                const collection = db.collection(dbName); 
+                collection.updateOne({_id:objectID(id)},{$set:{comments:[]}}).then((doc,err) =>{
+                    if (err){
+                        fail({status:"err",content:"出现错误"});
+                    }else{
+                        success({status:"ok",content:"评论清空成功"});
+                    }
+                });
+            });
+        }catch (err){
+            fail({status:"err",content:"错误id"})
+        }
+    }
+
+    delete_sub_comment_all(id,commentid,success,fail){
+        try {
+            mongodb.connect(url,(err,db) =>{
+                assert.equal(null,err);
+                const collection = db.collection(dbName); 
+                collection.updateOne({_id:objectID(id),"comments.$._id":objectID(commentid)},{$set:{"comments.$.comments":[]}}).then((doc,err) =>{
+                    if (err){
+                        fail({status:"err",content:"出现错误"});
+                    }else{
+                        success({status:"ok",content:"子评论清空成功"});
+                    }
+                });
+            });
+        }catch (err){
+            fail({status:"err",content:"错误id"})
+        }
+    }
+
+
     delete_comment(id,commentId,success,fail){
         try {
             mongodb.connect(url,(err,db) =>{

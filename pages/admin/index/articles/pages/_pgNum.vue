@@ -81,7 +81,7 @@
                                     </th>
                                     <th class='text-center'>{{ comment.like.num }}</th>
                                     <th class='text-center'>
-                                        <div class="dropdown">
+                                        <div class="dropdown" v-if='Object.keys(comment.comments).length > 0'>
                                             <a href='javascript:void(0)' @click='openSub(index)'>{{ Object.keys(comment.comments).length }}</a>
                                             <div class='dropdown-menu' style='width:400px;' :id='"comment" + index.toString()'>
                                                 <div class="modal-header">
@@ -119,15 +119,19 @@
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-primary" @click='closeSub(index)'>确定</button>
+                                                    <button class='btn btn-danger' @click='clearSubComments(comment._id)'>清空子评论</button>
                                                 </div>
                                             </div>
                                         </div> 
-                                        
+                                        <span v-else>0</span>
                                     </th>
                                     <th class='text-center'><a href='javascript:void(0)' @click='deleteComment(comment._id)'>删除</a></th>
                                 </tr>
                             </tbody>
                         </table>
+                        <div class='pull-right'>
+                            <button class='btn btn-danger' @click='clearComments'>清空评论</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -296,7 +300,7 @@
             deleteComment(id){
                 const sendMsg = this.$refs.resultView.sendMsg;
                 const _id = this.editLoads.article._id;
-                this.$refs.confirmView.getAction("是否删除该评论？",function() {
+                this.$refs.confirmView.getAction("是否删除该评论？",() => {
                     $.ajax({
                         url: `/post/${_id}/comments/${id}`,
                         type:'DELETE',
@@ -313,7 +317,7 @@
             deleteSubComment(id,subid){
                 const sendMsg = this.$refs.resultView.sendMsg;
                 const _id = this.editLoads.article._id;
-                this.$refs.confirmView.getAction("是否删除子评论？",function() {
+                this.$refs.confirmView.getAction("是否删除子评论？", () => {
                     $.ajax({
                         url: `/post/${_id}/comments/${id}/subcomments/${subid}`,
                         type:'DELETE',
@@ -332,6 +336,40 @@
             },
             closeSub(index){
                 $(`#comment${index}`).hide();
+            },
+            clearSubComments(commentid){
+                const sendMsg = this.$refs.resultView.sendMsg;
+                const id = this.editLoads.article._id;
+                this.$refs.confirmView.getAction("是否清空该评论中的子评论?", () => {
+                    $.ajax({
+                        url: `/post/${id}/${commentid}/all/subcomments/`,
+                        type:'DELETE',
+                        success: result => {
+                            location.reload();
+                        },
+                        error: err => {
+                            sendMsg(err.responseJSON.content,"error");
+                        }              
+                    });
+                });
+                $("#confirmMsg").modal('toggle');
+            },
+            clearComments(){
+                const sendMsg = this.$refs.resultView.sendMsg;
+                const id = this.editLoads.article._id;
+                this.$refs.confirmView.getAction("是否清空该文章中的评论?", () => {
+                    $.ajax({
+                        url: `/post/${id}/all/comments/`,
+                        type:'DELETE',
+                        success: result => {
+                            location.reload();
+                        },
+                        error: err => {
+                            sendMsg(err.responseJSON.content,"error");
+                        }              
+                    });
+                });
+                $("#confirmMsg").modal('toggle');
             }
         },
         components:{

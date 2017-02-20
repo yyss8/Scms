@@ -649,6 +649,26 @@ footer{
     border-top:1px solid lightgray;
 }
 
+.admin-users-general .checkbox button{
+    float:none;
+    position: relative;
+    top:3px;
+}
+
+.admin-reg-settings .panel{
+    width:50%;
+    min-height:200px;
+    max-height:400px;
+}
+
+.admin-reg-settings .panel button{
+    margin-top:-3px;
+}
+
+.admin-reg-settings input, .admin-reg-settings textarea{
+    width:50%;
+}
+
 @media screen and (min-width: 991px){
     /* for desktop */
     .headerview{

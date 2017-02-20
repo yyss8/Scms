@@ -116,6 +116,20 @@ class UserService{
             error({status:"err",content:"错误用户ID",result:err});
         }
     }
+
+    signup_user(user,success,fail){
+        mongodb.connect(url,(err,db) =>{
+            assert.equal(null,err);
+            const collection = db.collection(dbName); 
+            collection.insertOne(user).then((doc,err) =>{
+                if (err){
+                    fail({status:"err",content:"出现错误"});
+                }else{
+                    success({status:"ok",content:"用户注册成功"});
+                }
+            });
+        });
+    }
 }
 
 module.exports = {UserService:UserService}

@@ -32,7 +32,18 @@
 
                             </div>
                             <div class="modal-body">
-                                <input class='form-control' placeholder="昵称" v-model='replyName' /><br />
+                                <div class='row'>
+                                    <div class='col-md-9'>
+                                        <input class='form-control' placeholder="昵称" v-model='replyName' :readonly='anonyReply'/>
+                                    </div>
+                                    <div class='col-md-3'>
+                                        <div class='checkbox' style='margin-top:5px;'>
+                                            <label>
+                                                <input type='checkbox' v-model='anonyReply'/>匿名发布
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div><br />
                                 <input class='form-control' placeholder="回复内容" v-model='replyContent' />
                             </div>
                             <div class="modal-footer">
@@ -65,7 +76,18 @@
             <button class='btn btn-default' v-if='!hidePost' @click='hidePost = !hidePost'>发表评论</button>
             <Result-View class='pull-right' ref='resultView'></Result-View>
             <Edit-Post v-show='hidePost' style='width:100%' :preLoads='editLoads'>
-                <input class='form-control' v-model='commentName' placeholder="输入昵称" style='margin-top:10px;'/>
+                <div class='row'>
+                    <div class='col-md-10'>
+                        <input class='form-control' v-model='commentName' placeholder="输入昵称" style='margin-top:10px;' :readonly='anonyReply'/>
+                    </div>
+                    <div class='col-md-2'>
+                        <div class='checkbox' style="position: relative;top:5px;">
+                            <label>
+                                <input type='checkbox' v-model='anonyReply'/>匿名发布
+                            </label>
+                        </div>
+                    </div>
+                </div>
             </Edit-Post>
         </div>
     </div>
@@ -87,7 +109,8 @@
                 },
                 commentName:"",
                 replyName:"",
-                replyContent:""
+                replyContent:"",
+                anonyReply:true
             }
         },
         props:[
@@ -95,22 +118,28 @@
         ],
         methods:{
             submit(data,onResult){
-                let postData = data;
-                postData.id = this.$route.params.id;
-                postData.name = this.commentName;
+                if (!this.anonyReply && this.commentName == ""){
+                    this.$refs.resultView.sendMsg("请输入回复名称或选择匿名回复.","error");
+                }else{
+                    const name = this.anonyReply ? "游客":this.commentName;
+                    let postData = data;
+                    postData.id = this.$route.params.id;
+                    postData.name = name;
 
-                $.ajax({
-                    url: `/post/${postData.id}/comments`,
-                    type:'POST',
-                    contentType: "application/json",
-                    data: JSON.stringify(postData),
-                    success: result => {
-                        location.reload();
-                    },
-                    error: err => {
-                        onResult(err.responseJSON.content,"error");
-                    }
-                });
+                    $.ajax({
+                        url: `/post/${postData.id}/comments`,
+                        type:'POST',
+                        contentType: "application/json",
+                        data: JSON.stringify(postData),
+                        success: result => {
+                            location.reload();
+                        },
+                        error: err => {
+                            onResult(err.responseJSON.content,"error");
+                        }
+                    });
+                }
+
             },
             cancel(){
                 this.hidePost = !this.hidePost;
@@ -159,24 +188,29 @@
                 $("#confirmMsg").modal('toggle');
             },
             reply(id){
-                const postData = {
-                    id,
-                    name:this.replyName,
-                    content:this.replyContent
-                }
-
-                $.ajax({
-                    url: `/post/${this.$route.params.id}/comments/${id}/`,
-                    type:'POST',
-                    contentType: "application/json",
-                    data: JSON.stringify(postData),
-                    success: result => {
-                        location.reload();
-                    },
-                    error: err =>{
-                        this.$refs.resultView.sendMsg(err.responseJSON.content,"error");
+                if (!this.anonyReply && this.replyName == ""){
+                    this.$refs.resultView.sendMsg("请输入回复名称或选择匿名回复.","error");
+                }else{
+                    const name = this.anonyReply ? "游客":this.replyName;
+                    const postData = {
+                        id,
+                        name,
+                        content:this.replyContent
                     }
-                });
+
+                    $.ajax({
+                        url: `/post/${this.$route.params.id}/comments/${id}/`,
+                        type:'POST',
+                        contentType: "application/json",
+                        data: JSON.stringify(postData),
+                        success: result => {
+                            location.reload();
+                        },
+                        error: err =>{
+                            this.$refs.resultView.sendMsg(err.responseJSON.content,"error");
+                        }
+                    });
+                }
             },
             toggleReply(index){
                 $(".dropdown-menu").eq(index).toggle();
