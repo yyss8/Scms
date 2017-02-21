@@ -25,14 +25,18 @@
         },
         methods:{
             search(){
-                const keywords = this.kyWrds.replace(" ","+");
-                this.$router.push(`/keywords/${keywords}/pages/1`);
+                if (this.kyWrds != ""){
+                    const keywords = this.kyWrds.replace(" ","+");
+                    this.$router.push(`/keywords/${keywords}/pages/1`);
+                }else{
+                    alert("请输入搜索关键字");
+                }
             },
             clear(){
                 this.kyWrds = "";
             }
         },
-        watch:{
+        watch:{ 
             kyWrds(){
                 if (this.kyWrds.length != 0){
                     this.removeBtn = true;

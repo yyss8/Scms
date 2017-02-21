@@ -342,7 +342,7 @@
                 const id = this.editLoads.article._id;
                 this.$refs.confirmView.getAction("是否清空该评论中的子评论?", () => {
                     $.ajax({
-                        url: `/post/${id}/${commentid}/all/subcomments/`,
+                        url: `/post/${id}/all/comments/${commentid}/subcomments/`,
                         type:'DELETE',
                         success: result => {
                             location.reload();

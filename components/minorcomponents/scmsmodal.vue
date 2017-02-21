@@ -4,7 +4,7 @@
 
         </div>
         <transition name="modal-fade">
-            <div class='scms-modal' v-if='on'>
+            <div class='scms-modal' v-if='on' :style='{width:modalWidth !== undefined && modalWidth != "" ? modalWidth:"600px"}'>
                 <slot :toggle='toggle'></slot>
             </div>
         </transition>
@@ -13,6 +13,9 @@
 
 <script>
     export default {
+        props:[
+            'modalWidth'
+        ],
         data(){
             return {
                 on:false
@@ -33,7 +36,6 @@
         top: 45%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width:600px;
         min-height:150px;
         background-color:white;
         z-index:1002;

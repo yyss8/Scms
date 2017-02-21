@@ -21,6 +21,7 @@
                                 <input type="checkbox" v-model='allowSubComments'/>允许子评论
                             </label>
                         </div>
+                        <Image-Upload></Image-Upload>
                     </Post-Editor>
                 </div>
             </div>
@@ -30,6 +31,7 @@
 
 <script>
     import PostEditor from "../minorcomponents/posteditor.vue";
+    import ImageUpload from "~components/minorcomponents/imageupload.vue";
 
     export default {
         data(){
@@ -45,7 +47,8 @@
             }
         },
         components:{
-            PostEditor
+            PostEditor,
+            ImageUpload
         },
         methods:{
             submit(data,onResult){

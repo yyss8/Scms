@@ -87,7 +87,6 @@ routers.put('/:id/comments/:commentid/subcomments/:subid/like',(req,res) => {
 });
 
 routers.delete('/:id/all/comments',(req,res) => {
-    console.log(req.params.id);
     postSrv.delete_comment_all(req.params.id,success =>{
         res.status(200).send(success);
     },err =>{
@@ -95,7 +94,7 @@ routers.delete('/:id/all/comments',(req,res) => {
     });
 });
 
-routers.delete('/:id/:commentid/subcomments',(req,res) => {
+routers.delete('/:id/all/comments/:commentid/subcomments',(req,res) => {
     postSrv.delete_sub_comment_all(req.params.id,req.params.commentid,success =>{
         res.status(200).send(success);
     },err =>{

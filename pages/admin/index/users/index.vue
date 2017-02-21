@@ -29,7 +29,7 @@
                         <div class='panel-body'>
                             <div class='form-group'>
                                 <label>IP每天可注册用户数:</label>
-                                <input class='form-control' v-model='serverUsersControl.regPerDay'/> 
+                                <input type='number' class='form-control' v-model='serverUsersControl.regPerDay'/> 
                             </div>
                             <div class='form-group'>
                                 <label>禁止以下IP注册 (每行一个IP地址):</label>

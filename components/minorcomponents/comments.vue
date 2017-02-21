@@ -73,6 +73,7 @@
             </div>
         </div>
         <div class='article-post'>
+            <br v-if='comments.length == 0' />
             <button class='btn btn-default' v-if='!hidePost' @click='hidePost = !hidePost'>发表评论</button>
             <Result-View class='pull-right' ref='resultView'></Result-View>
             <Edit-Post v-show='hidePost' style='width:100%' :preLoads='editLoads'>
