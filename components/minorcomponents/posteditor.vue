@@ -3,6 +3,7 @@
         <div v-if='isEditing'>
             <input placeholder="输入标题" class='form-control' v-model='postTitle'>
             <slot></slot>
+            <Image-Upload v-if='postCoverImg' :preload='coverUploadPreloads'></Image-Upload>
             <div class='post-content-editor-btns'>
                 <div class="dropdown" v-if='hasCategory'>
                     <button class="btn btn-default dropdown-toggle btn-sm" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -77,7 +78,7 @@
             </div>
             
             <textarea placeholder="输入内容" class='form-control' id='editorArea' v-model='postContent'></textarea>
-            
+            <Attachments :preload='previewImgs'></Attachments>
             <div class='post-btns'>
                 <span style='float:left'>
                     <Result-View ref='resultView'></Result-View>
@@ -101,6 +102,8 @@
 
     import ResultView from "./resultview.vue";
     import Preview from "./preview.vue";
+    import Attachments from "./postuploads.vue";
+    import ImageUpload from "~components/minorcomponents/imageupload.vue";
 
     export default {
         props:[
@@ -113,6 +116,16 @@
                 category:this.preLoads === undefined ? "文章分类":this.preLoads.article === undefined ? "文章分类":this.preLoads.article.category,
                 hasCategory:this.preLoads === undefined ? false:this.preLoads.hasCategory,
                 categoryList:this.preLoads === undefined ? []:this.preLoads.categoryList,
+                postCoverImg:true,
+                coverUploadPreloads:{
+                    getImg:this.getCoverImg,
+                    multiple:false,
+                    accepts:'image/*'
+                },
+                previewImgs:{
+                    existingImgs:[],
+                    newImgs:[]
+                },
                 optionContent:"",
                 selectionStart:0,
                 selectionEnd:0,
@@ -284,13 +297,15 @@
                 const editorArea = document.getElementById('editorArea');
                 return [editorArea.selectionStart, editorArea.selectionEnd];
             },
-            optionOnchange(e){
-                alert(e.target.value);
+            getCoverImg(img){
+                this.previewImgs.newImgs = img;
             }
         },
         components:{
             ResultView,
-            Preview
+            Preview,
+            ImageUpload,
+            Attachments
         }
     }
 

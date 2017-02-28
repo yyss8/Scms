@@ -1,10 +1,8 @@
 <template>
-    <div>
-        <div class='scms-modal-mask' @click='on = !on' v-if='on'>
-
-        </div>
+    <div v-if='on'>
+        <div class='scms-modal-mask' @click='on = !on'></div>
         <transition name="modal-fade">
-            <div class='scms-modal' v-if='on' :style='{width:modalWidth !== undefined && modalWidth != "" ? modalWidth:"600px"}'>
+            <div class='scms-modal' :style='{width:modalWidth !== undefined && modalWidth != "" ? modalWidth:"600px"}'>
                 <slot :toggle='toggle'></slot>
             </div>
         </transition>
