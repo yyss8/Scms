@@ -21,7 +21,7 @@
             <span class='quick-setting-view-btns'>
                 <button class='btn btn-default btn' @click='toAdmin' v-if='$store.state.user.usertype == 1'><i class='fa fa-gear'></i>&nbsp;管理</button>&nbsp;&nbsp;
                 <button class='btn btn-default btn' @click='save'><i class='fa fa-save'></i>&nbsp;保存</button>&nbsp;&nbsp;
-                <button class='btn btn-default btn' onclick="window.location='/user/logout';"><i class='fa fa-sign-out'></i>&nbsp;注销</buttuon>
+                <button class='btn btn-default btn' onclick="window.location='/user/logout'"><i class='fa fa-sign-out'></i>&nbsp;注销</button>
             </span>
         </div>
         <br /><br /><br />
