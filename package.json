@@ -1,8 +1,12 @@
 {
   "name": "scms",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "a cms based on nuxt",
   "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yyss8/scBlog.git"
+  },
   "scripts": {
     "dev": "node app.js",
     "build": "nuxt build",

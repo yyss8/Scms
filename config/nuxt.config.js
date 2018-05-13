@@ -17,7 +17,7 @@ module.exports = {
                 'process.env': {
                     NODE_ENV: `"${process.env.NODE_ENV}"`
                 },
-                APP_VR:packageJson.version
+                
             })
         ]
     },
@@ -34,5 +34,9 @@ module.exports = {
     },
     plugins: ['~plugins/scms-global'],
     cache: true,
-    dev: (process.env.NODE_ENV !== 'production')
+    dev: (process.env.NODE_ENV !== 'production'),
+    env:{
+        NODE_ENV: process.env.NODE_ENV,
+        APP_VR:packageJson.version
+    }
 }
