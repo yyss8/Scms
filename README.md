@@ -10,7 +10,7 @@ Demo: http://118.25.128.65:4422 国内要备案只能用IP :(
 
 1. git clone git://github.com/yyss8/scBlog ./scms
 2. npm install
-3. use mongodbimport or any kind of Mongodb tools to import data dumps files located in /dumps/scblog
+3. use Mongodb Compass or command line "mongodbimport" to import data dumps files located in /dumps/scblog
 4. mongodbimport Example: mongoimport --db scblog --collection collectionname --file yourdatafilepath
 5. modify variable "dataDB" located in /config/db.config.js to your mongodb server url
 6. run "npm run dev" or "npm start" in console and wait for Nuxtjs to finish building 

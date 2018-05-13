@@ -21,7 +21,7 @@ export const mutations = {
         state.user = user;
         state.isLogin = true;
     },
-    loadSetting (state,setting){
+    loadSetting (state, setting){
         state.headerLink = setting.headerLink;
         state.sideBarComps = setting.sideBarComps;
         state.blogTitle = setting.title;
