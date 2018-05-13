@@ -8,11 +8,11 @@ Demo: http://118.25.128.65:4422 国内要备案只能用IP :(
 
 ### Runtime Environment Tested: Nodejs@10.0/Npm@6.0.1
 
-1. git clone git://github.com/yyss8/scBlog ./scms
+1. git clone https://github.com/yyss8/scBlog.git
 2. npm install
 3. use Mongodb Compass or command line "mongodbimport" to import data dumps files located in /dumps/scblog
 4. mongodbimport Example: mongoimport --db scblog --collection collectionname --file yourdatafilepath
-5. modify variable "dataDB" located in /config/db.config.js to your mongodb server url
+5. rename "db.config.js.example" located in /config folder to "db.config.js" and modify variable "dataDB" to your mongodb server url. (modify collection names as well if needed)
 6. run "npm run dev" or "npm start" in console and wait for Nuxtjs to finish building 
 7. visit http://localhost:4422 (if port 4422 is not used by other applications)
 
@@ -54,3 +54,7 @@ Database: Mongodb@3.6
 2. article deleting feature finished
 3. page switching feature finished
 4. layout adjusted for mobile platform
+
+## Notes:
+
+Scms is only using Nuxtjs as a middleware, so please use "npm start" or "npm run dev" to start it.
