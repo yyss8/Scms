@@ -8,7 +8,7 @@ Demo: http://118.25.128.65:4422 国内要备案只能用IP :(
 
 ### Runtime Environment Tested: Nodejs@10.0/Npm@6.0.1
 
-1. git clone https://github.com/yyss8/scBlog.git
+1. git clone https://github.com/yyss8/Scms.git
 2. npm install
 3. use Mongodb Compass or command line "mongodbimport" to import data dumps files located in /dumps/scblog
 4. mongodbimport Example: mongoimport --db scblog --collection collectionname --file yourdatafilepath
