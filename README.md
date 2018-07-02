@@ -2,7 +2,7 @@
 
     a simple blog content management system based on Nuxtjs/Vue SSR
 
-Demo: http://118.25.128.65:4422 国内要备案只能用IP :(
+Demo: http://www.scitweb.com/
 
 ## Installation instruction
 
@@ -20,9 +20,13 @@ Demo: http://118.25.128.65:4422 国内要备案只能用IP :(
 
 Front-end:Vuejs/Vuex/Vue-Router/Bootstrap@3.3.7/Jquery
 
-Back-end: Nuxtjs@1.4.0/Express@4.16.3
+Back-end: Nuxtjs@1.4.1/Express@4.16.3
 
 Database: Mongodb@3.6
+
+### v1.0.2 (07/01/2018) Updates:
+
+1. Rewrote image upload feature.
 
 ### v1.0.1 (05/13/2018) Updates:
 

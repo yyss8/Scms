@@ -1,3 +1,4 @@
 .nuxt
 node_modules/
 config/db.config.js
+config/oss.js

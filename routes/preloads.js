@@ -10,7 +10,9 @@ const usrSrv = new userServices.UserService();
 routers.get('/*', (req, res, next) => {
 
     //log access ip
-    console.log(`${req.method} ${req.path} | From ${req.connection.remoteAddress.split(":").pop()} | At ${new Date().toLocaleTimeString()}`);
+    if ( !process.env.NODE_ENV === 'production' ){
+        console.log(`${req.method} ${req.path} | From ${req.connection.remoteAddress.split(":").pop()} | At ${new Date().toLocaleTimeString()}`);
+    }
 
     //get all settings
     settingSrv.get_setting(result => {
@@ -30,7 +32,7 @@ routers.get('/*', (req,res,next) => {
 
         const matched = req.originalUrl.match( /\/admin\/articles\/pages\/(\d+)$/ );
         const pageNum = matched && !isNaN( matched[1] ) ? Number( matched[1] ):1;
-        console.log( pageNum );
+
         postSrv.get_post_admin(pageNum, r => {
             //on success
             req.preLoad.articles = r.result;

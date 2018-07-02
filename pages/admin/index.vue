@@ -31,8 +31,7 @@
         },
         data(){
             return{
-                toFullScreen:false,
-                abc:true
+                toFullScreen:false
             }
         },
         components:{

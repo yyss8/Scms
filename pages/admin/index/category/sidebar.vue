@@ -5,6 +5,7 @@
             <thead>
             <tr>
                 <th>导航名称</th>
+                <th class='text-center'>排序</th>
                 <th class='text-center'>导航可见</th>
                 <th class='text-center'>标题可见</th>
                 <th>标题名称</th>

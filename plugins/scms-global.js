@@ -1,10 +1,12 @@
 import Vue from "vue";
+import Request from './scms-requests';
 
 let sg = {}
 
 sg.install = function (Vue, options) {
 
     Vue.prototype.$scms = {
+        Request,
         showDate(id){
             const date = new Date(parseInt(id.toString().substring(0, 8), 16) * 1000);
             const day = date.getDate().toString().length == 1 ? "0" + date.getDate().toString():date.getDate().toString();
@@ -208,6 +210,23 @@ sg.install = function (Vue, options) {
             }
 
             return num
+        },
+        readObjectUrlAsFile:url =>{
+            return new Promise( (resolve, reject) =>{
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', url , true);
+                xhr.responseType = 'blob';
+                xhr.onload = e=> {
+        
+                    if (xhr.status == 200) {
+                        const blobData = xhr.response;
+                        resolve( blobData );
+                    }else{
+                        reject( xhr.statusText );
+                    }
+                };
+                xhr.send();
+            });
         }
     }
 }

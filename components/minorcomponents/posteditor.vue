@@ -3,7 +3,7 @@
         <div v-if='isEditing'>
             <input placeholder="输入标题" class='form-control' v-model='postTitle'>
             <slot></slot>
-            <Image-Upload v-if='postCoverImg' :preload='coverUploadPreloads'></Image-Upload>
+            <Image-Upload v-if='postCoverImg' :preload='imageUploadParams' :unUploaded='previewImgs.unUploadedAttachments' :unUploadedTitle='unUploadedAttachmentTitles' />
             <div class='post-content-editor-btns'>
                 <div class="dropdown" v-if='hasCategory'>
                     <button class="btn btn-default dropdown-toggle btn-sm" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -44,11 +44,11 @@
                     </ul>
                 </div>&nbsp;
 
-                <button class='btn btn-default btn-sm' @click='addBold'><i class='fa fa-bold'></i></button>&nbsp;
-                <button class='btn btn-default btn-sm' @click='addItalic'><i class='fa fa-italic'></i></button>&nbsp;
-                <button class='btn btn-default btn-sm' @click='addUnderLine'><i class='fa fa-underline'></i></button>&nbsp;
+                <button class='btn btn-default btn-sm' @click='addBold' title='bold'><i class='fa fa-bold'></i></button>&nbsp;
+                <button class='btn btn-default btn-sm' @click='addItalic' title='italic'><i class='fa fa-italic'></i></button>&nbsp;
+                <button class='btn btn-default btn-sm' @click='addUnderLine' title='underline'><i class='fa fa-underline'></i></button>&nbsp;
                 <div class="dropdown">
-                    <button class='btn btn-default btn-sm' @click='openUrlDropDown'><i class='fa fa-link'></i></button>
+                    <button class='btn btn-default btn-sm' @click='openUrlDropDown' title='url'><i class='fa fa-link'></i></button>
                     <div id='urlInput' class='dropdown-menu' v-if='showUrlInput' style='display:block'>
                         <div><br />
                             <input placeholder="链接文字" class='form-control' v-model='urlText'>
@@ -59,10 +59,10 @@
                         <br />
                     </div>
                 </div>&nbsp;
-                <button class='btn btn-default btn-sm' @click='addCode'><i class='fa fa-code'></i></button>&nbsp;
-                <button class='btn btn-default btn-sm' @click='addQuote'><i class='fa fa-quote-left'></i></button>&nbsp;
+                <button class='btn btn-default btn-sm' @click='addCode' title='code'><i class='fa fa-code'></i></button>&nbsp;
+                <button class='btn btn-default btn-sm' @click='addQuote' title='quote'><i class='fa fa-quote-left'></i></button>&nbsp;
                 <div class="dropdown">
-                    <button class='btn btn-default btn-sm' @click='openImgDropDown'><i class='fa fa-file-image-o'></i></button>
+                    <button class='btn btn-default btn-sm' @click='openImgDropDown' title='image'><i class='fa fa-file-image-o'></i></button>
                     <div id='imgInput' class='dropdown-menu' v-if='showImgInput' style='display:block'>
                         <div><br />
                             <input placeholder="图片描述" class='form-control' v-model='imgAlt'>
@@ -78,20 +78,20 @@
             </div>
             
             <textarea placeholder="输入内容" class='form-control' id='editorArea' v-model='postContent'></textarea>
-            <Attachments :preload='previewImgs'></Attachments>
+            <Attachments :previewImages='previewImgs' :removeImage='removeImage' :onUpload='onUpload' :onUseImage='onUseImage'/>
             <div class='post-btns'>
                 <span style='float:left'>
                     <Result-View ref='resultView'></Result-View>
                 </span>
                 <button class='btn btn-default' @click='submitPost'>{{ preLoads.article !== undefined ? "保存":"发表" }}</button>&nbsp;
-                <button class='btn btn-default' @click='cancel'>取消</button>&nbsp;
+                <button class='btn btn-default' @click='cancel'>隐藏</button>&nbsp;
                 <button class='btn btn-default' @click='clear'>清空</button>
             </div>
         </div>
         <div>
             <Preview v-if='isPreviewing' :title='postTitle' :content='postContent'></Preview>
             <div class='post-btns' v-if='isPreviewing'>
-                <button class='btn btn-default' @click='preview'>取消</button>&nbsp;
+                <button class='btn btn-default' @click='preview'>取消预览</button>&nbsp;
                 <button class='btn btn-default' @click='cancel'>撤销</button>
             </div>
         </div>
@@ -99,6 +99,8 @@
 </template>
 
 <script>
+
+    import updater from 'immutability-helper';
 
     import ResultView from "./resultview.vue";
     import Preview from "./preview.vue";
@@ -110,22 +112,26 @@
             'preLoads','categoryNeeded','preData'
         ],
         data(){
+
+            const hasPreload = typeof this.preLoads === 'undefined';
+
             return{
-                postTitle:this.preLoads === undefined ? "":this.preLoads.article === undefined ? "":this.preLoads.article.title,
-                postContent:this.preLoads === undefined ? "":this.preLoads.article === undefined ? "":this.preLoads.article.content,
-                category:this.preLoads === undefined ? "文章分类":this.preLoads.article === undefined ? "文章分类":this.preLoads.article.category,
-                hasCategory:this.preLoads === undefined ? false:this.preLoads.hasCategory,
-                categoryList:this.preLoads === undefined ? []:this.preLoads.categoryList,
+                postTitle: hasPreload ? this.preLoads.article.title : '' ,
+                postContent: hasPreload ? this.preLoads.article.content:'',
+                category: hasPreload ? this.preLoads.article.category:'文章分类',
+                hasCategory: hasPreload ? this.preLoads.hasCategory:false,
+                categoryList: hasPreload ? this.preLoads.categoryList:[],
                 postCoverImg:true,
-                coverUploadPreloads:{
-                    getImg:this.getCoverImg,
-                    multiple:false,
-                    delImg:this.deleteImg,
-                    accepts:'image/*'
+                imageUploadParams:{
+                    appendImages:this.appendImages,
+                    multiple:true,
+                    clearImages:this.clearImages,
+                    accepts:'image/*',
+                    onUpload:this.onUploadAll,
                 },
                 previewImgs:{
-                    existingImgs:[],
-                    newImgs:[]
+                    unUploadedAttachments:[],
+                    uploadedAttachments:[],
                 },
                 optionContent:"",
                 selectionStart:0,
@@ -144,6 +150,11 @@
                 hasMsg:false,
                 errMsg:false,
                 successMsg:false
+            }
+        },
+        computed:{
+            unUploadedAttachmentTitles(){
+                return this.previewImgs.unUploadedAttachments.length <= 0 ? '':this.previewImgs.unUploadedAttachments.map( file => file.name ).join(',');
             }
         },
         methods:{
@@ -298,11 +309,47 @@
                 const editorArea = document.getElementById('editorArea');
                 return [editorArea.selectionStart, editorArea.selectionEnd];
             },
-            getCoverImg(img){
-                this.previewImgs.newImgs = img;
+            appendImages(images){
+                this.previewImgs = updater( this.previewImgs, {
+                    unUploadedAttachments:{
+                        $push:Array.from(images)
+                    }
+                });
             },
-            deleteImg(){
-                this.previewImgs.newImgs = [];
+            clearImages( type = 'unUploadedAttachments' ){
+                this.previewImgs = updater( this.previewImgs, {
+                    [type]:{ $set:[] }
+                });
+            },
+            removeImage( index, attachmentType = 'unUploadedAttachments' ){
+                this.previewImgs = updater( this.previewImgs,{
+                    [attachmentType]:{
+                        $splice:[ [index, 1] ]
+                    }
+                });
+            },
+            onUpload(index){
+
+            },
+            onUploadAll(){
+
+                const url = `/files/images`;
+                const data = {
+                    onTest:'1',
+                    prefix:'post',
+                    images:this.previewImgs.unUploadedAttachments
+                };
+                this.$scms.Request.postFile( data, url ).then( res =>{
+                    console.log(res);
+                    if ( res.status === 'ok' ){
+                        
+                    }
+
+                });
+
+            },
+            onUseImage( index ){
+                
             }
         },
         components:{

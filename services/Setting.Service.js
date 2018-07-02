@@ -7,6 +7,7 @@ const url = config.dataDB; //database url
 const dbName = config.settingCollection;
 
 class SettingService{
+    
     get_setting(success,fail){
         mongodb.connect(url,(err,db) =>{
             assert.equal(null, err);

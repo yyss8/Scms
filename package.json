@@ -1,31 +1,37 @@
 {
   "name": "scms",
-  "version": "1.0.1c",
-  "description": "a cms based on nuxt",
+  "version": "1.0.2",
+  "description": "a cms based on nuxtjs",
   "main": "app.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/yyss8/scBlog.git"
   },
   "scripts": {
+    "server": "cross-env BUILD=disable node app.js",
     "dev": "node app.js",
     "build": "nuxt build",
     "start": "cross-env NODE_ENV=production node app.js"
   },
   "keywords": [
-    "blog"
+    "blog",
+    "nuxtjs cms",
+    "nuxtjs demos"
   ],
-  "author": "shen chen",
+  "author": "Shen Chen",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.18.2",
+    "body-parser": "^1.18.3",
     "bootstrap": "^3.3.7",
-    "cross-env": "^5.1.5",
+    "connect-multiparty": "^2.1.1",
+    "cos-nodejs-sdk-v5": "^2.4.3",
+    "cross-env": "^5.1.6",
     "expose-loader": "^0.7.5",
     "express": "^4.16.3",
     "express-session": "^1.15.6",
+    "immutability-helper": "^2.7.1",
     "jquery": "^3.3.1",
     "mongodb": "^2.2.35",
-    "nuxt": "^1.4.0"
+    "nuxt": "^1.4.1"
   }
 }

@@ -1,7 +1,7 @@
 <template>
     <div class='panel panel-default blog-content'>
         <div class='panel-body'>
-            <div class='panel panel-info article-body' v-for='(article, articleIndex) in $store.state.articles' :key='`article-${articleIndex}`'>
+            <article class='panel panel-info article-body' v-for='(article, articleIndex) in $store.state.articles' :key='`article-${articleIndex}`'>
                 <div class='panel-body'>
                     <br />
                     <div class='article-title'>
@@ -22,7 +22,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </article>
             <Switch-Page v-if='$store.state.articleNum>5'></Switch-Page>
         </div>
 
@@ -89,8 +89,3 @@
         }
     }
 </script>
-
-<style>
-
-
-</style>

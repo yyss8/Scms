@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 const isProd = process.env.NODE_ENV === 'production';
 const packageJson = require('../package.json');
-
+const ossConfig = require('./oss');
 
 module.exports = {
     build: {
@@ -37,6 +37,8 @@ module.exports = {
     dev: (process.env.NODE_ENV !== 'production'),
     env:{
         NODE_ENV: process.env.NODE_ENV,
-        APP_VR:packageJson.version
+        APP_VR:packageJson.version,
+        OSS_SRC:ossConfig.ossSrc,
+        OSS_SRC_TEMP:ossConfig.ossSrcTemp
     }
 }
