@@ -10,25 +10,34 @@ class PostService{
 
     get_post_firstPage( pgNum, fail, success){
         let data = {num:0,articles:[]}
-        mongodb.connect(url,(err,db) =>{
+        mongodb.connect(url, (err,db) =>{
+
             assert.equal(null, err);
-            let collection = db.collection(dbName); 
-            collection.find().count((err,doc) => {
-                data.num = doc;
-                const perPage = 5;
-                const offset = ( pgNum  - 1 ) * 5;
-                collection.find({},{ skip:offset, limit:perPage} ).toArray((err,doc) => {
-                    data.articles = doc;
-                    success(data);
-                    db.close();
-                },err =>{
-                    fail(err);
-                    db.close();
-                });
-            },err=>{
-                fail({status:"err",content:err});
-                db.close();
-            });
+            const collection = db.collection(dbName); 
+            const perPage = 5;
+            const offset = ( pgNum - 1 ) * perPage;
+            
+            collection.find()
+                      .count()
+                      .then( doc =>{
+
+                            data.num = doc;
+                            collection.find({}, { skip:offset, limit:perPage })
+                                      .toArray()
+                                      .then( doc =>{
+                                            data.articles = doc;
+                                            success(data);
+                                            db.close();
+                                      })
+                                      .catch( err =>{
+                                            fail(err);
+                                            db.close();
+                                      });
+                      })
+                      .catch( err =>{
+                            fail({status:"err",content:err});
+                            db.close();
+                      } );
         }); 
     }
 
@@ -37,22 +46,30 @@ class PostService{
         mongodb.connect(url,(err,db) =>{
             assert.equal(null, err);
             const collection = db.collection(dbName); 
-            collection.find().count((err,doc) => {
-                data.num = doc;
-                const skipNum = (doc - pgNum * 5) < 0 ? 0:doc - pgNum * 5; //需要跳过的文章数 (如果最后一页则为0)
-                const limitNum = (doc - pgNum * 5) < 0 ? (doc - (pgNum-1) * 5):5; //页数所需要的文章数 (如果最后一页则为发最后所有)
-                collection.find({},{skip:skipNum,limit:limitNum}).toArray((err,doc) => {
-                    data.articles = doc
-                    success({status:"ok",content:"Post Loaded",result:data});
-                    db.close();
-                },err =>{
-                    fail({status:"err",content:err});
-                    db.close();
-                });
-            },err=>{
-                fail({status:"err",content:err});
-                db.close();
-            });
+
+            collection.find()
+                      .count()
+                      .then( doc =>{
+                            data.num = doc;
+                            const skipNum = (doc - pgNum * 5) < 0 ? 0:doc - pgNum * 5;
+                            const limitNum = (doc - pgNum * 5) < 0 ? (doc - (pgNum-1) * 5):5;
+
+                            collection.find({},{skip:skipNum,limit:limitNum})
+                                      .toArray()
+                                      .then( doc =>{
+                                            data.articles = doc
+                                            success({status:"ok",content:"Post Loaded",result:data});
+                                            db.close();
+                                      })
+                                      .catch( err =>{
+                                            fail({status:"err",content:err});
+                                            db.close();
+                                      });
+                      })
+                      .catch( err =>{
+                        fail({status:"err",content:err});
+                        db.close();
+                      });
         }); 
     }
 
@@ -263,45 +280,53 @@ class PostService{
     create_new_post(data,success,fail){
         data.comments = [];
         data.click = 0;
+
         mongodb.connect(url,(err,db) =>{
             assert.equal(null,err);
             const collection = db.collection(dbName); 
-            collection.insertOne(data).then((doc,err) =>{
-                if (err){
-                    fail({status:"err",content:"出现错误"});
-                }else{
-                    success({status:"ok",content:"文章发表成功"});
-                }
-            });
+
+            collection.insertOne( data )
+                      .then( doc  =>{
+                            success({status:"ok",content:"文章发表成功"});
+                      }).catch( err =>{
+                            fail({status:"err",content:"出现错误"});
+                      });
         });
     }
 
-    update_post(data,success,fail){
-        try {
-            mongodb.connect(url,(err,db) =>{
-                assert.equal(null,err);
-                const collection = db.collection(dbName); 
-                collection.updateOne(
-                    {_id:objectID(data.id)},
-                    {$set:{
-                        title:data.title,
-                        content:data.content,
-                        category:data.category,
-                        allowComments:data.allowComments,
-                        allowSubComments:data.allowSubComments}
-                    }
-                    ).then((doc,err) =>{
-                    if (err){
-                        fail({status:"err",content:"出现错误"});
-                    }else{
-                        success({status:"ok",content:"文章修改成功"});
-                    }
-                });
-            });
-        }catch(err){
-            fail({status:"err",content:"错误id"})
-        }
+    update_post(data){
 
+        return new Promise( (resolve, reject) =>{
+
+            try {
+                mongodb.connect(url,(err,db) =>{
+                    assert.equal(null,err);
+                    const collection = db.collection(dbName); 
+    
+                    collection.updateOne( 
+                        { _id: objectID(data.id) },
+                        { $set: {
+                            title:data.title,
+                            content:data.content,
+                            category:data.category,
+                            allowComments:data.allowComments,
+                            allowSubComments:data.allowSubComments,
+                            attachments:data.attachments
+                            }})
+                            .then( doc =>{
+                                resolve('文章修改成功');
+                            })
+                            .catch( err =>{
+                                reject('出现错误');
+                            });
+                });
+    
+    
+            }catch(err){
+                reject('无效文章ID');
+            }
+
+        });
     }
 
     del_post(id,success,fail){

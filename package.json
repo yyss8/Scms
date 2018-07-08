@@ -1,6 +1,6 @@
 {
   "name": "scms",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "a cms based on nuxtjs",
   "main": "app.js",
   "repository": {

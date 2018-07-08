@@ -28,11 +28,20 @@ routers.delete('/:id',(req,res) => {
 });
 
 routers.put('/',(req,res) => {
-    postSrv.update_post(req.body,success =>{
-        res.status(200).send(success);
-    },err =>{
-        res.status(400).send(err);
-    });
+
+    postSrv.update_post( req.body )
+           .then( result =>{
+                res.status(200).send({
+                    status:'ok',
+                    content:result
+                });
+           })
+           .catch( err =>{
+                res.status(400).send({
+                    status:'err',
+                    content:err
+                });
+           });
 });
 
 routers.post('/:id/comments',(req,res) => {

@@ -53,20 +53,17 @@
                     allowComments:this.allowComments,
                     allowSubComments:this.allowSubComments
                 });
-                $.ajax({
-                    url: `/post/`,
-                    type:'POST',
-                    contentType: "application/json",
-                    data: JSON.stringify(postData),
-                    success: (result)=>{
-                        if (result.status == "ok"){
-                            onResult(result.content,"success");
-                            location.href = "/pages/1";
-                        }else{
-                            onResult(result.content,"error");
-                        }
-                    }
-                });
+
+                const url = '/post';
+                this.$scms.Request.postJson( data, url )
+                                  .then( res =>{
+                                      if ( res.status === 'ok' ){
+                                          onResult(res.content,"success");
+                                          location.href = "/pages/1";
+                                      }else{
+                                          onResult(res.content,"error");
+                                      }
+                                  });
             },
             cancel(){
                 $("#quickPostField").modal('hide');

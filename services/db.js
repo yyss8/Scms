@@ -9,7 +9,7 @@ module.exports = ( collection )  =>{
         mongodb.connect( url, (err, db) =>{
 
             if ( err ){
-                reject( err);
+                reject( `Mongodb数据库链接出错: ${err}` );
             }
             resolve( db.collection( collection ) );
         });

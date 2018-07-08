@@ -5,7 +5,6 @@
                 {{ $store.state.sideBarComps.HotPosts.title }}
             </div>
             <div class='panel-body'>
-                feawfaw
             </div>
         </div>
     </div>

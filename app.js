@@ -25,7 +25,7 @@ app.use(bodyParser.urlencoded({
 app.use(express.static('static'));
 app.use(session({
   secret:'scBlog',
-  cookie:{ maxAge:60*60*1000*24 },
+  cookie:{ maxAge:60 * 60 * 1000 * 24 },
   resave:false,
   saveUninitialized:false
 }));

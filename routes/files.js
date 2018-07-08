@@ -61,6 +61,13 @@ routers.post('/images', mp , (req, res) => {
 
     const onTest = req.body.onTest === '1';
 
+    if ( typeof req.files.images === 'undefined' || req.files.images.length <= 0 ){
+        res.status(400).send({
+            status:'err',
+            content:'无任何图片'
+        });
+    }
+
     Promise.all( req.files.images.map( file =>{
 
         return new Promise( (resolve, reject) =>{
@@ -98,8 +105,7 @@ routers.post('/images', mp , (req, res) => {
                 env:onTest ? 'dev':'prod'
             };
         });
-
-        const insertResponses = await ImageService.addCosImages( images );
+        
         res.status(200).send({status:'ok', result:{ images }, content:'图片上传成功'});
     }, error =>{
         res.status(400).send({status:'err', content:'图片上传出错'});

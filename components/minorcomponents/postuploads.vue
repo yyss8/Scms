@@ -1,19 +1,22 @@
 <template>
     <div>
-        <div class='file-upload-preview' v-if='images.length != 0'>
-            <h6>附件</h6>
+        <h6>附件</h6>
+        <div class='file-upload-preview' v-if='images.length > 0'>
             <ul class='list-group'>
                 <li class="list-group-item" v-for='(img,index) in images'  :key='`image-${index}`'>
                     <span>
                         {{index + 1}}. {{img.name}} &nbsp;&nbsp;
-                        <a href='javascript:void(0)' class='btn btn-default btn-sm' @click='preview(index)'>预览</a>&nbsp;&nbsp;
-                        <a href="javascript:void(0)" class='btn btn-success btn-sm' v-if='!img.isUploaded' @click='onUpload( img.imgIndex )'>上传</a>
-                        <a href="javascript:void(0)" class='btn btn-default btn-sm' v-else @click='onUseImage(img.imgIndex)'>使用</a>&nbsp;&nbsp;
-                        <a href='javascript:void(0)' class='btn btn-danger btn-sm' @click='removeImage(img.imgIndex, img.isUploaded ? "uploadedAttachments":"unUploadedAttachments")'>删除</a>
+                        <button class='btn btn-default btn-sm' @click='preview(index)'>预览</button>&nbsp;&nbsp;
+                        <button class='btn btn-success btn-sm' v-if='!img.isUploaded' @click='onUpload( $event, img.imgIndex )'>上传</button>
+                        <button class='btn btn-default btn-sm' v-else @click='onUseImage(img.imgIndex)'>使用</button>&nbsp;&nbsp;
+                        <button class='btn btn-danger btn-sm' @click='removeImage(img.imgIndex, img.isUploaded ? "uploadedAttachments":"unUploadedAttachments")'>删除</button>
                     </span>
                     <b class='pull-right upload-status' :style='{color:!img.isUploaded ? "#d9534f":"#5cb85c"}'>{{!img.isUploaded ? "未上传":"已上传"}}</b>
                 </li>
             </ul>
+        </div>
+        <div v-else>
+            <span>尚无任何附件</span>
         </div>
         <Modal-View ref='modalView' :modalWidth='previewImgSize'>
             <template slot-scope='props'>
@@ -23,7 +26,7 @@
                         <span>&times;</span>
                     </button>
                 </div>
-                <div class='scms-modal-body' style='text-align:center;'>
+                <div class='scms-modal-body'>
                     <img :src='previewingImgSrc' width='500'>
                 </div>
                 <div class='scms-modal-footer'>
@@ -57,7 +60,7 @@
                     ...this.previewImages.uploadedAttachments.map( (imageObj, index) =>{
                         return {    
                             name:imageObj.key,
-                            url:`${imageObj.env === 'prod' ? OSS_SRC:OSS_SRC_TEMP}/${imageObj.key}`,
+                            url:`${imageObj.env === 'prod' ? process.env.OSS_SRC:process.env.OSS_SRC_TEMP}/${imageObj.key}`,
                             isUploaded:true,
                             imgIndex:index
                         };
@@ -78,6 +81,10 @@
 </script>
 
 <style>
+
+    .scms-modal-body{
+        text-align: center;
+    }
 
     .list-group{
         border-radius: 3px;

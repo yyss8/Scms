@@ -5,12 +5,14 @@
             <slot></slot>
             <Image-Upload v-if='postCoverImg' :preload='imageUploadParams' :unUploaded='previewImgs.unUploadedAttachments' :unUploadedTitle='unUploadedAttachmentTitles' />
             <div class='post-content-editor-btns'>
-                <div class="dropdown" v-if='hasCategory'>
+                <div class="dropdown" v-if='hasPreload && preLoads.categoryList.length > 0'>
                     <button class="btn btn-default dropdown-toggle btn-sm" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                         {{category}} <span class="caret" v-if='category === "文章分类"'></span>
                     </button>&nbsp;
-                    <ul class="dropdown-menu">
-                        <li  @click='selectCategories(category.name)' v-for='(category, categoryIndex) in categoryList' :key='`category-${categoryIndex}`'><a href="javascript:void(0)">{{category.name}}</a></li>
+                    <ul class="dropdown-menu" v-if='hasPreload && this.preLoads.categoryList.length > 0'>
+                        <li @click='selectCategories(cg.name)'  v-for='(cg, categoryIndex) in preLoads.categoryList' :key='`category-${categoryIndex}`'>
+                            <a href="javascript:void(0)">{{cg.name}}</a>
+                        </li>
                     </ul>
                 </div>
 
@@ -112,15 +114,11 @@
             'preLoads','categoryNeeded','preData'
         ],
         data(){
-
-            const hasPreload = typeof this.preLoads === 'undefined';
-
+            const hasPreload = this.preLoads && this.preLoads.article;
             return{
                 postTitle: hasPreload ? this.preLoads.article.title : '' ,
                 postContent: hasPreload ? this.preLoads.article.content:'',
                 category: hasPreload ? this.preLoads.article.category:'文章分类',
-                hasCategory: hasPreload ? this.preLoads.hasCategory:false,
-                categoryList: hasPreload ? this.preLoads.categoryList:[],
                 postCoverImg:true,
                 imageUploadParams:{
                     appendImages:this.appendImages,
@@ -131,7 +129,7 @@
                 },
                 previewImgs:{
                     unUploadedAttachments:[],
-                    uploadedAttachments:[],
+                    uploadedAttachments:hasPreload && this.preLoads.article.attachments ? this.preLoads.article.attachments: [],
                 },
                 optionContent:"",
                 selectionStart:0,
@@ -155,6 +153,12 @@
         computed:{
             unUploadedAttachmentTitles(){
                 return this.previewImgs.unUploadedAttachments.length <= 0 ? '':this.previewImgs.unUploadedAttachments.map( file => file.name ).join(',');
+            },
+            hasPreload(){
+                return this.preLoads && this.preLoads.article;
+            },
+            hasCategory(){
+                return this.preLoads.categoryList && this.preLoads.categoryList.length > 0;
             }
         },
         methods:{
@@ -187,13 +191,15 @@
                     const postData = this.hasCategory ? {
                         title:this.postTitle,
                         content:this.postContent,
-                        category:this.category
+                        category:this.category,
+                        attachments:this.previewImgs.uploadedAttachments
                     } : {
                         title:this.postTitle,
-                        content:this.postContent
+                        content:this.postContent,
+                        attachments:this.previewImgs.uploadedAttachments
                     }
                     
-                    const submit = this.preLoads.submit === undefined ? this.$parent.editorSubmit : this.preLoads.submit;
+                    const submit = this.preLoads.submit || this.$parent.editorSubmit;
                     submit(postData,this.$refs.resultView.sendMsg);  
                 }
 
@@ -310,6 +316,7 @@
                 return [editorArea.selectionStart, editorArea.selectionEnd];
             },
             appendImages(images){
+                
                 this.previewImgs = updater( this.previewImgs, {
                     unUploadedAttachments:{
                         $push:Array.from(images)
@@ -328,28 +335,74 @@
                     }
                 });
             },
-            onUpload(index){
+            onUpload( e, index){
 
-            },
-            onUploadAll(){
+                const button = $(e.target);
+                const orgText = button.text();
+                button.prop('disabled', true).html('<i class="fa fa-circle-o-notch fa-spin"></i> 上传中...');
 
                 const url = `/files/images`;
                 const data = {
                     onTest:'1',
                     prefix:'post',
+                    images:[this.previewImgs.unUploadedAttachments[index]]
+                };
+
+                this.$scms.Request.postFile( data, url ).then( res =>{
+                    if ( res.status === 'ok' ){
+                        this.previewImgs = updater( this.previewImgs, {
+                            unUploadedAttachments:{
+                                $splice:[[index, 1]]
+                            },
+                            uploadedAttachments:{
+                                $push:res.result.images
+                            }
+                        });
+                    }else{
+                        alert('上传失败');
+                    }
+                    button.prop('disabled', false).text( orgText );
+                }, () =>{
+                    alert('上传失败');
+                    button.prop('disabled', false).text( orgText );
+                });
+                
+            },
+            onUploadAll( event ){
+                const button = $("#upload-all-images");
+                const orgText = button.text();
+                button.prop('disabled', true).html('<i class="fa fa-circle-o-notch fa-spin"></i> 上传中...');
+
+                const url = `/files/images`;
+                const data = {
+                    onTest:'0',
+                    prefix:'post',
                     images:this.previewImgs.unUploadedAttachments
                 };
                 this.$scms.Request.postFile( data, url ).then( res =>{
-                    console.log(res);
                     if ( res.status === 'ok' ){
-                        
+                        this.previewImgs = updater( this.previewImgs, {
+                            unUploadedAttachments:{
+                                $set:[]
+                            },
+                            uploadedAttachments:{
+                                $push:res.result.images
+                            }
+                        });
                     }
 
+                    button.prop('disabled', false).text(orgText);
+                }, () =>{
+                    alert('上传出错');
+                    button.prop('disabled', false).text(orgText);
                 });
-
             },
             onUseImage( index ){
-                
+
+                const imageObj = this.previewImgs.uploadedAttachments[index];
+                const url = `${imageObj.env === 'prod' ? process.env.OSS_SRC:process.env.OSS_SRC_TEMP}/${imageObj.key}`;
+
+                this.postContent += `\n[img a='${imageObj.key}' w='100%']${url}[/img]`;
             }
         },
         components:{
